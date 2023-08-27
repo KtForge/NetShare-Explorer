@@ -1,0 +1,17 @@
+workflows:
+  native-android:
+    name: Native Android
+    instance_type: mac_mini_m1
+    scripts:
+      - name: Build Android debug apk
+        script: |
+          ./gradlew assembleDebug
+    artifacts:
+      - app/build/outputs/**/*.apk
+    publishing:
+      email:
+        recipients:
+          - msd117c@gmail.com
+        notify:
+          success: true
+          failure: true
