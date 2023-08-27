@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="name_label">Name</string>
+    <string name="server_label">Server</string>
+    <string name="shared_path_label">Shared path</string>
+    <string name="user_label">User</string>
+    <string name="password_label">Password</string>
+    <string name="show_password_a11y">Show password</string>
+    <string name="hide_password_a11y">Hide password</string>
+
+    <string name="save_configuration_button">Save</string>
+    <string name="edit_configuration_button">Edit</string>
+</resources>

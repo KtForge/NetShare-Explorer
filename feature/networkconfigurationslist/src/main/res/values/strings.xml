@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="delete_dialog_title">Do you want to delete this configuration?</string>
+    <string name="delete_dialog_confirm">Delete</string>
+    <string name="delete_dialog_cancel">Cancel</string>
+
+    <string name="add_configuration_button_a11y">Add a new network configuration</string>
+    <string name="edit_configuration_button_a11y">Edit this network configuration</string>
+    <string name="delete_configuration_button_a11y">Delete this network configuration</string>
+
+    <string name="server_info_label">Server: %s</string>
+    <string name="path_info_label">Path: %s</string>
+
+    <string name="empty_network_configurations">You have no network configurations, add one!</string>
+    <string name="add_network_configuration_button">Create shared folder configuration</string>
+</resources>

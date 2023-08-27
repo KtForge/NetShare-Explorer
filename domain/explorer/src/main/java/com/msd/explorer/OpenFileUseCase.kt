@@ -1,0 +1,20 @@
+package com.msd.explorer
+
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.File
+import javax.inject.Inject
+
+class OpenFileUseCase @Inject constructor(private val repository: IExplorerRepository) {
+
+    suspend operator fun invoke(
+        server: String,
+        sharedPath: String,
+        directoryRelativePath: String,
+        fileName: String,
+        user: String,
+        psw: String
+    ): File? = withContext(Dispatchers.IO) {
+        repository.openFile(server, sharedPath, directoryRelativePath, fileName, user, psw)
+    }
+}
