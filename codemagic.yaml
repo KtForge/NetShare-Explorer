@@ -2,6 +2,8 @@ workflows:
   native-android:
     name: Native Android
     instance_type: mac_mini_m1
+    environment:
+      java: 17
     scripts:
       - name: Build Android debug apk
         script: |
