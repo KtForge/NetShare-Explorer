@@ -49,7 +49,7 @@ workflows:
         script: |
           git add version
           git commit -m "Increment minor version to $version_major.$next_minor_version.$version_patch.$version_build"
-          git push "https://msd117c:$GITHUB_PAT@github.com/Network-Explorer.git" main
+          git push "https://$GITHUB_PAT@github.com/msd117c/Network-Explorer.git" main
     publishing:
       email:
         recipients:
