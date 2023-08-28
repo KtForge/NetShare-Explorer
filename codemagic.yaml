@@ -22,6 +22,8 @@ workflows:
     instance_type: mac_mini_m1
     environment:
       java: 17
+      groups:
+        - repo_credentials
     scripts:
       - name: Increment minor version
         script: |
@@ -43,6 +45,11 @@ workflows:
           END
 
           cat "$file"
+      - name: Push updated version file
+        script: |
+          git add version
+          git commit -m "Increment minor version to $version_major.$next_minor_version.$version_patch.$version_build"
+          git push origin main
     publishing:
       email:
         recipients:
