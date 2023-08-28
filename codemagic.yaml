@@ -46,8 +46,8 @@ workflows:
   release-github-app:
     environment:
       java: 17
-      vars:
-        GITHUB_TOKEN
+      groups:
+        - github
     triggering:
       events:
         - tag
