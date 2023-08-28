@@ -1,4 +1,4 @@
-package com.msd.explorer
+package com.msd.network.explorer
 
 import org.junit.Test
 
