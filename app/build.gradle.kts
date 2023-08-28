@@ -20,6 +20,26 @@ android {
     namespace = Configuration.namespace
     compileSdk = Configuration.compileSdk
 
+    signingConfigs {
+        create("release") {
+            if (System.getenv("CI") as Boolean? == true) {
+                storeFile = file(System.getenv()["CM_KEYSTORE_PATH"] as String)
+                storePassword = System.getenv()["CM_KEYSTORE_PASSWORD"]
+                keyAlias = System.getenv()["CM_KEY_ALIAS"]
+                keyPassword = System.getenv()["CM_KEY_PASSWORD"]
+            } else {
+                val properties = Properties()
+                val propertiesFile = File("key.properties")
+                properties.load(propertiesFile.inputStream())
+
+                keyAlias = properties["key.alias"] as String
+                keyPassword = properties["key.alias.password"] as String
+                storeFile = file(properties["key.store.file"] as String)
+                storePassword = properties["key.store.password"] as String
+            }
+        }
+    }
+
     defaultConfig {
         applicationId = Configuration.namespace
         minSdk = Configuration.minSdk
@@ -36,10 +56,13 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
+            isDebuggable = false
         }
     }
     compileOptions {
