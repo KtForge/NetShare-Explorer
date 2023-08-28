@@ -22,7 +22,7 @@ android {
 
     signingConfigs {
         create("release") {
-            if (System.getenv("CI") as Boolean? == true) {
+            if (System.getenv("CI").toBoolean()) {
                 storeFile = file(System.getenv()["CM_KEYSTORE_PATH"] as String)
                 storePassword = System.getenv()["CM_KEYSTORE_PASSWORD"]
                 keyAlias = System.getenv()["CM_KEY_ALIAS"]
