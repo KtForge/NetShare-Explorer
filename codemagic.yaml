@@ -25,11 +25,6 @@ workflows:
       groups:
         - github
     scripts:
-      - name: Authenticate GitHub CLI
-        script: |
-          echo $GITHUB_PAT > gh_credentials.txt
-          gh auth login --with-token < gh_credentials.txt
-          rm gh_credentials.txt
       - name: Increment minor version
         script: |
           file="./version"
@@ -54,7 +49,7 @@ workflows:
         script: |
           git add version
           git commit -m "Increment minor version to $version_major.$next_minor_version.$version_patch.$version_build"
-          git push origin main
+          git push "https://msd117c:$GITHUB_PAT@github.com/Network-Explorer.git" main
     publishing:
       email:
         recipients:
