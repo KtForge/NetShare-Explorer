@@ -51,6 +51,9 @@ workflows:
     triggering:
       events:
         - tag
+      tag_patterns:
+        - pattern: v*
+      cancel_previous_builds: true
     scripts:
       - *build_release_apk
       - name: Publish to GitHub
