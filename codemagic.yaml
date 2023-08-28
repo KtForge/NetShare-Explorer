@@ -53,6 +53,7 @@ workflows:
         - tag
       tag_patterns:
         - pattern: v*
+          include: true
       cancel_previous_builds: true
     scripts:
       - *build_release_apk
