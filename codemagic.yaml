@@ -1,3 +1,9 @@
+definitions:
+  - &build_release_apk
+    name: Build release apk
+    script: |
+      ./gradlew assembleRelease
+
 workflows:
   build-debug-apk:
     name: Build debug apk
@@ -53,7 +59,7 @@ workflows:
 
           git add version
           git commit -m "Increment version to $version"
-          git push "https://$GITHUB_PAT@github.com/msd117c/Network-Explorer.git" main
+          git push "https://$GITHUB_TOKEN@github.com/msd117c/Network-Explorer.git" main
     publishing:
       email:
         recipients:
@@ -69,9 +75,39 @@ workflows:
       android_signing:
         - network-file-explorer
     scripts:
-      - name: Build Android release apk
+      - *build_release_apk
+    artifacts:
+      - app/build/outputs/**/*.apk
+    publishing:
+      email:
+        recipients:
+          - msd117c@gmail.com
+        notify:
+          success: true
+          failure: true
+  release-github-app:
+    environment:
+      java: 17
+      vars:
+        GITHUB_TOKEN
+    triggering:
+      events:
+        - tag
+    scripts:
+      - *build_release_apk
+      - name: Publish to GitHub
         script: |
-          ./gradlew assembleRelease
+          #!/usr/bin/env zsh
+      
+          # Publish only for tag builds
+          if [ -z ${CM_TAG} ]; then
+            echo "Not a tag build, will not publish GitHub release"
+            exit 0
+          fi
+      
+          gh release create "${CM_TAG}" \
+            --title "Network Explorer ${CM_TAG}" \
+            app/build/outputs/apk/release/app-release.apk
     artifacts:
       - app/build/outputs/**/*.apk
     publishing:
