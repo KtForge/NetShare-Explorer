@@ -1,4 +1,4 @@
-package com.msd.networkstorageconfiguration
+package com.msd.explorer
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.msd.networkstorageconfiguration.di
+package com.msd.network.explorer.di
 
 import android.content.Context
 import androidx.room.Room

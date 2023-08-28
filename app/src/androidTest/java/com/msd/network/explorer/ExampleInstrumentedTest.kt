@@ -1,4 +1,4 @@
-package com.msd.networkstorageconfiguration
+package com.msd.network.explorer
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

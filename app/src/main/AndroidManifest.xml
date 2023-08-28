@@ -13,12 +13,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.NetworkStorageConfiguration"
+        android:theme="@style/Theme.NetworkExplorer"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.NetworkStorageConfiguration">
+            android:theme="@style/Theme.NetworkExplorer">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,7 +28,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.msd.networkstorageconfiguration.provider"
+            android:authorities="com.msd.explorer.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

@@ -1,4 +1,4 @@
-package com.msd.networkstorageconfiguration.ui.theme
+package com.msd.network.explorer.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

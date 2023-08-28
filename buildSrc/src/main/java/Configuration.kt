@@ -2,7 +2,7 @@ import org.gradle.api.JavaVersion
 
 object Configuration {
 
-    const val namespace = "com.msd.networkstorageconfiguration"
+    const val namespace = "com.msd.network.explorer"
     const val compileSdk = 33
     const val minSdk = 24
     const val targetSdk = 33

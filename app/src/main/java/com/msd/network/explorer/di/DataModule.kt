@@ -1,4 +1,4 @@
-package com.msd.networkstorageconfiguration.di
+package com.msd.network.explorer.di
 
 import com.msd.explorer.ExplorerRepository
 import com.msd.explorer.IExplorerRepository

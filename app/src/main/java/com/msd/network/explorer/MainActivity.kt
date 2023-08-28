@@ -1,4 +1,4 @@
-package com.msd.networkstorageconfiguration
+package com.msd.network.explorer
 
 import android.app.Activity
 import android.content.Intent

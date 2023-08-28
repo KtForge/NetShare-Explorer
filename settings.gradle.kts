@@ -12,7 +12,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Network Storage Configuration"
+rootProject.name = "Network Explorer"
 include(":app")
 include(":core:ui")
 include(":core:presentation")

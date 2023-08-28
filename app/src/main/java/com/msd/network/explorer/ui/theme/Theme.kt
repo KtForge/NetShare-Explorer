@@ -1,4 +1,4 @@
-package com.msd.networkstorageconfiguration.ui.theme
+package com.msd.network.explorer.ui.theme
 
 import android.app.Activity
 import android.os.Build
