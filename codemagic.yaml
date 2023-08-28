@@ -35,14 +35,14 @@ workflows:
 
           next_minor_version=$((version_minor + 1))
 
-          tee -a $file < END
+          cat <<END > "$file"
           version.major=$version_major
           version.minor=$next_minor_version
           version.patch=$version_patch
           version.build=$version_build
           END
 
-          cat $file
+          cat "$file"
     publishing:
       email:
         recipients:
