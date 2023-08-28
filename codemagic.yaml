@@ -45,10 +45,14 @@ workflows:
           END
 
           cat "$file"
+
+          echo "$version_major.$next_minor_version.$version_patch.$version_build" > version.txt
       - name: Push updated version file
         script: |
+          version=$(<"version.txt")
+
           git add version
-          git commit -m "Increment minor version to $version_major.$next_minor_version.$version_patch.$version_build"
+          git commit -m "Increment minor version to $version"
           git push "https://$GITHUB_PAT@github.com/msd117c/Network-Explorer.git" main
     publishing:
       email:
