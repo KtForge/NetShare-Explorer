@@ -52,7 +52,7 @@ workflows:
           version=$(<"version.txt")
 
           git add version
-          git commit -m "Increment minor version to $version"
+          git commit -m "Increment version to $version"
           git push "https://$GITHUB_PAT@github.com/msd117c/Network-Explorer.git" main
     publishing:
       email:
