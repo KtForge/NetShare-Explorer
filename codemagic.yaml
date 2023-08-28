@@ -48,6 +48,8 @@ workflows:
       java: 17
       groups:
         - github
+      android_signing:
+        - network-file-explorer
     triggering:
       events:
         - tag
