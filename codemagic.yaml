@@ -5,26 +5,8 @@ definitions:
       ./gradlew assembleRelease
 
 workflows:
-  build-debug-apk:
-    name: Build debug apk
-    instance_type: mac_mini_m1
-    environment:
-      java: 17
-    scripts:
-      - name: Build Android debug apk
-        script: |
-          ./gradlew assembleDebug
-    artifacts:
-      - app/build/outputs/**/*.apk
-    publishing:
-      email:
-        recipients:
-          - msd117c@gmail.com
-        notify:
-          success: true
-          failure: true
-  increment-minor-version:
-    name: Increment minor version
+  create-release-candidate:
+    name: Create release candidate
     instance_type: mac_mini_m1
     environment:
       java: 17
@@ -34,7 +16,7 @@ workflows:
       - name: Increment minor version
         script: |
           file="./version"
-  
+
           while IFS='=' read -r key value
           do
             key=$(echo $key | tr '.' '_')
@@ -59,32 +41,8 @@ workflows:
 
           git add version
           git commit -m "Increment version to $version"
-          git push "https://$GITHUB_TOKEN@github.com/msd117c/Network-Explorer.git" main
-    publishing:
-      email:
-        recipients:
-          - msd117c@gmail.com
-        notify:
-          success: true
-          failure: true
-  build-release-apk:
-    name: Build release apk
-    instance_type: mac_mini_m1
-    environment:
-      java: 17
-      android_signing:
-        - network-file-explorer
-    scripts:
-      - *build_release_apk
-    artifacts:
-      - app/build/outputs/**/*.apk
-    publishing:
-      email:
-        recipients:
-          - msd117c@gmail.com
-        notify:
-          success: true
-          failure: true
+          git tag -a "v$version"
+          git push --atomic "https://$GITHUB_TOKEN@github.com/msd117c/Network-Explorer.git" main "v$version"
   release-github-app:
     environment:
       java: 17
