@@ -12,5 +12,5 @@
     <string name="path_info_label">Path: %s</string>
 
     <string name="empty_network_configurations">You have no network configurations, add one!</string>
-    <string name="add_network_configuration_button">Create shared folder configuration</string>
+    <string name="add_network_configuration_button">Configure a network location</string>
 </resources>
