@@ -4,10 +4,15 @@ workflows:
     instance_type: mac_mini_m1
     environment:
       java: 17
+      android_signing:
+        - network-file-explorer
     scripts:
       - name: Build Android debug apk
         script: |
           ./gradlew assembleDebug
+      - name: Build Android release apk
+        script: |
+          ./gradlew assembleRelease
     artifacts:
       - app/build/outputs/**/*.apk
     publishing:
