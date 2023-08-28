@@ -32,11 +32,17 @@ workflows:
             key=$(echo $key | tr '.' '_')
             eval ${key}=\${value}
           done < "$file"
-  
-          echo "Major = " ${version_major}
-          echo "Minor = " ${version_minor}
-          echo "Patch = " ${version_patch}
-          echo "Build = " ${version_build}
+
+          next_minor_version=$(version_minor + 1)
+
+          tee -a $file << END
+          version.major=$version_major
+          version.minor=$next_minor_version
+          version.patch=$version_patch
+          version.build=$version_build
+          END
+
+          cat $file
     publishing:
       email:
         recipients:
