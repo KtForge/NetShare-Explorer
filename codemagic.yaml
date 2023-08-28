@@ -33,7 +33,7 @@ workflows:
             eval ${key}=\${value}
           done < "$file"
 
-          next_minor_version=$(version_minor + 1)
+          next_minor_version=$((version_minor + 1))
 
           tee -a $file << END
           version.major=$version_major
