@@ -17,6 +17,33 @@ workflows:
         notify:
           success: true
           failure: true
+  increment-minor-version:
+    name: Increment minor version
+    instance_type: mac_mini_m1
+    environment:
+      java: 17
+    scripts:
+      - name: Increment minor version
+        script: |
+          file="./version"
+  
+          while IFS='=' read -r key value
+          do
+            key=$(echo $key | tr '.' '_')
+            eval ${key}=\${value}
+          done < "$file"
+  
+          echo "Major = " ${version_major}
+          echo "Minor = " ${version_minor}
+          echo "Patch = " ${version_patch}
+          echo "Build = " ${version_build}
+    publishing:
+      email:
+        recipients:
+          - msd117c@gmail.com
+        notify:
+          success: true
+          failure: true
   build-release-apk:
     name: Build release apk
     instance_type: mac_mini_m1
