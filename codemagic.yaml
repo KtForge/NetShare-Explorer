@@ -1,15 +1,30 @@
 workflows:
-  native-android:
-    name: Native Android
+  build-debug-apk:
+    name: Build debug apk
+    instance_type: mac_mini_m1
+    environment:
+      java: 17
+    scripts:
+      - name: Build Android debug apk
+        script: |
+          ./gradlew assembleDebug
+    artifacts:
+      - app/build/outputs/**/*.apk
+    publishing:
+      email:
+        recipients:
+          - msd117c@gmail.com
+        notify:
+          success: true
+          failure: true
+  build-release-apk:
+    name: Build release apk
     instance_type: mac_mini_m1
     environment:
       java: 17
       android_signing:
         - network-file-explorer
     scripts:
-      - name: Build Android debug apk
-        script: |
-          ./gradlew assembleDebug
       - name: Build Android release apk
         script: |
           ./gradlew assembleRelease
