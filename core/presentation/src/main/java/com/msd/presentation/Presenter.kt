@@ -8,14 +8,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-abstract class Presenter<S : State>(private val core: PresenterCore<S>) : ViewModel() {
+abstract class Presenter<S : State>(private val core: IPresenterCore<S>) : ViewModel() {
 
-    fun getState(): Flow<S> = core.state
+    fun getState(): Flow<S> = core.state()
+
     val currentState: State
-        get() = core.state.value
+        get() = core.currentState()
 
     fun tryEmit(nextState: S) {
-        core.state.tryEmit(nextState)
+        core.tryEmit(nextState)
     }
 
     private val navigationEvent = MutableStateFlow<NavigationEvent>(Idle)
@@ -26,7 +27,7 @@ abstract class Presenter<S : State>(private val core: PresenterCore<S>) : ViewMo
     }
 
     open fun initialize() {
-        if (!core.isUninitialized()) return
+        if (core.isInitialized()) return
     }
 
     open fun onStart() = Unit

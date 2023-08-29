@@ -9,7 +9,7 @@ import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNameArgToRepl
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNoIdArg
 import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Empty
 import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loaded
-import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Uninitialized
+import com.msd.presentation.IPresenterCore
 import com.msd.presentation.Presenter
 import com.msd.presentation.PresenterCore
 import com.msd.smb.DeleteSMBConfigurationUseCase
@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NetworkConfigurationsListPresenter @Inject constructor(
-    core: PresenterCore<NetworkConfigurationsListState>,
+    core: IPresenterCore<NetworkConfigurationsListState>,
     private val getSMBConfigurationsUseCase: GetSMBConfigurationsUseCase,
     private val deleteSMBConfigurationUseCase: DeleteSMBConfigurationUseCase,
 ) : Presenter<NetworkConfigurationsListState>(core), UserInteractions {

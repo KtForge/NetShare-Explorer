@@ -10,6 +10,7 @@ java {
 
 dependencies {
     api(Dependencies.jUnit)
+    api(Dependencies.mockito)
     api(Dependencies.mockitoKotlin)
     api(Dependencies.coroutinesTest)
 

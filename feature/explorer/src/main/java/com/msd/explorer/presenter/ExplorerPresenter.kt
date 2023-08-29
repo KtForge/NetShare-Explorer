@@ -18,8 +18,8 @@ import com.msd.navigation.NavigateUp
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteIdArg
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNameArg
 import com.msd.navigation.OpenFile
+import com.msd.presentation.IPresenterCore
 import com.msd.presentation.Presenter
-import com.msd.presentation.PresenterCore
 import com.msd.smb.GetSMBConfigurationUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -27,7 +27,7 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.launch
 
 class ExplorerPresenter @AssistedInject constructor(
-    core: PresenterCore<ExplorerState>,
+    core: IPresenterCore<ExplorerState>,
     private val getSMBConfigurationUseCase: GetSMBConfigurationUseCase,
     private val getFilesAndDirectoriesUseCase: GetFilesAndDirectoriesUseCase,
     private val openFileUseCase: OpenFileUseCase,

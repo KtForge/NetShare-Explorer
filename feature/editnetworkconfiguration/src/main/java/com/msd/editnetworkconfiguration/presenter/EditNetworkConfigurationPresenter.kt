@@ -8,8 +8,8 @@ import com.msd.editnetworkconfiguration.presenter.EditNetworkConfigurationState.
 import com.msd.navigation.NavigateBack
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteIdArg
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNoIdArg
+import com.msd.presentation.IPresenterCore
 import com.msd.presentation.Presenter
-import com.msd.presentation.PresenterCore
 import com.msd.smb.GetSMBConfigurationUseCase
 import com.msd.smb.StoreSMBConfigurationUseCase
 import com.msd.smb.model.SMBConfiguration
@@ -19,7 +19,7 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.launch
 
 class EditNetworkConfigurationPresenter @AssistedInject constructor(
-    core: PresenterCore<EditNetworkConfigurationState>,
+    core: IPresenterCore<EditNetworkConfigurationState>,
     private val getSMBConfigurationUseCase: GetSMBConfigurationUseCase,
     private val storeSMBConfigurationUseCase: StoreSMBConfigurationUseCase,
     @Assisted(SmbConfigurationRouteIdArg) val smbConfigurationId: Int,
