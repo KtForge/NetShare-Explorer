@@ -1,6 +1,6 @@
 definitions:
   - &build_release_apk_and_aab
-    name: Build release apk
+    name: Build release apk and aab
     script: |
       ./gradlew assembleRelease bundleRelease
 
