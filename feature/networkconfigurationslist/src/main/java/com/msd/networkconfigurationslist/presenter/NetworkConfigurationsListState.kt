@@ -6,6 +6,7 @@ import com.msd.smb.model.SMBConfiguration
 sealed interface NetworkConfigurationsListState : State {
 
     object Uninitialized : NetworkConfigurationsListState
+    object Loading : NetworkConfigurationsListState
     object Empty : NetworkConfigurationsListState
     data class Loaded(
         val smbConfigurations: List<SMBConfiguration>,

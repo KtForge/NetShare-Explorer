@@ -44,7 +44,6 @@ dependencies {
     implementation(project(":core:navigation"))
     implementation(project(":core:ui"))
     implementation(project(":core:presentation"))
-    implementation(project(":core:unittest"))
 
     implementation(project(":domain:smb"))
 
@@ -56,5 +55,5 @@ dependencies {
     kapt(Dependencies.daggerHiltAndroidCompiler)
     kapt(Dependencies.daggerHiltAndroidCompiler)
 
-    implementation(Dependencies.smbj)
+    testImplementation(project(":core:unittest"))
 }

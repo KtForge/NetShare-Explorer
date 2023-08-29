@@ -231,7 +231,7 @@ class MainActivity : ComponentActivity() {
 
             content(presenter)
 
-            LaunchedEffect(Unit) { presenter.initialize() }
+            presenter.initialize()
         }
     }
 

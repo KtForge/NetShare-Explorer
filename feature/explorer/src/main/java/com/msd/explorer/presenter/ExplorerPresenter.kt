@@ -36,13 +36,13 @@ class ExplorerPresenter @AssistedInject constructor(
 ) : Presenter<ExplorerState>(core), UserInteractions {
 
     override fun initialize() {
-        super.initialize()
+        if (isInitialized()) return
 
+        tryEmit(Loading(smbConfigurationName))
         viewModelScope.launch {
             if (smbConfigurationId == -1) {
                 navigate(NavigateBack)
             } else {
-                tryEmit(Loading(smbConfigurationName))
                 val smbConfiguration = getSMBConfigurationUseCase(smbConfigurationId)
                 try {
                     val filesAndDirectories = getFilesAndDirectoriesUseCase(

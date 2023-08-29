@@ -9,9 +9,9 @@ import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNameArgToRepl
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNoIdArg
 import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Empty
 import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loaded
+import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loading
 import com.msd.presentation.IPresenterCore
 import com.msd.presentation.Presenter
-import com.msd.presentation.PresenterCore
 import com.msd.smb.DeleteSMBConfigurationUseCase
 import com.msd.smb.GetSMBConfigurationsUseCase
 import com.msd.smb.model.SMBConfiguration
@@ -27,7 +27,7 @@ class NetworkConfigurationsListPresenter @Inject constructor(
 ) : Presenter<NetworkConfigurationsListState>(core), UserInteractions {
 
     override fun initialize() {
-        super.initialize()
+        if (isInitialized()) return
 
         fetchSMBConfigurations()
     }
@@ -92,6 +92,7 @@ class NetworkConfigurationsListPresenter @Inject constructor(
     }
 
     private fun fetchSMBConfigurations() {
+        tryEmit(Loading)
         viewModelScope.launch {
             val smbConfigurations = getSMBConfigurationsUseCase()
             handleSMBConfigurations(smbConfigurations)

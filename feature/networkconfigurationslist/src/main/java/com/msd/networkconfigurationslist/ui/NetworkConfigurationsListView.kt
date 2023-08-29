@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListPresenter
 import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Empty
 import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loaded
+import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loading
 import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Uninitialized
 import com.msd.ui.widget.AppCrossfade
 
@@ -15,6 +16,7 @@ fun NetworkConfigurationsListView(presenter: NetworkConfigurationsListPresenter)
 
     AppCrossfade(targetState = currentState) { state ->
         when (state) {
+            is Loading -> NetworkConfigurationsListLoadingView()
             is Empty -> NetworkConfigurationsListEmptyView(presenter)
             is Loaded -> NetworkConfigurationsListLoadedView(state, presenter)
             is Uninitialized -> Unit

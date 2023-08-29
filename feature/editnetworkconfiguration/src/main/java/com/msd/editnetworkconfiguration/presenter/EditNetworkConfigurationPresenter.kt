@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.msd.editnetworkconfiguration.R
 import com.msd.editnetworkconfiguration.presenter.EditNetworkConfigurationState.Loaded
+import com.msd.editnetworkconfiguration.presenter.EditNetworkConfigurationState.Loading
 import com.msd.navigation.NavigateBack
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteIdArg
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNoIdArg
@@ -26,8 +27,9 @@ class EditNetworkConfigurationPresenter @AssistedInject constructor(
 ) : Presenter<EditNetworkConfigurationState>(core), UserInteractions {
 
     override fun initialize() {
-        super.initialize()
+        if (isInitialized()) return
 
+        tryEmit(Loading)
         viewModelScope.launch {
             if (smbConfigurationId.toString() == SmbConfigurationRouteNoIdArg) {
                 val smbConfiguration = SMBConfiguration(
@@ -70,6 +72,7 @@ class EditNetworkConfigurationPresenter @AssistedInject constructor(
         psw: String
     ) {
         (currentState as? Loaded)?.let { loaded ->
+            tryEmit(Loading)
             viewModelScope.launch {
                 val serverError = validateServer(server)
                 val sharedPathError = validateSharedPath(sharedPath)

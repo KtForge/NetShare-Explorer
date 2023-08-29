@@ -26,10 +26,9 @@ abstract class Presenter<S : State>(private val core: IPresenterCore<S>) : ViewM
         viewModelScope.launch { navigationEvent.tryEmit(route) }
     }
 
-    open fun initialize() {
-        if (core.isInitialized()) return
-    }
+    fun isInitialized(): Boolean = core.isInitialized()
 
+    open fun initialize() = Unit
     open fun onStart() = Unit
     open fun onResume() = Unit
 
