@@ -12,10 +12,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.inOrder
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -85,5 +88,17 @@ class ExplorerPresenterTest : CoroutineTest() {
             verify(core).tryEmit(Loading(smbConfigurationName))
             verify(core).tryEmit(expectedLoadedState)
         }
+    }
+
+    @Test
+    fun `when already initialized should do nothing`() = runTest {
+        whenever(core.isInitialized()).thenReturn(true)
+
+        presenter.initialize()
+        advanceUntilIdle()
+
+        verifyNoInteractions(getSMBConfigurationUseCase)
+        verifyNoInteractions(getFilesAndDirectoriesUseCase)
+        verify(core, times(0)).tryEmit(any())
     }
 }
