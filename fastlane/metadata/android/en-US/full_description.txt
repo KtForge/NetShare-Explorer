@@ -1,0 +1,3 @@
+Unlock seamless and convenient access to your shared files within your local network using NetShare Explorer, an Android app designed to streamline your file management experience. With NetShare Explorer, you can effortlessly connect to and explore files stored on various devices within your local network via the Samba protocol.
+
+NetShare Explorer provides a simple and intuitive interface to effortlessly integrate your Android device with devices connected to your local network. Seamlessly access files from your desktop, laptop, NAS (Network Attached Storage), and more.
