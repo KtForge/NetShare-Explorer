@@ -81,7 +81,7 @@ workflows:
         recipients:
           - msd117c@gmail.com
         notify:
-          success: true
+          success: false
           failure: true
   unit-tests:
     environment:
@@ -92,7 +92,6 @@ workflows:
       branch_patterns:
         - pattern: 'main'
           include: true
-          source: true
       cancel_previous_builds: true
     scripts:
       - name: Unit Tests
