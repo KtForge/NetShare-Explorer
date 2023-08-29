@@ -11,22 +11,20 @@ import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListStat
 import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loaded
 import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Uninitialized
 import com.msd.presentation.Presenter
+import com.msd.presentation.PresenterCore
 import com.msd.smb.DeleteSMBConfigurationUseCase
 import com.msd.smb.GetSMBConfigurationsUseCase
 import com.msd.smb.model.SMBConfiguration
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class NetworkConfigurationsListPresenter @Inject constructor(
+    core: PresenterCore<NetworkConfigurationsListState>,
     private val getSMBConfigurationsUseCase: GetSMBConfigurationsUseCase,
     private val deleteSMBConfigurationUseCase: DeleteSMBConfigurationUseCase,
-) : Presenter<NetworkConfigurationsListState>(), UserInteractions {
-
-    override val state: MutableStateFlow<NetworkConfigurationsListState> =
-        MutableStateFlow(Uninitialized)
+) : Presenter<NetworkConfigurationsListState>(core), UserInteractions {
 
     override fun initialize() {
         super.initialize()
@@ -66,15 +64,15 @@ class NetworkConfigurationsListPresenter @Inject constructor(
     }
 
     override fun onDeleteNetworkConfigurationItemClicked(smbConfiguration: SMBConfiguration) {
-        (state.value as? Loaded)?.let { loaded ->
+        (currentState as? Loaded)?.let { loaded ->
             viewModelScope.launch {
-                state.tryEmit(loaded.copy(smbConfigurationItemIdToDelete = smbConfiguration.id))
+                tryEmit(loaded.copy(smbConfigurationItemIdToDelete = smbConfiguration.id))
             }
         }
     }
 
     override fun confirmDeleteDialog() {
-        (state.value as? Loaded)?.let { loaded ->
+        (currentState as? Loaded)?.let { loaded ->
             loaded.smbConfigurationItemIdToDelete?.let { id ->
                 viewModelScope.launch {
                     deleteSMBConfigurationUseCase(id)
@@ -86,9 +84,9 @@ class NetworkConfigurationsListPresenter @Inject constructor(
     }
 
     override fun dismissDeleteDialog() {
-        (state.value as? Loaded)?.let { loaded ->
+        (currentState as? Loaded)?.let { loaded ->
             viewModelScope.launch {
-                state.tryEmit(loaded.copy(smbConfigurationItemIdToDelete = null))
+                tryEmit(loaded.copy(smbConfigurationItemIdToDelete = null))
             }
         }
     }
@@ -102,9 +100,9 @@ class NetworkConfigurationsListPresenter @Inject constructor(
 
     private fun handleSMBConfigurations(smbConfigurations: List<SMBConfiguration>) {
         if (smbConfigurations.isEmpty()) {
-            state.tryEmit(Empty)
+            tryEmit(Empty)
         } else {
-            state.tryEmit(
+            tryEmit(
                 Loaded(
                     smbConfigurations,
                     smbConfigurationItemIdToDelete = null

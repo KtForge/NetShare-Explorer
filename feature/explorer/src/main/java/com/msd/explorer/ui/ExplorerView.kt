@@ -26,13 +26,12 @@ import com.msd.explorer.presenter.ExplorerState.Error
 import com.msd.explorer.presenter.ExplorerState.Loaded
 import com.msd.explorer.presenter.ExplorerState.Loading
 import com.msd.explorer.presenter.ExplorerState.Uninitialized
-import com.msd.explorer.presenter.initialState
 import com.msd.ui.widget.AppCrossfade
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExplorerView(presenter: ExplorerPresenter) {
-    val currentState by presenter.getState().collectAsState(initial = initialState)
+    val currentState by presenter.getState().collectAsState(initial = Uninitialized(""))
 
     Scaffold(
         topBar = {

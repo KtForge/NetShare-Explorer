@@ -7,12 +7,11 @@ import com.msd.editnetworkconfiguration.presenter.EditNetworkConfigurationPresen
 import com.msd.editnetworkconfiguration.presenter.EditNetworkConfigurationState.Loaded
 import com.msd.editnetworkconfiguration.presenter.EditNetworkConfigurationState.Loading
 import com.msd.editnetworkconfiguration.presenter.EditNetworkConfigurationState.Uninitialized
-import com.msd.editnetworkconfiguration.presenter.initialState
 import com.msd.ui.widget.AppCrossfade
 
 @Composable
 fun EditNetworkConfigurationView(presenter: EditNetworkConfigurationPresenter) {
-    val currentState by presenter.getState().collectAsState(initial = initialState)
+    val currentState by presenter.getState().collectAsState(initial = Uninitialized)
 
     AppCrossfade(targetState = currentState) { state ->
         when (state) {

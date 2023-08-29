@@ -13,30 +13,27 @@ import com.msd.explorer.model.SMBException
 import com.msd.explorer.presenter.ExplorerState.Error
 import com.msd.explorer.presenter.ExplorerState.Loaded
 import com.msd.explorer.presenter.ExplorerState.Loading
-import com.msd.explorer.presenter.ExplorerState.Uninitialized
 import com.msd.navigation.NavigateBack
 import com.msd.navigation.NavigateUp
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteIdArg
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNameArg
 import com.msd.navigation.OpenFile
 import com.msd.presentation.Presenter
+import com.msd.presentation.PresenterCore
 import com.msd.smb.GetSMBConfigurationUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class ExplorerPresenter @AssistedInject constructor(
+    core: PresenterCore<ExplorerState>,
     private val getSMBConfigurationUseCase: GetSMBConfigurationUseCase,
     private val getFilesAndDirectoriesUseCase: GetFilesAndDirectoriesUseCase,
     private val openFileUseCase: OpenFileUseCase,
     @Assisted(SmbConfigurationRouteIdArg) private val smbConfigurationId: Int,
     @Assisted(SmbConfigurationRouteNameArg) private val smbConfigurationName: String,
-) : Presenter<ExplorerState>(), UserInteractions {
-
-    override val state: MutableStateFlow<ExplorerState> =
-        MutableStateFlow(Uninitialized(smbConfigurationName))
+) : Presenter<ExplorerState>(core), UserInteractions {
 
     override fun initialize() {
         super.initialize()
@@ -45,7 +42,7 @@ class ExplorerPresenter @AssistedInject constructor(
             if (smbConfigurationId == -1) {
                 navigate(NavigateBack)
             } else {
-                state.tryEmit(Loading(smbConfigurationName))
+                tryEmit(Loading(smbConfigurationName))
                 val smbConfiguration = getSMBConfigurationUseCase(smbConfigurationId)
                 try {
                     val filesAndDirectories = getFilesAndDirectoriesUseCase(
@@ -57,7 +54,7 @@ class ExplorerPresenter @AssistedInject constructor(
                     )
                     val root = "\\\\${smbConfiguration.server}\\${smbConfiguration.sharedPath}"
 
-                    state.tryEmit(
+                    tryEmit(
                         Loaded(
                             smbConfiguration,
                             root = root,
@@ -81,7 +78,7 @@ class ExplorerPresenter @AssistedInject constructor(
     }
 
     private fun openDirectory(directory: NetworkDirectory) {
-        (state.value as? Loaded)?.let { loaded ->
+        (currentState as? Loaded)?.let { loaded ->
             viewModelScope.launch {
                 val smbConfiguration = loaded.smbConfiguration
                 try {
@@ -92,7 +89,7 @@ class ExplorerPresenter @AssistedInject constructor(
                         user = smbConfiguration.user,
                         psw = smbConfiguration.psw
                     )
-                    state.tryEmit(
+                    tryEmit(
                         loaded.copy(
                             path = directory.path,
                             filesOrDirectories = filesAndDirectories
@@ -106,9 +103,9 @@ class ExplorerPresenter @AssistedInject constructor(
     }
 
     private fun openFile(file: NetworkFile) {
-        (state.value as? Loaded)?.let { loaded ->
+        (currentState as? Loaded)?.let { loaded ->
             viewModelScope.launch {
-                state.tryEmit(Loading(loaded.name))
+                tryEmit(Loading(loaded.name))
                 val smbConfiguration = loaded.smbConfiguration
                 try {
                     openFileUseCase(
@@ -119,7 +116,7 @@ class ExplorerPresenter @AssistedInject constructor(
                         user = smbConfiguration.user,
                         psw = smbConfiguration.psw
                     )?.let {
-                        state.tryEmit(loaded)
+                        tryEmit(loaded)
                         navigate(OpenFile(it))
                     }
                 } catch (e: Exception) {
@@ -130,7 +127,7 @@ class ExplorerPresenter @AssistedInject constructor(
     }
 
     override fun onBackPressed() {
-        (state.value as? Loaded)?.let { loaded ->
+        (currentState as? Loaded)?.let { loaded ->
             viewModelScope.launch {
                 if (loaded.path == loaded.root) {
                     navigate(NavigateBack)
@@ -146,7 +143,7 @@ class ExplorerPresenter @AssistedInject constructor(
                             psw = smbConfiguration.psw
                         )
 
-                        state.tryEmit(
+                        tryEmit(
                             loaded.copy(
                                 path = path,
                                 filesOrDirectories = filesAndDirectories
@@ -167,7 +164,7 @@ class ExplorerPresenter @AssistedInject constructor(
             Error.UnknownError(name)
         }
 
-        state.tryEmit(error)
+        tryEmit(error)
     }
 
     override fun onNavigateUp() {

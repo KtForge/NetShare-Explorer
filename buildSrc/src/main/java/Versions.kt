@@ -19,6 +19,8 @@ object Versions {
     const val inject = "1"
 
     const val jUnit = "4.13.2"
+    const val mockitoKotlin = "4.0.0"
+    const val coroutines = "1.6.4"
 
     const val jUnitKtx = "1.1.5"
     const val espressoCore = "3.5.1"

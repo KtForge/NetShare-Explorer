@@ -5,28 +5,25 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.msd.editnetworkconfiguration.R
 import com.msd.editnetworkconfiguration.presenter.EditNetworkConfigurationState.Loaded
-import com.msd.editnetworkconfiguration.presenter.EditNetworkConfigurationState.Uninitialized
 import com.msd.navigation.NavigateBack
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteIdArg
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNoIdArg
 import com.msd.presentation.Presenter
+import com.msd.presentation.PresenterCore
 import com.msd.smb.GetSMBConfigurationUseCase
 import com.msd.smb.StoreSMBConfigurationUseCase
 import com.msd.smb.model.SMBConfiguration
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class EditNetworkConfigurationPresenter @AssistedInject constructor(
+    core: PresenterCore<EditNetworkConfigurationState>,
     private val getSMBConfigurationUseCase: GetSMBConfigurationUseCase,
     private val storeSMBConfigurationUseCase: StoreSMBConfigurationUseCase,
     @Assisted(SmbConfigurationRouteIdArg) val smbConfigurationId: Int,
-) : Presenter<EditNetworkConfigurationState>(), UserInteractions {
-
-    override val state: MutableStateFlow<EditNetworkConfigurationState> =
-        MutableStateFlow(Uninitialized)
+) : Presenter<EditNetworkConfigurationState>(core), UserInteractions {
 
     override fun initialize() {
         super.initialize()
@@ -42,7 +39,7 @@ class EditNetworkConfigurationPresenter @AssistedInject constructor(
                     psw = ""
                 )
 
-                state.tryEmit(
+                tryEmit(
                     Loaded(
                         smbConfiguration,
                         actionButtonLabel = R.string.save_configuration_button,
@@ -53,7 +50,7 @@ class EditNetworkConfigurationPresenter @AssistedInject constructor(
             } else {
                 val smbConfiguration = getSMBConfigurationUseCase(smbConfigurationId)
 
-                state.tryEmit(
+                tryEmit(
                     Loaded(
                         smbConfiguration,
                         actionButtonLabel = R.string.edit_configuration_button,
@@ -72,13 +69,13 @@ class EditNetworkConfigurationPresenter @AssistedInject constructor(
         user: String,
         psw: String
     ) {
-        (state.value as? Loaded)?.let { loaded ->
+        (currentState as? Loaded)?.let { loaded ->
             viewModelScope.launch {
                 val serverError = validateServer(server)
                 val sharedPathError = validateSharedPath(sharedPath)
 
                 if (serverError || sharedPathError) {
-                    state.tryEmit(
+                    tryEmit(
                         loaded.copy(
                             serverError = serverError,
                             sharedPathError = sharedPathError

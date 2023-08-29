@@ -21,6 +21,5 @@ sealed class ExplorerState(open val name: String) : State {
     }
 
     override fun isUninitialized(): Boolean = this != Uninitialized("")
+    override fun initialState(): State = Uninitialized("")
 }
-
-val initialState = ExplorerState.Uninitialized("")

@@ -13,6 +13,5 @@ sealed interface NetworkConfigurationsListState : State {
     ) : NetworkConfigurationsListState
 
     override fun isUninitialized(): Boolean = this != Uninitialized
+    override fun initialState(): State = Uninitialized
 }
-
-val initialState = NetworkConfigurationsListState.Uninitialized

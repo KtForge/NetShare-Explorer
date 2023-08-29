@@ -23,6 +23,9 @@ object Dependencies {
     val inject by lazy { "javax.inject:javax.inject:${Versions.inject}" }
 
     val jUnit by lazy { "junit:junit:${Versions.jUnit}" }
+    val mockitoKotlin by lazy { "org.mockito.kotlin:mockito-kotlin:${Versions.mockitoKotlin}" }
+    val mockitoInline by lazy { "org.mockito:mockito-inline:${Versions.mockitoKotlin}" }
+    val coroutinesTest by lazy { "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines}" }
 
     val jUnitKtx by lazy { "androidx.test.ext:junit-ktx:${Versions.jUnitKtx}" }
     val espressoCore by lazy { "androidx.test.espresso:espresso-core:${Versions.espressoCore}" }

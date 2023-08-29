@@ -7,12 +7,11 @@ import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListPres
 import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Empty
 import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loaded
 import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Uninitialized
-import com.msd.networkconfigurationslist.presenter.initialState
 import com.msd.ui.widget.AppCrossfade
 
 @Composable
 fun NetworkConfigurationsListView(presenter: NetworkConfigurationsListPresenter) {
-    val currentState by presenter.getState().collectAsState(initial = initialState)
+    val currentState by presenter.getState().collectAsState(initial = Uninitialized)
 
     AppCrossfade(targetState = currentState) { state ->
         when (state) {
