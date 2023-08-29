@@ -8,22 +8,30 @@ NetShare Explorer provides a simple and intuitive interface to effortlessly inte
 
 Keep your files safe with NetShare Explorer's secure authentication process. Log in using your network credentials to ensure that only authorized users can access shared resources.
 
-<img align="center" src="readme/images/edit_screen.png" width="300">
+<p align="center">
+    <img src="readme/images/edit_screen.png" width="300">
+</p>
 
 ## List your configurations
 
 List your connected shared storage and access them easily from the list of configurations.
 
-<img align="center" src="readme/images/main_screen.png" width="300">
+<p align="center">
+    <img src="readme/images/main_screen.png" width="300">
+</p>
 
 ## Navigate through your files
 
 Navigate through your shared files and directories with ease. NetShare Explorer offers a familiar file browsing experience, allowing you to effortlessly find the documents, photos, videos, and other content you need.
 
-<img align="center" src="readme/images/explorer_screen.png" width="300">
+<p align="center">
+    <img src="readme/images/explorer_screen.png" width="300">
+</p>
 
 ## Access your files using your device's apps
 
 Access your files directly from the app. NetShare Explorer empowers you to manage your files efficiently without needing to be physically present at your computer.
 
-<img align="center" src="readme/images/open_screen.png" width="300">
+<p align="center">
+    <img src="readme/images/open_screen.png" width="300">
+</p>
