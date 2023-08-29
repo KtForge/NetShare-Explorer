@@ -9,12 +9,20 @@ plugins {
 
 val properties = Properties()
 val propertiesFile = File("version")
-properties.load(propertiesFile.inputStream())
 
-val major = (properties["version.major"] as String).toInt()
-val minor = (properties["version.minor"] as String).toInt()
-val patch = (properties["version.patch"] as String).toInt()
-val build = (properties["version.build"] as String).toInt()
+var major = 0
+var minor = 0
+var patch = 0
+var build = 0
+
+if (propertiesFile.canRead()) {
+    properties.load(propertiesFile.inputStream())
+
+    major = (properties["version.major"] as String).toInt()
+    minor = (properties["version.minor"] as String).toInt()
+    patch = (properties["version.patch"] as String).toInt()
+    build = (properties["version.build"] as String).toInt()
+}
 
 android {
     namespace = Configuration.namespace
@@ -30,12 +38,14 @@ android {
             } else {
                 val properties = Properties()
                 val propertiesFile = File("key.properties")
-                properties.load(propertiesFile.inputStream())
+                if (propertiesFile.canRead()) {
+                    properties.load(propertiesFile.inputStream())
 
-                keyAlias = properties["key.alias"] as String
-                keyPassword = properties["key.alias.password"] as String
-                storeFile = file(properties["key.store.file"] as String)
-                storePassword = properties["key.store.password"] as String
+                    keyAlias = properties["key.alias"] as String
+                    keyPassword = properties["key.alias.password"] as String
+                    storeFile = file(properties["key.store.file"] as String)
+                    storePassword = properties["key.store.password"] as String
+                }
             }
         }
     }
