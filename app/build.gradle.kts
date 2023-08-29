@@ -111,4 +111,6 @@ dependencies {
     implementation(Dependencies.daggerHiltNavigation)
 
     implementation(Dependencies.roomRuntime)
+
+    testImplementation(project(":core:unittest"))
 }

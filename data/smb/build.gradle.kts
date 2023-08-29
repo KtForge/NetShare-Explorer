@@ -46,4 +46,6 @@ dependencies {
     annotationProcessor(Dependencies.roomCompiler)
     kapt(Dependencies.roomCompiler)
     implementation(Dependencies.roomKtx)
+
+    testImplementation(project(":core:unittest"))
 }

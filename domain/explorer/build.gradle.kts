@@ -12,4 +12,6 @@ dependencies {
 
     implementation(Dependencies.coroutinesCore)
     implementation(Dependencies.inject)
+
+    testImplementation(project(":core:unittest"))
 }

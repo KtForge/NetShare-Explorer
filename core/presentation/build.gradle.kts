@@ -38,4 +38,6 @@ dependencies {
 
     implementation(platform(Dependencies.kotlinBom))
     api(Dependencies.viewModelLifecycleKtx)
+
+    testImplementation(project(":core:unittest"))
 }

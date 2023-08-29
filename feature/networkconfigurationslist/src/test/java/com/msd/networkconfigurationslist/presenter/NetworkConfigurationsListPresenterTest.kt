@@ -3,6 +3,7 @@ package com.msd.networkconfigurationslist.presenter
 import com.msd.navigation.Navigate
 import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Empty
 import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loaded
+import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loading
 import com.msd.presentation.IPresenterCore
 import com.msd.smb.DeleteSMBConfigurationUseCase
 import com.msd.smb.GetSMBConfigurationsUseCase
@@ -15,6 +16,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.inOrder
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
@@ -55,7 +57,10 @@ class NetworkConfigurationsListPresenterTest : CoroutineTest() {
         advanceUntilIdle()
 
         verify(getSMBConfigurationsUseCase).invoke()
-        verify(core).tryEmit(expectedState)
+        inOrder(core) {
+            verify(core).tryEmit(Loading)
+            verify(core).tryEmit(expectedState)
+        }
     }
 
     @Test

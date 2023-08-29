@@ -44,4 +44,6 @@ dependencies {
     kapt(Dependencies.daggerHiltAndroidCompiler)
 
     implementation(Dependencies.smbj)
+
+    testImplementation(project(":core:unittest"))
 }

@@ -9,6 +9,7 @@ import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNameArgToRepl
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNoIdArg
 import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Empty
 import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loaded
+import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loading
 import com.msd.presentation.IPresenterCore
 import com.msd.presentation.Presenter
 import com.msd.smb.DeleteSMBConfigurationUseCase
@@ -28,6 +29,7 @@ class NetworkConfigurationsListPresenter @Inject constructor(
     override fun initialize() {
         if (isInitialized()) return
 
+        tryEmit(Loading)
         viewModelScope.launch {
             getSMBConfigurationsUseCase().collect {
                 handleSMBConfigurations(it)

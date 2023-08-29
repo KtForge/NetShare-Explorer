@@ -191,7 +191,7 @@ class MainActivity : ComponentActivity() {
         builder.composable(route, arguments) {
             val presenter = viewModelProvider()
             this.presenter = presenter
-            val navigationEvent by presenter.getNavigationEvent().collectAsState(initial = Idle)
+            val navigationEvent by presenter.getNavigation().collectAsState(initial = Idle)
 
             LaunchedEffect(navigationEvent) {
                 when (navigationEvent) {
