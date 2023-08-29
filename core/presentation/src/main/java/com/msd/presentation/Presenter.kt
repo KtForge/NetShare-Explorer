@@ -20,10 +20,10 @@ abstract class Presenter<S : State>(private val core: IPresenterCore<S>) : ViewM
     }
 
     private val navigationEvent = MutableStateFlow<NavigationEvent>(Idle)
-    fun getNavigationEvent(): Flow<NavigationEvent> = navigationEvent
+    fun getNavigation(): Flow<NavigationEvent> = core.navigation()
 
-    fun navigate(route: NavigationEvent) {
-        viewModelScope.launch { navigationEvent.tryEmit(route) }
+    fun navigate(event: NavigationEvent) {
+        core.navigate(event)
     }
 
     fun isInitialized(): Boolean = core.isInitialized()

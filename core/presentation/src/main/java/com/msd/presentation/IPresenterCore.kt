@@ -1,5 +1,6 @@
 package com.msd.presentation
 
+import com.msd.navigation.NavigationEvent
 import kotlinx.coroutines.flow.Flow
 
 interface IPresenterCore<S: State> {
@@ -8,4 +9,6 @@ interface IPresenterCore<S: State> {
     fun currentState(): S
     fun isInitialized(): Boolean
     fun tryEmit(s: S)
+    fun navigation(): Flow<NavigationEvent>
+    fun navigate(event: NavigationEvent)
 }
