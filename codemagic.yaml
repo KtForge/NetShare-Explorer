@@ -1,8 +1,8 @@
 definitions:
-  - &build_release_apk
+  - &build_release_apk_and_aab
     name: Build release apk
     script: |
-      ./gradlew assembleRelease
+      ./gradlew assembleRelease bundleRelease
 
 workflows:
   create-release-candidate:
@@ -58,7 +58,7 @@ workflows:
           include: true
       cancel_previous_builds: true
     scripts:
-      - *build_release_apk
+      - *build_release_apk_and_aab
       - name: Publish to GitHub
         script: |
           #!/usr/bin/env zsh
@@ -71,9 +71,11 @@ workflows:
       
           gh release create "${CM_TAG}" \
             --title "NetShare Explorer ${CM_TAG}" \
-            app/build/outputs/apk/release/app-release.apk
+            app/build/outputs/apk/release/app-release.apk \
+            app/build/outputs/bundle/release/app-release.aab
     artifacts:
       - app/build/outputs/**/*.apk
+      - app/build/outputs/**/*.aab
     publishing:
       email:
         recipients:
