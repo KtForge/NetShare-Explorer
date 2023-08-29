@@ -12,7 +12,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Network Explorer"
+rootProject.name = "NetShare Explorer"
 include(":app")
 include(":core:ui")
 include(":core:presentation")

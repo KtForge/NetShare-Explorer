@@ -70,7 +70,7 @@ workflows:
           fi
       
           gh release create "${CM_TAG}" \
-            --title "Network Explorer ${CM_TAG}" \
+            --title "NetShare Explorer ${CM_TAG}" \
             app/build/outputs/apk/release/app-release.apk
     artifacts:
       - app/build/outputs/**/*.apk
