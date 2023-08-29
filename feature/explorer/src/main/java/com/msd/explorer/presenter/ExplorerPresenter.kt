@@ -158,10 +158,10 @@ class ExplorerPresenter @AssistedInject constructor(
     }
 
     private fun handleError(e: Exception, name: String) {
-        val error = if (e == SMBException.ConnectionError) {
-            Error.ConnectionError(name)
-        } else {
-            Error.UnknownError(name)
+        val error = when (e) {
+            SMBException.ConnectionError -> Error.ConnectionError(name)
+            SMBException.AccessDenied -> Error.AccessError(name)
+            else -> Error.UnknownError(name)
         }
 
         tryEmit(error)

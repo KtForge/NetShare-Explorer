@@ -2,4 +2,5 @@
 <resources>
     <string name="navigate_up_content_description">Back</string>
     <string name="connection_error_message">Shared folder can\'t be accessed. Something happened when connecting to the server.</string>
+    <string name="access_error_message">Access denied. Please check your credentials.</string>
 </resources>

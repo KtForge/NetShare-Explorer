@@ -1,5 +1,7 @@
 package com.msd.explorer.presenter
 
+import androidx.annotation.StringRes
+import com.msd.explorer.R
 import com.msd.explorer.model.IBaseFile
 import com.msd.presentation.State
 import com.msd.smb.model.SMBConfiguration
@@ -15,9 +17,16 @@ sealed class ExplorerState(open val name: String) : State {
         val filesOrDirectories: List<IBaseFile>
     ) : ExplorerState(smbConfiguration.name)
 
-    sealed class Error(override val name: String) : ExplorerState(name) {
-        data class ConnectionError(override val name: String) : Error(name)
-        data class UnknownError(override val name: String) : Error(name)
+    sealed class Error(override val name: String, @StringRes val message: Int) :
+        ExplorerState(name) {
+        data class ConnectionError(override val name: String) :
+            Error(name, R.string.connection_error_message)
+
+        data class AccessError(override val name: String) :
+            Error(name, R.string.access_error_message)
+
+        data class UnknownError(override val name: String) :
+            Error(name, R.string.connection_error_message)
     }
 
     override fun isUninitialized(): Boolean = this != Uninitialized("")

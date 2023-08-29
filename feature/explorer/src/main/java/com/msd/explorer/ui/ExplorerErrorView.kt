@@ -1,5 +1,6 @@
 package com.msd.explorer.ui
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
@@ -9,7 +10,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.msd.explorer.R
 import com.msd.explorer.presenter.ExplorerState.Error
 import com.msd.ui.theme.Dimensions.sizeM
 import com.msd.ui.theme.Dimensions.sizeXL
@@ -22,17 +22,14 @@ fun ExplorerErrorView(error: Error) {
             .padding(sizeM),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
     ) {
-        when (error) {
-            is Error.ConnectionError -> ConnectionErrorMessage()
-            is Error.UnknownError -> ConnectionErrorMessage()
-        }
+        ErrorMessage(error.message)
     }
 }
 
 @Composable
-fun ConnectionErrorMessage() {
+fun ErrorMessage(@StringRes message: Int) {
     Text(
-        text = stringResource(id = R.string.connection_error_message),
+        text = stringResource(id = message),
         color = MaterialTheme.colorScheme.onErrorContainer,
         modifier = Modifier.padding(sizeXL)
     )
