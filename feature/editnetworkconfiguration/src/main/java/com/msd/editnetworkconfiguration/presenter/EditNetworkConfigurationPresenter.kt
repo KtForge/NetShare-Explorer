@@ -7,6 +7,7 @@ import com.msd.editnetworkconfiguration.R
 import com.msd.editnetworkconfiguration.presenter.EditNetworkConfigurationState.Loaded
 import com.msd.editnetworkconfiguration.presenter.EditNetworkConfigurationState.Loading
 import com.msd.navigation.NavigateBack
+import com.msd.navigation.NavigateUp
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteIdArg
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNoIdArg
 import com.msd.presentation.IPresenterCore
@@ -62,6 +63,10 @@ class EditNetworkConfigurationPresenter @AssistedInject constructor(
                 )
             }
         }
+    }
+
+    override fun onNavigateUp() {
+        navigate(NavigateUp)
     }
 
     override fun onConfirmButtonClicked(
@@ -127,6 +132,8 @@ class EditNetworkConfigurationPresenter @AssistedInject constructor(
 }
 
 interface UserInteractions {
+
+    fun onNavigateUp()
     fun onConfirmButtonClicked(
         name: String,
         server: String,

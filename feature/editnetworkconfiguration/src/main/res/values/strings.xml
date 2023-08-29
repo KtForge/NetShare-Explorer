@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="edit_screen_title">Network Storage Configuration</string>
+    <string name="navigate_up_content_description">Back</string>
+
     <string name="name_label">Name (optional)</string>
     <string name="server_label">Server</string>
     <string name="shared_path_label">Shared path</string>
