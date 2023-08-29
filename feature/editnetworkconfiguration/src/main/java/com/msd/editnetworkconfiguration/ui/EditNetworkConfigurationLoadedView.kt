@@ -60,7 +60,8 @@ fun EditNetworkConfigurationLoadedView(loaded: Loaded, userInteractions: UserInt
             onValueChange = { server = it },
             label = {
                 Text(text = stringResource(id = R.string.server_label))
-            }
+            },
+            isError = loaded.serverError
         )
         OutlinedTextField(
             value = sharedPath,
@@ -70,7 +71,8 @@ fun EditNetworkConfigurationLoadedView(loaded: Loaded, userInteractions: UserInt
             onValueChange = { sharedPath = it },
             label = {
                 Text(text = stringResource(id = R.string.shared_path_label))
-            }
+            },
+            isError = loaded.sharedPathError
         )
         OutlinedTextField(
             value = user,

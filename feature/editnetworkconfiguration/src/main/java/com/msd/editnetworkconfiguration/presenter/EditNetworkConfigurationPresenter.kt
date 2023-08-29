@@ -43,13 +43,23 @@ class EditNetworkConfigurationPresenter @AssistedInject constructor(
                 )
 
                 state.tryEmit(
-                    Loaded(smbConfiguration, actionButtonLabel = R.string.save_configuration_button)
+                    Loaded(
+                        smbConfiguration,
+                        actionButtonLabel = R.string.save_configuration_button,
+                        serverError = false,
+                        sharedPathError = false,
+                    )
                 )
             } else {
                 val smbConfiguration = getSMBConfigurationUseCase(smbConfigurationId)
 
                 state.tryEmit(
-                    Loaded(smbConfiguration, actionButtonLabel = R.string.edit_configuration_button)
+                    Loaded(
+                        smbConfiguration,
+                        actionButtonLabel = R.string.edit_configuration_button,
+                        serverError = false,
+                        sharedPathError = false,
+                    )
                 )
             }
         }
@@ -64,18 +74,35 @@ class EditNetworkConfigurationPresenter @AssistedInject constructor(
     ) {
         (state.value as? Loaded)?.let { loaded ->
             viewModelScope.launch {
-                storeSMBConfigurationUseCase(
-                    id = loaded.smbConfiguration.id,
-                    name = name,
-                    server = server,
-                    sharedPath = sharedPath,
-                    user = user,
-                    psw = psw,
-                )
+                val serverError = validateServer(server)
+                val sharedPathError = validateSharedPath(sharedPath)
+
+                if (serverError || sharedPathError) {
+                    state.tryEmit(
+                        loaded.copy(
+                            serverError = serverError,
+                            sharedPathError = sharedPathError
+                        )
+                    )
+                } else {
+                    storeSMBConfigurationUseCase(
+                        id = loaded.smbConfiguration.id,
+                        name = name,
+                        server = server,
+                        sharedPath = sharedPath,
+                        user = user,
+                        psw = psw,
+                    )
+
+                    navigate(NavigateBack)
+                }
             }
         }
-        navigate(NavigateBack)
     }
+
+    private fun validateServer(server: String): Boolean = server.isEmpty()
+
+    private fun validateSharedPath(sharedPath: String): Boolean = sharedPath.isEmpty()
 
     @AssistedFactory
     interface Factory {

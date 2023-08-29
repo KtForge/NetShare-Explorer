@@ -10,7 +10,9 @@ sealed interface EditNetworkConfigurationState : State {
     object Loading : EditNetworkConfigurationState
     data class Loaded(
         val smbConfiguration: SMBConfiguration,
-        @StringRes val actionButtonLabel: Int
+        @StringRes val actionButtonLabel: Int,
+        val serverError: Boolean,
+        val sharedPathError: Boolean,
     ) : EditNetworkConfigurationState
 
     override fun isUninitialized(): Boolean = this != Uninitialized
