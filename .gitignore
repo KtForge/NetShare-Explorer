@@ -18,3 +18,4 @@ key.properties
 /app/nfe_android_keystore
 google_play_key.json
 /fastlane/metadata/android/en-US/images
+/fastlane/report.xml
