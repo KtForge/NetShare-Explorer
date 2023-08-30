@@ -1,12 +1,9 @@
 package com.msd.presentation
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.msd.navigation.Idle
 import com.msd.navigation.NavigationEvent
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 
 abstract class Presenter<S : State>(private val core: IPresenterCore<S>) : ViewModel() {
 
@@ -19,7 +16,6 @@ abstract class Presenter<S : State>(private val core: IPresenterCore<S>) : ViewM
         core.tryEmit(nextState)
     }
 
-    private val navigationEvent = MutableStateFlow<NavigationEvent>(Idle)
     fun getNavigation(): Flow<NavigationEvent> = core.navigation()
 
     fun navigate(event: NavigationEvent) {
@@ -33,6 +29,6 @@ abstract class Presenter<S : State>(private val core: IPresenterCore<S>) : ViewM
     open fun onResume() = Unit
 
     fun cleanNavigation() {
-        viewModelScope.launch { navigationEvent.tryEmit(Idle) }
+        core.navigate(Idle)
     }
 }

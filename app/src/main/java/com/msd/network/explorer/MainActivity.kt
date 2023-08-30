@@ -3,6 +3,7 @@ package com.msd.network.explorer
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -49,6 +50,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.components.ActivityComponent
+import kotlinx.coroutines.flow.collectLatest
 
 
 @AndroidEntryPoint
@@ -194,11 +196,11 @@ class MainActivity : ComponentActivity() {
             val navigationEvent by presenter.getNavigation().collectAsState(initial = Idle)
 
             LaunchedEffect(navigationEvent) {
+                Log.d("NAVI", navigationEvent.toString())
                 when (navigationEvent) {
                     is Idle -> Unit
                     is Navigate -> {
                         navController.navigate((navigationEvent as Navigate).routeId)
-                        presenter.cleanNavigation()
                     }
 
                     is NavigateBack -> {
@@ -224,9 +226,9 @@ class MainActivity : ComponentActivity() {
                         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                         val intentChooser = Intent.createChooser(intent, "Open file")
                         startActivity(intentChooser)
-                        presenter.cleanNavigation()
                     }
                 }
+                presenter.cleanNavigation()
             }
 
             content(presenter)
