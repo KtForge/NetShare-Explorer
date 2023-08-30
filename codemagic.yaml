@@ -98,7 +98,7 @@ workflows:
     scripts:
       - name: Unit Tests
         script: ./gradlew testDebugUnitTestCoverage
-        test_report: build/reports/jacoco/codeCoverageReport/html/*
+        test_report: /*/*/build/test-results/**/*.xml
     publishing:
       email:
         recipients:
