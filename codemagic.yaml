@@ -86,6 +86,8 @@ workflows:
   unit-tests:
     environment:
       java: 17
+      android_signing:
+        - network-file-explorer
     triggering:
       events:
         - push
