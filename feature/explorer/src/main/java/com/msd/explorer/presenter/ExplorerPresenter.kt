@@ -3,8 +3,7 @@ package com.msd.explorer.presenter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.msd.explorer.GetFilesAndDirectoriesUseCase
-import com.msd.explorer.OpenFileUseCase
+import com.msd.explorer.helper.FilesAndDirectoriesHelper
 import com.msd.explorer.model.IBaseFile
 import com.msd.explorer.model.NetworkDirectory
 import com.msd.explorer.model.NetworkFile
@@ -29,8 +28,7 @@ import kotlinx.coroutines.launch
 class ExplorerPresenter @AssistedInject constructor(
     core: IPresenterCore<ExplorerState>,
     private val getSMBConfigurationUseCase: GetSMBConfigurationUseCase,
-    private val getFilesAndDirectoriesUseCase: GetFilesAndDirectoriesUseCase,
-    private val openFileUseCase: OpenFileUseCase,
+    private val filesAndDirectoriesHelper: FilesAndDirectoriesHelper,
     @Assisted(SmbConfigurationRouteIdArg) private val smbConfigurationId: Int,
     @Assisted(SmbConfigurationRouteNameArg) private val smbConfigurationName: String,
 ) : Presenter<ExplorerState>(core), UserInteractions {
@@ -45,22 +43,14 @@ class ExplorerPresenter @AssistedInject constructor(
             } else {
                 getSMBConfigurationUseCase(smbConfigurationId)?.let { smbConfiguration ->
                     try {
-                        val filesAndDirectories = getFilesAndDirectoriesUseCase(
-                            server = smbConfiguration.server,
-                            sharedPath = smbConfiguration.sharedPath,
-                            directoryRelativePath = "",
-                            user = smbConfiguration.user,
-                            psw = smbConfiguration.psw
+                        val filesAndDirectories = filesAndDirectoriesHelper.getFilesAndDirectories(
+                            smbConfiguration,
+                            path = ""
                         )
-                        val root = "\\\\${smbConfiguration.server}\\${smbConfiguration.sharedPath}"
+                        val root = filesAndDirectoriesHelper.getRootPath(smbConfiguration)
 
                         tryEmit(
-                            Loaded(
-                                smbConfiguration,
-                                root = root,
-                                path = root,
-                                filesAndDirectories
-                            )
+                            Loaded(smbConfiguration, root = root, path = root, filesAndDirectories)
                         )
                     } catch (e: Exception) {
                         handleError(e, smbConfigurationName)
@@ -72,33 +62,16 @@ class ExplorerPresenter @AssistedInject constructor(
 
     override fun onItemClicked(file: IBaseFile) {
         when (file) {
+            is NetworkParentDirectory -> onBackPressed()
             is NetworkDirectory -> openDirectory(file)
             is NetworkFile -> openFile(file)
-            is NetworkParentDirectory -> onBackPressed()
         }
     }
 
     private fun openDirectory(directory: NetworkDirectory) {
         (currentState as? Loaded)?.let { loaded ->
             viewModelScope.launch {
-                val smbConfiguration = loaded.smbConfiguration
-                try {
-                    val filesAndDirectories = getFilesAndDirectoriesUseCase(
-                        server = smbConfiguration.server,
-                        sharedPath = smbConfiguration.sharedPath,
-                        directoryRelativePath = directory.path,
-                        user = smbConfiguration.user,
-                        psw = smbConfiguration.psw
-                    )
-                    tryEmit(
-                        loaded.copy(
-                            path = directory.path,
-                            filesOrDirectories = filesAndDirectories
-                        )
-                    )
-                } catch (e: Exception) {
-                    handleError(e, loaded.name)
-                }
+                emitFilesAndDirectories(loaded, path = directory.path)
             }
         }
     }
@@ -109,15 +82,8 @@ class ExplorerPresenter @AssistedInject constructor(
                 tryEmit(Loading(loaded.name))
                 val smbConfiguration = loaded.smbConfiguration
                 try {
-                    openFileUseCase(
-                        server = smbConfiguration.server,
-                        sharedPath = smbConfiguration.sharedPath,
-                        directoryRelativePath = loaded.path,
-                        fileName = file.name,
-                        user = smbConfiguration.user,
-                        psw = smbConfiguration.psw
-                    )?.let {
-                        tryEmit(loaded)
+                    tryEmit(loaded)
+                    filesAndDirectoriesHelper.openFile(smbConfiguration, file, loaded.path)?.let {
                         navigate(OpenFile(it))
                     }
                 } catch (e: Exception) {
@@ -134,27 +100,23 @@ class ExplorerPresenter @AssistedInject constructor(
                     navigate(NavigateBack)
                 } else {
                     val path = loaded.path.substring(0, loaded.path.lastIndexOf("\\"))
-                    val smbConfiguration = loaded.smbConfiguration
-                    try {
-                        val filesAndDirectories = getFilesAndDirectoriesUseCase(
-                            server = smbConfiguration.server,
-                            sharedPath = smbConfiguration.sharedPath,
-                            directoryRelativePath = path,
-                            user = smbConfiguration.user,
-                            psw = smbConfiguration.psw
-                        )
-
-                        tryEmit(
-                            loaded.copy(
-                                path = path,
-                                filesOrDirectories = filesAndDirectories
-                            )
-                        )
-                    } catch (e: Exception) {
-                        handleError(e, loaded.name)
-                    }
+                    emitFilesAndDirectories(loaded, path)
                 }
             }
+        }
+    }
+
+    private suspend fun emitFilesAndDirectories(loaded: Loaded, path: String) {
+        val smbConfiguration = loaded.smbConfiguration
+        try {
+            val filesAndDirectories = filesAndDirectoriesHelper.getFilesAndDirectories(
+                smbConfiguration,
+                path = path
+            )
+
+            tryEmit(loaded.copy(path = path, filesOrDirectories = filesAndDirectories))
+        } catch (e: Exception) {
+            handleError(e, loaded.name)
         }
     }
 
