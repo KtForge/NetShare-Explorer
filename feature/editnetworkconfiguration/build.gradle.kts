@@ -29,6 +29,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = Versions.kotlinCompilerExtensionVersion
     }
+    testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
