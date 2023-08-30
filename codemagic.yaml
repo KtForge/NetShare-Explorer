@@ -98,7 +98,7 @@ workflows:
     scripts:
       - name: Unit Tests
         script: ./gradlew testDebugUnitTest
-        test_report: /**/build/test-results/**/*.xml
+        test_report: $CM_BUILD_DIR/**/build/test-results/**/*.xml
     publishing:
       email:
         recipients:
