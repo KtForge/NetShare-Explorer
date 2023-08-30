@@ -51,16 +51,16 @@ class EditNetworkConfigurationPresenter @AssistedInject constructor(
                     )
                 )
             } else {
-                val smbConfiguration = getSMBConfigurationUseCase(smbConfigurationId)
-
-                tryEmit(
-                    Loaded(
-                        smbConfiguration,
-                        actionButtonLabel = R.string.edit_configuration_button,
-                        serverError = false,
-                        sharedPathError = false,
+                getSMBConfigurationUseCase(smbConfigurationId)?.let { smbConfiguration ->
+                    tryEmit(
+                        Loaded(
+                            smbConfiguration,
+                            actionButtonLabel = R.string.edit_configuration_button,
+                            serverError = false,
+                            sharedPathError = false,
+                        )
                     )
-                )
+                } ?: navigate(NavigateBack)
             }
         }
     }

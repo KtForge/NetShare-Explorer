@@ -7,7 +7,7 @@ interface ISMBConfigurationRepository {
 
     fun getAll(): Flow<List<SMBConfiguration>>
 
-    suspend fun getSmbConfiguration(id: Int) : SMBConfiguration
+    suspend fun getSmbConfiguration(id: Int) : SMBConfiguration?
 
     suspend fun insert(smbConfiguration: SMBConfiguration)
 

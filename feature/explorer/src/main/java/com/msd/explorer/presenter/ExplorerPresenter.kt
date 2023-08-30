@@ -43,28 +43,29 @@ class ExplorerPresenter @AssistedInject constructor(
             if (smbConfigurationId == -1) {
                 navigate(NavigateBack)
             } else {
-                val smbConfiguration = getSMBConfigurationUseCase(smbConfigurationId)
-                try {
-                    val filesAndDirectories = getFilesAndDirectoriesUseCase(
-                        server = smbConfiguration.server,
-                        sharedPath = smbConfiguration.sharedPath,
-                        directoryRelativePath = "",
-                        user = smbConfiguration.user,
-                        psw = smbConfiguration.psw
-                    )
-                    val root = "\\\\${smbConfiguration.server}\\${smbConfiguration.sharedPath}"
-
-                    tryEmit(
-                        Loaded(
-                            smbConfiguration,
-                            root = root,
-                            path = root,
-                            filesAndDirectories
+                getSMBConfigurationUseCase(smbConfigurationId)?.let { smbConfiguration ->
+                    try {
+                        val filesAndDirectories = getFilesAndDirectoriesUseCase(
+                            server = smbConfiguration.server,
+                            sharedPath = smbConfiguration.sharedPath,
+                            directoryRelativePath = "",
+                            user = smbConfiguration.user,
+                            psw = smbConfiguration.psw
                         )
-                    )
-                } catch (e: Exception) {
-                    handleError(e, smbConfigurationName)
-                }
+                        val root = "\\\\${smbConfiguration.server}\\${smbConfiguration.sharedPath}"
+
+                        tryEmit(
+                            Loaded(
+                                smbConfiguration,
+                                root = root,
+                                path = root,
+                                filesAndDirectories
+                            )
+                        )
+                    } catch (e: Exception) {
+                        handleError(e, smbConfigurationName)
+                    }
+                } ?: tryEmit(Error.UnknownError(smbConfigurationName))
             }
         }
     }

@@ -13,7 +13,7 @@ class SMBConfigurationRepository @Inject constructor(private val dao: SMBConfigu
 
     override fun getAll(): Flow<List<SMBConfiguration>> = dao.getAll().map { it.toDomain() }
 
-    override suspend fun getSmbConfiguration(id: Int): SMBConfiguration = dao.get(id).toDomain()
+    override suspend fun getSmbConfiguration(id: Int): SMBConfiguration? = dao.get(id).toDomain()
 
     override suspend fun insert(smbConfiguration: SMBConfiguration) =
         dao.insert(smbConfiguration.toData())

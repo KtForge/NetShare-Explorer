@@ -14,7 +14,7 @@ interface SMBConfigurationDao {
     fun getAll(): Flow<List<DataSMBConfiguration>>
 
     @Query("SELECT * FROM datasmbconfiguration WHERE id == :id")
-    suspend fun get(id: Int): DataSMBConfiguration
+    suspend fun get(id: Int): DataSMBConfiguration?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(dataSMBConfiguration: DataSMBConfiguration)

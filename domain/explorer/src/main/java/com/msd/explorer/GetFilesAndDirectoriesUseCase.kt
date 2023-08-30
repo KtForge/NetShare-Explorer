@@ -7,6 +7,7 @@ import javax.inject.Inject
 
 class GetFilesAndDirectoriesUseCase @Inject constructor(private val repository: IExplorerRepository) {
 
+    @Throws(Exception::class)
     suspend operator fun invoke(
         server: String,
         sharedPath: String,
