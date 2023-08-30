@@ -1,8 +1,8 @@
 plugins {
-    jacoco
     kotlin(Plugins.kapt)
     id(Plugins.androidLibrary)
     id(Plugins.kotlinAndroid)
+    id("jacoco-reports")
 }
 
 android {
