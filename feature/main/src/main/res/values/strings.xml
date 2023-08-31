@@ -15,4 +15,6 @@
 
     <string name="empty_network_configurations">You have no network configurations, add one!</string>
     <string name="add_network_configuration_button">Configure a network location</string>
+
+    <string name="main_loading_indicator_a11y">Loading your configurations, please wait</string>
 </resources>

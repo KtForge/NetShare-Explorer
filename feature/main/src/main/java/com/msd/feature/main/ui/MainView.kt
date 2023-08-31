@@ -15,7 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.msd.feature.main.R
-import com.msd.feature.main.presenter.NetworkConfigurationsListPresenter
+import com.msd.feature.main.presenter.MainPresenter
 import com.msd.feature.main.presenter.MainState.Empty
 import com.msd.feature.main.presenter.MainState.Loaded
 import com.msd.feature.main.presenter.MainState.Loading
@@ -24,7 +24,7 @@ import com.msd.core.ui.widget.AppCrossfade
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainView(presenter: NetworkConfigurationsListPresenter) {
+fun MainView(presenter: MainPresenter) {
     val currentState by presenter.getState().collectAsState(initial = Uninitialized)
 
     Scaffold(

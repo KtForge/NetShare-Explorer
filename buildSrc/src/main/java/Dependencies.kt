@@ -13,9 +13,9 @@ object Dependencies {
     val composeRuntime by lazy { "androidx.compose.runtime:runtime" }
     val composeUi by lazy { "androidx.compose.ui:ui" }
     val composeUiGraphics by lazy { "androidx.compose.ui:ui-graphics" }
-    val composeUiToolingPreview by lazy { "androidx.compose.ui:ui-tooling-preview" }
-    val composeMaterial3 by lazy { "androidx.compose.material3:material3" }
-    val composeMaterialIcons by lazy { "androidx.compose.material:material-icons-extended" }
+    val composeUiToolingPreview by lazy { "androidx.compose.ui:ui-tooling-preview:${Versions.composeUi}" }
+    val composeMaterial3 by lazy { "androidx.compose.material3:material3:${Versions.material3}" }
+    val composeMaterialIcons by lazy { "androidx.compose.material:material-icons-extended:${Versions.materialIconsExtended}" }
 
     val daggerHiltAndroid by lazy { "com.google.dagger:hilt-android:${Versions.daggerHilt}" }
     val daggerHiltAndroidCompiler by lazy { "com.google.dagger:hilt-android-compiler:${Versions.daggerHilt}" }
@@ -33,6 +33,7 @@ object Dependencies {
     val espressoCore by lazy { "androidx.test.espresso:espresso-core:${Versions.espressoCore}" }
     val uiTooling by lazy { "androidx.compose.ui:ui-tooling" }
 
+    val androidxTestRunner by lazy { "androidx.test:runner:${Versions.androidxTestRunner} "}
     val uiTest by lazy { "androidx.compose.ui:ui-test" }
     val uiTestJUnit4 by lazy { "androidx.compose.ui:ui-test-junit4:${Versions.composeUiJUnit4}" }
     val uiTestManifest by lazy { "androidx.compose.ui:ui-test-manifest:${Versions.composeUiJUnit4}" }

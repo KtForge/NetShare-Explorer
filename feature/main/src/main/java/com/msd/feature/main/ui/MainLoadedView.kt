@@ -27,6 +27,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
@@ -76,16 +78,20 @@ fun MainLoadedView(loaded: Loaded, userInteractions: UserInteractions) {
             }
         }
 
+        val actionContentDescription = stringResource(id = R.string.add_configuration_button_a11y)
         FloatingActionButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(sizeL),
+                .padding(sizeL)
+                .clearAndSetSemantics {
+                    contentDescription = actionContentDescription
+                },
             shape = CircleShape,
-            onClick = userInteractions::onAddButtonClicked
+            onClick = userInteractions::onAddButtonClicked,
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
-                contentDescription = stringResource(id = R.string.add_configuration_button_a11y)
+                contentDescription = null
             )
         }
     }

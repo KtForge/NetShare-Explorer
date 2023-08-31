@@ -6,6 +6,7 @@ plugins {
 android {
     namespace = "com.msd.core.uitest"
     compileSdk = Configuration.compileSdk
+    compileSdkPreview = "UpsideDownCake"
 
     defaultConfig {
         minSdk = Configuration.minSdk
@@ -30,10 +31,10 @@ android {
 
 dependencies {
 
+    api(Dependencies.androidxTestRunner)
+    api(Dependencies.espressoCore)
     api(Dependencies.mockitoAndroid)
     api(Dependencies.mockitoKotlin)
     api(Dependencies.uiTestJUnit4)
     debugApi(Dependencies.uiTestManifest)
-
-    androidTestImplementation(Dependencies.mockitoInline)
 }

@@ -1,5 +1,3 @@
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-
 plugins {
     kotlin(Plugins.kapt)
     id(Plugins.androidLibrary)
@@ -10,6 +8,7 @@ plugins {
 android {
     namespace = "com.msd.feature.edit"
     compileSdk = Configuration.compileSdk
+    compileSdkPreview = "UpsideDownCake"
 
     defaultConfig {
         minSdk = Configuration.minSdk

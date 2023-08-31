@@ -1,5 +1,3 @@
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-
 plugins {
     kotlin(Plugins.kapt)
     id(Plugins.androidLibrary)
@@ -10,6 +8,7 @@ plugins {
 android {
     namespace = "com.msd.feature.explorer"
     compileSdk = Configuration.compileSdk
+    compileSdkPreview = "UpsideDownCake"
 
     defaultConfig {
         minSdk = Configuration.minSdk
@@ -51,4 +50,5 @@ dependencies {
     kapt(Dependencies.daggerHiltAndroidCompiler)
 
     testImplementation(project(":core:unittest"))
+    androidTestImplementation(project(":core:uitest"))
 }

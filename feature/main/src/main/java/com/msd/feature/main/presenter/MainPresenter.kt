@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NetworkConfigurationsListPresenter @Inject constructor(
+class MainPresenter @Inject constructor(
     core: IPresenterCore<MainState>,
     private val getSMBConfigurationsUseCase: GetSMBConfigurationsUseCase,
     private val deleteSMBConfigurationUseCase: DeleteSMBConfigurationUseCase,

@@ -6,6 +6,7 @@ plugins {
 android {
     namespace = "com.msd.navigation"
     compileSdk = Configuration.compileSdk
+    compileSdkPreview = "UpsideDownCake"
 
     defaultConfig {
         minSdk = Configuration.minSdk

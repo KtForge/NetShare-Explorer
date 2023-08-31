@@ -40,7 +40,7 @@ import com.msd.navigation.NavigationConstants.NetworkSettingsList
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteIdArg
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNameArg
 import com.msd.navigation.OpenFile
-import com.msd.feature.main.presenter.NetworkConfigurationsListPresenter
+import com.msd.feature.main.presenter.MainPresenter
 import com.msd.feature.main.ui.MainView
 import com.msd.presentation.Presenter
 import com.msd.presentation.State
@@ -128,7 +128,7 @@ class MainActivity : ComponentActivity() {
             route = NetworkSettingsList,
             arguments = emptyList(),
             navController,
-            viewModelProvider = { hiltViewModel<NetworkConfigurationsListPresenter>() },
+            viewModelProvider = { hiltViewModel<MainPresenter>() },
             content = { presenter -> MainView(presenter) }
         )
     }

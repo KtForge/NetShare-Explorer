@@ -1,4 +1,3 @@
-import org.gradle.api.tasks.testing.logging.TestLogEvent
 import java.util.Properties
 
 plugins {
@@ -28,6 +27,7 @@ if (propertiesFile.canRead()) {
 android {
     namespace = Configuration.namespace
     compileSdk = Configuration.compileSdk
+    compileSdkPreview = "UpsideDownCake"
 
     signingConfigs {
         create("release") {
@@ -125,4 +125,5 @@ dependencies {
     implementation(Dependencies.smbj)
 
     testImplementation(project(":core:unittest"))
+    androidTestImplementation(project(":core:uitest"))
 }

@@ -31,7 +31,7 @@ class MainPresenterTest : CoroutineTest() {
     }
     private val getSMBConfigurationsUseCase: GetSMBConfigurationsUseCase = mock()
     private val deleteSMBConfigurationUseCase: DeleteSMBConfigurationUseCase = mock()
-    private val presenter = NetworkConfigurationsListPresenter(
+    private val presenter = MainPresenter(
         core,
         getSMBConfigurationsUseCase,
         deleteSMBConfigurationUseCase

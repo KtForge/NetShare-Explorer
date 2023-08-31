@@ -15,6 +15,9 @@ object Versions {
     const val coroutinesCore = "1.7.3"
 
     const val composeBom = "2023.06.01"
+    const val composeUi = "1.5.0"
+    const val material3 = "1.0.1"
+    const val materialIconsExtended = "1.3.1"
     const val composeUiJUnit4 = "1.5.0"
 
     const val daggerHilt = "2.44"
@@ -25,6 +28,8 @@ object Versions {
     const val mockitoAndroid = "5.5.0"
     const val mockitoKotlin = "4.0.0"
     const val coroutines = "1.6.4"
+
+    const val androidxTestRunner = "1.5.2"
 
     const val jUnitKtx = "1.1.5"
     const val espressoCore = "3.5.1"
