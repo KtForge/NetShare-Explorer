@@ -34,8 +34,8 @@ object Dependencies {
     val uiTooling by lazy { "androidx.compose.ui:ui-tooling" }
 
     val uiTest by lazy { "androidx.compose.ui:ui-test" }
-    val uiTestJUnit4 by lazy { "androidx.compose.ui:ui-test-junit4" }
-    val uiTestManifest by lazy { "androidx.compose.ui:ui-test-manifest" }
+    val uiTestJUnit4 by lazy { "androidx.compose.ui:ui-test-junit4:${Versions.composeUiJUnit4}" }
+    val uiTestManifest by lazy { "androidx.compose.ui:ui-test-manifest:${Versions.composeUiJUnit4}" }
 
     // Dependencies specific to this app
     val smbj by lazy { "com.hierynomus:smbj:${Versions.smbj}" }

@@ -15,6 +15,7 @@ object Versions {
     const val coroutinesCore = "1.7.3"
 
     const val composeBom = "2023.06.01"
+    const val composeUiJUnit4 = "1.5.0"
 
     const val daggerHilt = "2.44"
     const val daggerHiltNavigation = "1.0.0"
