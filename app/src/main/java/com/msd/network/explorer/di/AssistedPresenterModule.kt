@@ -1,6 +1,6 @@
 package com.msd.network.explorer.di
 
-import com.msd.feature.editnetworkconfiguration.presenter.EditNetworkConfigurationState
+import com.msd.feature.edit.presenter.EditState
 import com.msd.feature.explorer.presenter.ExplorerState
 import com.msd.presentation.IPresenterCore
 import com.msd.presentation.PresenterCore
@@ -14,8 +14,8 @@ import dagger.hilt.components.SingletonComponent
 class AssistedPresenterModule {
 
     @Provides
-    fun provideEditNetworkConfigurationPresenterCore(): IPresenterCore<EditNetworkConfigurationState> {
-        return PresenterCore(EditNetworkConfigurationState.Uninitialized)
+    fun provideEditNetworkConfigurationPresenterCore(): IPresenterCore<EditState> {
+        return PresenterCore(EditState.Uninitialized)
     }
 
     @Provides

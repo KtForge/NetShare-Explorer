@@ -107,8 +107,8 @@ dependencies {
     implementation(project(":domain:smb"))
     implementation(project(":domain:explorer"))
     implementation(project(":feature:main"))
+    implementation(project(":feature:edit"))
 
-    implementation(project(":feature:editnetworkconfiguration"))
     implementation(project(":feature:explorer"))
 
     implementation(platform(Dependencies.kotlinBom))

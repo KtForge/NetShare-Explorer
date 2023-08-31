@@ -25,9 +25,9 @@
             <option value="$PROJECT_DIR$/domain/explorer" />
             <option value="$PROJECT_DIR$/domain/smb" />
             <option value="$PROJECT_DIR$/feature" />
-            <option value="$PROJECT_DIR$/feature/editnetworkconfiguration" />
+            <option value="$PROJECT_DIR$/feature/edit" />
             <option value="$PROJECT_DIR$/feature/explorer" />
-            <option value="$PROJECT_DIR$/feature/networkconfigurationslist" />
+            <option value="$PROJECT_DIR$/feature/main" />
           </set>
         </option>
       </GradleProjectSettings>

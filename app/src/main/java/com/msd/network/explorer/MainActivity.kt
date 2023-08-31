@@ -26,8 +26,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.msd.feature.editnetworkconfiguration.presenter.EditNetworkConfigurationPresenter
-import com.msd.feature.editnetworkconfiguration.ui.EditNetworkConfigurationView
+import com.msd.feature.edit.presenter.EditPresenter
+import com.msd.feature.edit.ui.EditView
 import com.msd.feature.explorer.presenter.ExplorerPresenter
 import com.msd.feature.explorer.ui.ExplorerView
 import com.msd.navigation.Idle
@@ -58,21 +58,21 @@ class MainActivity : ComponentActivity() {
     @EntryPoint
     @InstallIn(ActivityComponent::class)
     interface ViewModelFactoryProvider {
-        fun editNetworkConfigurationViewModelFactory(): EditNetworkConfigurationPresenter.Factory
+        fun editViewModelFactory(): EditPresenter.Factory
         fun explorerViewModelFactory(): ExplorerPresenter.Factory
     }
 
     @ExperimentalTransitionApi
     @ExperimentalComposeUiApi
     @Composable
-    fun editNetworkConfigurationPresenter(smbConfigurationId: Int): EditNetworkConfigurationPresenter {
+    fun editPresenter(smbConfigurationId: Int): EditPresenter {
         val factory = EntryPointAccessors.fromActivity(
             LocalContext.current as Activity,
             ViewModelFactoryProvider::class.java
-        ).editNetworkConfigurationViewModelFactory()
+        ).editViewModelFactory()
 
         return viewModel(
-            factory = EditNetworkConfigurationPresenter.provideFactory(
+            factory = EditPresenter.provideFactory(
                 factory,
                 smbConfigurationId
             )
@@ -149,10 +149,10 @@ class MainActivity : ComponentActivity() {
             viewModelProvider = {
                 with(navController.currentBackStackEntry?.arguments) {
                     val smbConfigurationId = this?.getInt(SmbConfigurationRouteIdArg) ?: -1
-                    editNetworkConfigurationPresenter(smbConfigurationId = smbConfigurationId)
+                    editPresenter(smbConfigurationId = smbConfigurationId)
                 }
             },
-            content = { presenter -> EditNetworkConfigurationView(presenter) }
+            content = { presenter -> EditView(presenter) }
         )
     }
 
