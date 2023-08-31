@@ -16,7 +16,5 @@ class OpenFileUseCase @Inject constructor(private val repository: IExplorerRepos
         fileName: String,
         user: String,
         psw: String
-    ): File? = withContext(Dispatchers.IO) {
-        repository.openFile(server, sharedPath, directoryRelativePath, fileName, user, psw)
-    }
+    ): File? = repository.openFile(server, sharedPath, directoryRelativePath, fileName, user, psw)
 }

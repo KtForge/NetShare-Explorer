@@ -14,7 +14,6 @@ class GetFilesAndDirectoriesUseCase @Inject constructor(private val repository: 
         directoryRelativePath: String,
         user: String,
         psw: String
-    ): List<IBaseFile> = withContext(Dispatchers.IO) {
+    ): List<IBaseFile> =
         repository.retrieveFilesAndDirectories(server, sharedPath, directoryRelativePath, user, psw)
-    }
 }
