@@ -3,6 +3,9 @@ package com.msd.feature.edit.presenter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.msd.domain.smb.GetSMBConfigurationUseCase
+import com.msd.domain.smb.StoreSMBConfigurationUseCase
+import com.msd.domain.smb.model.SMBConfiguration
 import com.msd.feature.edit.R
 import com.msd.feature.edit.presenter.EditState.Loaded
 import com.msd.feature.edit.presenter.EditState.Loading
@@ -12,13 +15,9 @@ import com.msd.navigation.NavigationConstants.SmbConfigurationRouteIdArg
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNoIdArg
 import com.msd.presentation.IPresenterCore
 import com.msd.presentation.Presenter
-import com.msd.domain.smb.GetSMBConfigurationUseCase
-import com.msd.domain.smb.StoreSMBConfigurationUseCase
-import com.msd.domain.smb.model.SMBConfiguration
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class EditPresenter @AssistedInject constructor(
@@ -51,7 +50,7 @@ class EditPresenter @AssistedInject constructor(
                 )
             )
         } else {
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch {
                 getSMBConfigurationUseCase(smbConfigurationId)?.let { smbConfiguration ->
                     tryEmit(
                         Loaded(
