@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
     kotlin(Plugins.kapt)
     id(Plugins.androidLibrary)
