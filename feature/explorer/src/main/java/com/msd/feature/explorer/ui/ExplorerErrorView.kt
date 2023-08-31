@@ -11,8 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.msd.feature.explorer.presenter.ExplorerState.Error
-import com.msd.ui.theme.Dimensions.sizeM
-import com.msd.ui.theme.Dimensions.sizeXL
+import com.msd.core.ui.theme.Dimensions.sizeM
+import com.msd.core.ui.theme.Dimensions.sizeXL
 
 @Composable
 fun ExplorerErrorView(error: Error) {

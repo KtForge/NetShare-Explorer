@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.msd.feature.main.R
 import com.msd.feature.main.presenter.UserInteractions
-import com.msd.ui.theme.Dimensions.sizeXL
-import com.msd.ui.theme.Dimensions.sizeXXL
+import com.msd.core.ui.theme.Dimensions.sizeXL
+import com.msd.core.ui.theme.Dimensions.sizeXXL
 
 @Composable
 fun MainEmptyView(userInteractions: UserInteractions) {

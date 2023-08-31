@@ -26,7 +26,7 @@ import com.msd.feature.explorer.presenter.ExplorerState.Error
 import com.msd.feature.explorer.presenter.ExplorerState.Loaded
 import com.msd.feature.explorer.presenter.ExplorerState.Loading
 import com.msd.feature.explorer.presenter.ExplorerState.Uninitialized
-import com.msd.ui.widget.AppCrossfade
+import com.msd.core.ui.widget.AppCrossfade
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -17,6 +17,7 @@
             <option value="$PROJECT_DIR$/core/navigation" />
             <option value="$PROJECT_DIR$/core/presentation" />
             <option value="$PROJECT_DIR$/core/ui" />
+            <option value="$PROJECT_DIR$/core/uitest" />
             <option value="$PROJECT_DIR$/core/unittest" />
             <option value="$PROJECT_DIR$/data" />
             <option value="$PROJECT_DIR$/data/explorer_data" />

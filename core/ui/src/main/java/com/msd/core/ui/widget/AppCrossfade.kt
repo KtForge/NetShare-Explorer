@@ -1,4 +1,4 @@
-package com.msd.ui.widget
+package com.msd.core.ui.widget
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween

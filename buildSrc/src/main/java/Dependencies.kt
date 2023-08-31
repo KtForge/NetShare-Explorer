@@ -24,15 +24,17 @@ object Dependencies {
 
     val jUnit by lazy { "junit:junit:${Versions.jUnit}" }
     val mockito by lazy { "org.mockito:mockito-core:${Versions.mockitoKotlin}"}
+    val mockitoAndroid by lazy { "org.mockito:mockito-android:${Versions.mockitoAndroid}"}
     val mockitoKotlin by lazy { "org.mockito.kotlin:mockito-kotlin:${Versions.mockitoKotlin}" }
     val mockitoInline by lazy { "org.mockito:mockito-inline:${Versions.mockitoKotlin}" }
     val coroutinesTest by lazy { "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines}" }
 
     val jUnitKtx by lazy { "androidx.test.ext:junit-ktx:${Versions.jUnitKtx}" }
     val espressoCore by lazy { "androidx.test.espresso:espresso-core:${Versions.espressoCore}" }
-    val uiTestJUnit4 by lazy { "androidx.compose.ui:ui-test-junit4" }
-
     val uiTooling by lazy { "androidx.compose.ui:ui-tooling" }
+
+    val uiTest by lazy { "androidx.compose.ui:ui-test" }
+    val uiTestJUnit4 by lazy { "androidx.compose.ui:ui-test-junit4" }
     val uiTestManifest by lazy { "androidx.compose.ui:ui-test-manifest" }
 
     // Dependencies specific to this app

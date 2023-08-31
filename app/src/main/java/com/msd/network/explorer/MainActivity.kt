@@ -44,7 +44,7 @@ import com.msd.feature.main.presenter.NetworkConfigurationsListPresenter
 import com.msd.feature.main.ui.MainView
 import com.msd.presentation.Presenter
 import com.msd.presentation.State
-import com.msd.ui.theme.NetworkStorageConfigurationTheme
+import com.msd.core.ui.theme.NetworkStorageConfigurationTheme
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint

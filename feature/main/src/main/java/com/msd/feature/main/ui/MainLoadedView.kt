@@ -34,10 +34,10 @@ import com.msd.feature.main.R
 import com.msd.feature.main.presenter.MainState.Loaded
 import com.msd.feature.main.presenter.UserInteractions
 import com.msd.domain.smb.model.SMBConfiguration
-import com.msd.ui.theme.Dimensions.sizeL
-import com.msd.ui.theme.Dimensions.sizeM
-import com.msd.ui.theme.Dimensions.sizeS
-import com.msd.ui.theme.Dimensions.sizeXL
+import com.msd.core.ui.theme.Dimensions.sizeL
+import com.msd.core.ui.theme.Dimensions.sizeM
+import com.msd.core.ui.theme.Dimensions.sizeS
+import com.msd.core.ui.theme.Dimensions.sizeXL
 
 @Composable
 fun MainLoadedView(loaded: Loaded, userInteractions: UserInteractions) {

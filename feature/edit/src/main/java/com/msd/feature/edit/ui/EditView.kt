@@ -23,7 +23,7 @@ import com.msd.feature.edit.presenter.EditPresenter
 import com.msd.feature.edit.presenter.EditState.Loaded
 import com.msd.feature.edit.presenter.EditState.Loading
 import com.msd.feature.edit.presenter.EditState.Uninitialized
-import com.msd.ui.widget.AppCrossfade
+import com.msd.core.ui.widget.AppCrossfade
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

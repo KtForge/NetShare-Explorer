@@ -25,8 +25,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import com.msd.feature.edit.R
 import com.msd.feature.edit.presenter.EditState.Loaded
 import com.msd.feature.edit.presenter.UserInteractions
-import com.msd.ui.theme.Dimensions.sizeM
-import com.msd.ui.theme.Dimensions.sizeXL
+import com.msd.core.ui.theme.Dimensions.sizeM
+import com.msd.core.ui.theme.Dimensions.sizeXL
 
 @Composable
 fun EditLoadedView(loaded: Loaded, userInteractions: UserInteractions) {

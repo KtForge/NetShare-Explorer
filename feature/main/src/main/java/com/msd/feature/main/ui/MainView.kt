@@ -20,7 +20,7 @@ import com.msd.feature.main.presenter.MainState.Empty
 import com.msd.feature.main.presenter.MainState.Loaded
 import com.msd.feature.main.presenter.MainState.Loading
 import com.msd.feature.main.presenter.MainState.Uninitialized
-import com.msd.ui.widget.AppCrossfade
+import com.msd.core.ui.widget.AppCrossfade
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

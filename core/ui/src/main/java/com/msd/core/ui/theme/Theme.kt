@@ -1,4 +1,4 @@
-package com.msd.ui.theme
+package com.msd.core.ui.theme
 
 import android.app.Activity
 import android.os.Build

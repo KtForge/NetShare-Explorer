@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.msd.ui"
+    namespace = "com.msd.core.ui"
     compileSdk = Configuration.compileSdk
 
     defaultConfig {

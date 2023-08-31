@@ -1,12 +1,10 @@
 plugins {
-    kotlin(Plugins.kapt)
     id(Plugins.androidLibrary)
     id(Plugins.kotlinAndroid)
-    id("jacoco-reports")
 }
 
 android {
-    namespace = "com.msd.feature.main"
+    namespace = "com.msd.core.uitest"
     compileSdk = Configuration.compileSdk
 
     defaultConfig {
@@ -15,7 +13,6 @@ android {
         testInstrumentationRunner = Configuration.testInstrumentationRunner
         consumerProguardFiles("consumer-rules.pro")
     }
-
     compileOptions {
         sourceCompatibility = Configuration.javaVersion
         targetCompatibility = Configuration.javaVersion
@@ -33,20 +30,10 @@ android {
 
 dependencies {
 
-    implementation(project(":core:navigation"))
-    implementation(project(":core:ui"))
-    implementation(project(":core:presentation"))
+    api(Dependencies.mockitoAndroid)
+    api(Dependencies.mockitoKotlin)
+    api(Dependencies.uiTestJUnit4)
+    debugApi(Dependencies.uiTestManifest)
 
-    implementation(project(":domain:smb"))
-
-    implementation(platform(Dependencies.kotlinBom))
-    implementation(Dependencies.coreKtx)
-    implementation(Dependencies.composeActivity)
-
-    implementation(Dependencies.daggerHiltAndroid)
-    kapt(Dependencies.daggerHiltAndroidCompiler)
-    kapt(Dependencies.daggerHiltAndroidCompiler)
-
-    testImplementation(project(":core:unittest"))
-    androidTestImplementation(project(":core:uitest"))
+    androidTestImplementation(Dependencies.mockitoInline)
 }

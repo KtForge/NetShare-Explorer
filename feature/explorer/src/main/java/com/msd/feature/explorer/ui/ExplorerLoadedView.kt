@@ -35,10 +35,10 @@ import com.msd.domain.explorer.model.NetworkFile
 import com.msd.domain.explorer.model.NetworkParentDirectory
 import com.msd.feature.explorer.presenter.ExplorerState.Loaded
 import com.msd.feature.explorer.presenter.UserInteractions
-import com.msd.ui.theme.Dimensions.sizeS
-import com.msd.ui.theme.Dimensions.sizeXL
-import com.msd.ui.theme.Dimensions.sizeXXL
-import com.msd.ui.theme.Dimensions.sizeXXXL
+import com.msd.core.ui.theme.Dimensions.sizeS
+import com.msd.core.ui.theme.Dimensions.sizeXL
+import com.msd.core.ui.theme.Dimensions.sizeXXL
+import com.msd.core.ui.theme.Dimensions.sizeXXXL
 
 @Composable
 fun ExplorerLoadedView(loaded: Loaded, userInteractions: UserInteractions) {

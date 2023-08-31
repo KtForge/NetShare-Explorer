@@ -21,6 +21,7 @@ object Versions {
     const val inject = "1"
 
     const val jUnit = "4.13.2"
+    const val mockitoAndroid = "5.5.0"
     const val mockitoKotlin = "4.0.0"
     const val coroutines = "1.6.4"
 
