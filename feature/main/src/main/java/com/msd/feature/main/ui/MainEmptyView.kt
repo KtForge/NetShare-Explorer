@@ -1,4 +1,4 @@
-package com.msd.feature.networkconfigurationslist.ui
+package com.msd.feature.main.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,13 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.msd.feature.networkconfigurationslist.R
-import com.msd.feature.networkconfigurationslist.presenter.UserInteractions
+import com.msd.feature.main.R
+import com.msd.feature.main.presenter.UserInteractions
 import com.msd.ui.theme.Dimensions.sizeXL
 import com.msd.ui.theme.Dimensions.sizeXXL
 
 @Composable
-fun NetworkConfigurationsListEmptyView(userInteractions: UserInteractions) {
+fun MainEmptyView(userInteractions: UserInteractions) {
     Column(
         modifier = Modifier
             .fillMaxSize()

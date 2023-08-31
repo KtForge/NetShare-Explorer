@@ -1,15 +1,15 @@
 package com.msd.feature.networkconfigurationslist.presenter
 
 import com.msd.navigation.Navigate
-import com.msd.feature.networkconfigurationslist.presenter.NetworkConfigurationsListState.Empty
-import com.msd.feature.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loaded
-import com.msd.feature.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loading
+import com.msd.feature.main.presenter.MainState.Empty
+import com.msd.feature.main.presenter.MainState.Loaded
+import com.msd.feature.main.presenter.MainState.Loading
 import com.msd.presentation.IPresenterCore
 import com.msd.domain.smb.DeleteSMBConfigurationUseCase
 import com.msd.domain.smb.GetSMBConfigurationsUseCase
 import com.msd.domain.smb.model.SMBConfiguration
-import com.msd.feature.networkconfigurationslist.presenter.NetworkConfigurationsListPresenter
-import com.msd.feature.networkconfigurationslist.presenter.NetworkConfigurationsListState
+import com.msd.feature.main.presenter.NetworkConfigurationsListPresenter
+import com.msd.feature.main.presenter.MainState
 import com.msd.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
@@ -26,9 +26,9 @@ import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class NetworkConfigurationsListPresenterTest : CoroutineTest() {
+class MainPresenterTest : CoroutineTest() {
 
-    private val core: IPresenterCore<NetworkConfigurationsListState> = mock {
+    private val core: IPresenterCore<MainState> = mock {
         on { isInitialized() } doReturn false
     }
     private val getSMBConfigurationsUseCase: GetSMBConfigurationsUseCase = mock()

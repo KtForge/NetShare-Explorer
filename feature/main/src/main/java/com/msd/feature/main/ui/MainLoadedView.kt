@@ -1,4 +1,4 @@
-package com.msd.feature.networkconfigurationslist.ui
+package com.msd.feature.main.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,9 +30,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
-import com.msd.feature.networkconfigurationslist.R
-import com.msd.feature.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loaded
-import com.msd.feature.networkconfigurationslist.presenter.UserInteractions
+import com.msd.feature.main.R
+import com.msd.feature.main.presenter.MainState.Loaded
+import com.msd.feature.main.presenter.UserInteractions
 import com.msd.domain.smb.model.SMBConfiguration
 import com.msd.ui.theme.Dimensions.sizeL
 import com.msd.ui.theme.Dimensions.sizeM
@@ -40,7 +40,7 @@ import com.msd.ui.theme.Dimensions.sizeS
 import com.msd.ui.theme.Dimensions.sizeXL
 
 @Composable
-fun NetworkConfigurationsListLoadedView(loaded: Loaded, userInteractions: UserInteractions) {
+fun MainLoadedView(loaded: Loaded, userInteractions: UserInteractions) {
     loaded.smbConfigurationItemIdToDelete?.let {
         AlertDialog(
             title = { Text(text = stringResource(id = R.string.delete_dialog_title)) },

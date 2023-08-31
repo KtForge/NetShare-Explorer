@@ -1,6 +1,6 @@
 package com.msd.network.explorer.di
 
-import com.msd.feature.networkconfigurationslist.presenter.NetworkConfigurationsListState
+import com.msd.feature.main.presenter.MainState
 import com.msd.presentation.IPresenterCore
 import com.msd.presentation.PresenterCore
 import dagger.Module
@@ -13,7 +13,7 @@ import dagger.hilt.android.components.ViewModelComponent
 class PresenterModule {
 
     @Provides
-    fun provideNetworkConfigurationsListPresenterCore(): IPresenterCore<NetworkConfigurationsListState> {
-        return PresenterCore(NetworkConfigurationsListState.Uninitialized)
+    fun provideNetworkConfigurationsListPresenterCore(): IPresenterCore<MainState> {
+        return PresenterCore(MainState.Uninitialized)
     }
 }

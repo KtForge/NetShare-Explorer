@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.msd.feature.networkconfigurationslist"
+    namespace = "com.msd.feature.main"
     compileSdk = Configuration.compileSdk
 
     defaultConfig {

@@ -1,4 +1,4 @@
-package com.msd.feature.networkconfigurationslist.ui
+package com.msd.feature.main.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun NetworkConfigurationsListLoadingView() {
+fun MainLoadingView() {
     Box(modifier = Modifier.fillMaxSize()) {
         CircularProgressIndicator()
     }

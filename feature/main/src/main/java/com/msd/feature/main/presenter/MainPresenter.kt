@@ -1,4 +1,4 @@
-package com.msd.feature.networkconfigurationslist.presenter
+package com.msd.feature.main.presenter
 
 import androidx.lifecycle.viewModelScope
 import com.msd.navigation.Navigate
@@ -7,9 +7,9 @@ import com.msd.navigation.NavigationConstants.Explorer
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteIdArgToReplace
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNameArgToReplace
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNoIdArg
-import com.msd.feature.networkconfigurationslist.presenter.NetworkConfigurationsListState.Empty
-import com.msd.feature.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loaded
-import com.msd.feature.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loading
+import com.msd.feature.main.presenter.MainState.Empty
+import com.msd.feature.main.presenter.MainState.Loaded
+import com.msd.feature.main.presenter.MainState.Loading
 import com.msd.presentation.IPresenterCore
 import com.msd.presentation.Presenter
 import com.msd.domain.smb.DeleteSMBConfigurationUseCase
@@ -21,10 +21,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NetworkConfigurationsListPresenter @Inject constructor(
-    core: IPresenterCore<NetworkConfigurationsListState>,
+    core: IPresenterCore<MainState>,
     private val getSMBConfigurationsUseCase: GetSMBConfigurationsUseCase,
     private val deleteSMBConfigurationUseCase: DeleteSMBConfigurationUseCase,
-) : Presenter<NetworkConfigurationsListState>(core), UserInteractions {
+) : Presenter<MainState>(core), UserInteractions {
 
     override fun initialize() {
         if (isInitialized()) return

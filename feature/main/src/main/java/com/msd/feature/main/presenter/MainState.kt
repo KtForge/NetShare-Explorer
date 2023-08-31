@@ -1,17 +1,17 @@
-package com.msd.feature.networkconfigurationslist.presenter
+package com.msd.feature.main.presenter
 
 import com.msd.presentation.State
 import com.msd.domain.smb.model.SMBConfiguration
 
-sealed interface NetworkConfigurationsListState : State {
+sealed interface MainState : State {
 
-    object Uninitialized : NetworkConfigurationsListState
-    object Loading : NetworkConfigurationsListState
-    object Empty : NetworkConfigurationsListState
+    object Uninitialized : MainState
+    object Loading : MainState
+    object Empty : MainState
     data class Loaded(
         val smbConfigurations: List<SMBConfiguration>,
         val smbConfigurationItemIdToDelete: Int?,
-    ) : NetworkConfigurationsListState
+    ) : MainState
 
     override fun isUninitialized(): Boolean = this != Uninitialized
     override fun initialState(): State = Uninitialized

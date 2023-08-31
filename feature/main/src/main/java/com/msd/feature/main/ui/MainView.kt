@@ -1,4 +1,4 @@
-package com.msd.feature.networkconfigurationslist.ui
+package com.msd.feature.main.ui
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -14,17 +14,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import com.msd.feature.networkconfigurationslist.R
-import com.msd.feature.networkconfigurationslist.presenter.NetworkConfigurationsListPresenter
-import com.msd.feature.networkconfigurationslist.presenter.NetworkConfigurationsListState.Empty
-import com.msd.feature.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loaded
-import com.msd.feature.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loading
-import com.msd.feature.networkconfigurationslist.presenter.NetworkConfigurationsListState.Uninitialized
+import com.msd.feature.main.R
+import com.msd.feature.main.presenter.NetworkConfigurationsListPresenter
+import com.msd.feature.main.presenter.MainState.Empty
+import com.msd.feature.main.presenter.MainState.Loaded
+import com.msd.feature.main.presenter.MainState.Loading
+import com.msd.feature.main.presenter.MainState.Uninitialized
 import com.msd.ui.widget.AppCrossfade
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NetworkConfigurationsListView(presenter: NetworkConfigurationsListPresenter) {
+fun MainView(presenter: NetworkConfigurationsListPresenter) {
     val currentState by presenter.getState().collectAsState(initial = Uninitialized)
 
     Scaffold(
@@ -48,9 +48,9 @@ fun NetworkConfigurationsListView(presenter: NetworkConfigurationsListPresenter)
             targetState = currentState
         ) { state ->
             when (state) {
-                is Loading -> NetworkConfigurationsListLoadingView()
-                is Empty -> NetworkConfigurationsListEmptyView(presenter)
-                is Loaded -> NetworkConfigurationsListLoadedView(state, presenter)
+                is Loading -> MainLoadingView()
+                is Empty -> MainEmptyView(presenter)
+                is Loaded -> MainLoadedView(state, presenter)
                 is Uninitialized -> Unit
             }
         }

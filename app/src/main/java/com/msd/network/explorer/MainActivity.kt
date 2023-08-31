@@ -40,8 +40,8 @@ import com.msd.navigation.NavigationConstants.NetworkSettingsList
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteIdArg
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNameArg
 import com.msd.navigation.OpenFile
-import com.msd.feature.networkconfigurationslist.presenter.NetworkConfigurationsListPresenter
-import com.msd.feature.networkconfigurationslist.ui.NetworkConfigurationsListView
+import com.msd.feature.main.presenter.NetworkConfigurationsListPresenter
+import com.msd.feature.main.ui.MainView
 import com.msd.presentation.Presenter
 import com.msd.presentation.State
 import com.msd.ui.theme.NetworkStorageConfigurationTheme
@@ -114,7 +114,7 @@ class MainActivity : ComponentActivity() {
                     navController = navController,
                     startDestination = NetworkSettingsList
                 ) {
-                    networkSettingsList(builder = this, navController)
+                    main(builder = this, navController)
                     editNetworkConfiguration(builder = this, navController)
                     explorer(builder = this, navController)
                 }
@@ -122,14 +122,14 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun networkSettingsList(builder: NavGraphBuilder, navController: NavHostController) {
+    private fun main(builder: NavGraphBuilder, navController: NavHostController) {
         composable(
             builder,
             route = NetworkSettingsList,
             arguments = emptyList(),
             navController,
             viewModelProvider = { hiltViewModel<NetworkConfigurationsListPresenter>() },
-            content = { presenter -> NetworkConfigurationsListView(presenter) }
+            content = { presenter -> MainView(presenter) }
         )
     }
 
