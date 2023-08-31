@@ -2,9 +2,9 @@ package com.msd.explorer.presenter
 
 import androidx.annotation.StringRes
 import com.msd.explorer.R
-import com.msd.explorer.model.IBaseFile
+import com.msd.domain.explorer.model.IBaseFile
 import com.msd.presentation.State
-import com.msd.smb.model.SMBConfiguration
+import com.msd.domain.smb.model.SMBConfiguration
 
 sealed class ExplorerState(open val name: String) : State {
 

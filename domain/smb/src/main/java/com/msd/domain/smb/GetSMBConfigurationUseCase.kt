@@ -1,6 +1,6 @@
-package com.msd.smb
+package com.msd.domain.smb
 
-import com.msd.smb.model.SMBConfiguration
+import com.msd.domain.smb.model.SMBConfiguration
 import javax.inject.Inject
 
 class GetSMBConfigurationUseCase @Inject constructor(private val repository: ISMBConfigurationRepository) {

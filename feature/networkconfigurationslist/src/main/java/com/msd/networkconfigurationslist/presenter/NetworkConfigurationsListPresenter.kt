@@ -12,9 +12,9 @@ import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListStat
 import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loading
 import com.msd.presentation.IPresenterCore
 import com.msd.presentation.Presenter
-import com.msd.smb.DeleteSMBConfigurationUseCase
-import com.msd.smb.GetSMBConfigurationsUseCase
-import com.msd.smb.model.SMBConfiguration
+import com.msd.domain.smb.DeleteSMBConfigurationUseCase
+import com.msd.domain.smb.GetSMBConfigurationsUseCase
+import com.msd.domain.smb.model.SMBConfiguration
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

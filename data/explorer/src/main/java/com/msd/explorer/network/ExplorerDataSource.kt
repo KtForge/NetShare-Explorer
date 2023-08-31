@@ -10,8 +10,8 @@ import com.hierynomus.smbj.SMBClient
 import com.hierynomus.smbj.auth.AuthenticationContext
 import com.hierynomus.smbj.share.DiskShare
 import com.msd.explorer.mapper.FilesAndDirectoriesMapper.toBaseFile
-import com.msd.explorer.model.IBaseFile
-import com.msd.explorer.model.SMBException
+import com.msd.domain.explorer.model.IBaseFile
+import com.msd.domain.explorer.model.SMBException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.FileOutputStream

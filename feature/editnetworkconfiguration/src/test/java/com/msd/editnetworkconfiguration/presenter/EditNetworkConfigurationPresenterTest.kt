@@ -7,9 +7,9 @@ import com.msd.editnetworkconfiguration.presenter.EditNetworkConfigurationState.
 import com.msd.navigation.NavigateBack
 import com.msd.navigation.NavigateUp
 import com.msd.presentation.IPresenterCore
-import com.msd.smb.GetSMBConfigurationUseCase
-import com.msd.smb.StoreSMBConfigurationUseCase
-import com.msd.smb.model.SMBConfiguration
+import com.msd.domain.smb.GetSMBConfigurationUseCase
+import com.msd.domain.smb.StoreSMBConfigurationUseCase
+import com.msd.domain.smb.model.SMBConfiguration
 import com.msd.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle

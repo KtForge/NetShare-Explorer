@@ -1,6 +1,8 @@
-package com.msd.explorer
+package com.msd.domain.explorer
 
-import com.msd.explorer.model.IBaseFile
+import com.msd.domain.explorer.GetFilesAndDirectoriesUseCase
+import com.msd.domain.explorer.IExplorerRepository
+import com.msd.domain.explorer.model.IBaseFile
 import com.msd.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest

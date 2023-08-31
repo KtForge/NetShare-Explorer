@@ -1,7 +1,8 @@
 package com.msd.explorer
 
-import com.msd.explorer.model.IBaseFile
-import com.msd.explorer.model.NetworkFile
+import com.msd.domain.explorer.IExplorerRepository
+import com.msd.domain.explorer.model.IBaseFile
+import com.msd.domain.explorer.model.NetworkFile
 import com.msd.explorer.network.ExplorerDataSource
 import java.io.File
 import javax.inject.Inject

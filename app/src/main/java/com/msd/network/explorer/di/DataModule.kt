@@ -1,8 +1,8 @@
 package com.msd.network.explorer.di
 
 import com.msd.explorer.ExplorerRepository
-import com.msd.explorer.IExplorerRepository
-import com.msd.smb.ISMBConfigurationRepository
+import com.msd.domain.explorer.IExplorerRepository
+import com.msd.domain.smb.ISMBConfigurationRepository
 import com.msd.smb.SMBConfigurationRepository
 import dagger.Binds
 import dagger.Module

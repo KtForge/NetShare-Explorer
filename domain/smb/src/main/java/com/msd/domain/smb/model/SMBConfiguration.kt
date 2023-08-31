@@ -1,4 +1,4 @@
-package com.msd.smb.model
+package com.msd.domain.smb.model
 
 data class SMBConfiguration(
     val id: Int?,

@@ -2,7 +2,7 @@ package com.msd.editnetworkconfiguration.presenter
 
 import androidx.annotation.StringRes
 import com.msd.presentation.State
-import com.msd.smb.model.SMBConfiguration
+import com.msd.domain.smb.model.SMBConfiguration
 
 sealed interface EditNetworkConfigurationState : State {
 

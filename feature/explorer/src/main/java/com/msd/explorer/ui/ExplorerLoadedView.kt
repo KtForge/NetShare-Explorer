@@ -30,9 +30,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.msd.explorer.model.NetworkDirectory
-import com.msd.explorer.model.NetworkFile
-import com.msd.explorer.model.NetworkParentDirectory
+import com.msd.domain.explorer.model.NetworkDirectory
+import com.msd.domain.explorer.model.NetworkFile
+import com.msd.domain.explorer.model.NetworkParentDirectory
 import com.msd.explorer.presenter.ExplorerState.Loaded
 import com.msd.explorer.presenter.UserInteractions
 import com.msd.ui.theme.Dimensions.sizeS

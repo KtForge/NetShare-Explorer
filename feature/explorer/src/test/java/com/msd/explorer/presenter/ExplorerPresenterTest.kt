@@ -1,10 +1,10 @@
 package com.msd.explorer.presenter
 
 import com.msd.explorer.helper.FilesAndDirectoriesHelper
-import com.msd.explorer.model.NetworkDirectory
-import com.msd.explorer.model.NetworkFile
-import com.msd.explorer.model.NetworkParentDirectory
-import com.msd.explorer.model.SMBException
+import com.msd.domain.explorer.model.NetworkDirectory
+import com.msd.domain.explorer.model.NetworkFile
+import com.msd.domain.explorer.model.NetworkParentDirectory
+import com.msd.domain.explorer.model.SMBException
 import com.msd.explorer.presenter.ExplorerState.Error
 import com.msd.explorer.presenter.ExplorerState.Loaded
 import com.msd.explorer.presenter.ExplorerState.Loading
@@ -12,8 +12,8 @@ import com.msd.navigation.NavigateBack
 import com.msd.navigation.NavigateUp
 import com.msd.navigation.OpenFile
 import com.msd.presentation.IPresenterCore
-import com.msd.smb.GetSMBConfigurationUseCase
-import com.msd.smb.model.SMBConfiguration
+import com.msd.domain.smb.GetSMBConfigurationUseCase
+import com.msd.domain.smb.model.SMBConfiguration
 import com.msd.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle

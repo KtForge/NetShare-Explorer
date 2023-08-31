@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.sp
 import com.msd.networkconfigurationslist.R
 import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loaded
 import com.msd.networkconfigurationslist.presenter.UserInteractions
-import com.msd.smb.model.SMBConfiguration
+import com.msd.domain.smb.model.SMBConfiguration
 import com.msd.ui.theme.Dimensions.sizeL
 import com.msd.ui.theme.Dimensions.sizeM
 import com.msd.ui.theme.Dimensions.sizeS

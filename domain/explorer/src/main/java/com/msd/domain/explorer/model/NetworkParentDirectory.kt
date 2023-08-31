@@ -1,4 +1,4 @@
-package com.msd.explorer.model
+package com.msd.domain.explorer.model
 
 data class NetworkParentDirectory(
     override val name: String,

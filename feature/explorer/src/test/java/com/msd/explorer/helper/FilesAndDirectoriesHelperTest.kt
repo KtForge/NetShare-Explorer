@@ -1,11 +1,11 @@
 package com.msd.explorer.helper
 
-import com.msd.explorer.GetFilesAndDirectoriesUseCase
-import com.msd.explorer.OpenFileUseCase
-import com.msd.explorer.model.NetworkDirectory
-import com.msd.explorer.model.NetworkFile
-import com.msd.explorer.model.SMBException
-import com.msd.smb.model.SMBConfiguration
+import com.msd.domain.explorer.GetFilesAndDirectoriesUseCase
+import com.msd.domain.explorer.OpenFileUseCase
+import com.msd.domain.explorer.model.NetworkDirectory
+import com.msd.domain.explorer.model.NetworkFile
+import com.msd.domain.explorer.model.SMBException
+import com.msd.domain.smb.model.SMBConfiguration
 import com.msd.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest

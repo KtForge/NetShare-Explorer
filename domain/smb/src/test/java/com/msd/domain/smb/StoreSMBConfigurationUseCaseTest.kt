@@ -1,6 +1,8 @@
-package com.msd.smb
+package com.msd.domain.smb
 
-import com.msd.smb.model.SMBConfiguration
+import com.msd.domain.smb.ISMBConfigurationRepository
+import com.msd.domain.smb.StoreSMBConfigurationUseCase
+import com.msd.domain.smb.model.SMBConfiguration
 import com.msd.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest

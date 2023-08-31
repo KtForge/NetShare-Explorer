@@ -1,6 +1,6 @@
-package com.msd.smb
+package com.msd.domain.smb
 
-import com.msd.smb.model.SMBConfiguration
+import com.msd.domain.smb.model.SMBConfiguration
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

@@ -5,9 +5,9 @@ import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListStat
 import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loaded
 import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState.Loading
 import com.msd.presentation.IPresenterCore
-import com.msd.smb.DeleteSMBConfigurationUseCase
-import com.msd.smb.GetSMBConfigurationsUseCase
-import com.msd.smb.model.SMBConfiguration
+import com.msd.domain.smb.DeleteSMBConfigurationUseCase
+import com.msd.domain.smb.GetSMBConfigurationsUseCase
+import com.msd.domain.smb.model.SMBConfiguration
 import com.msd.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf

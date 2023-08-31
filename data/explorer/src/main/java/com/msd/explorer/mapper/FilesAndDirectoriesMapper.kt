@@ -6,10 +6,10 @@ import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation
 import com.hierynomus.mssmb2.SMB2CreateDisposition
 import com.hierynomus.mssmb2.SMB2ShareAccess
 import com.hierynomus.smbj.share.DiskShare
-import com.msd.explorer.model.IBaseFile
-import com.msd.explorer.model.NetworkDirectory
-import com.msd.explorer.model.NetworkFile
-import com.msd.explorer.model.NetworkParentDirectory
+import com.msd.domain.explorer.model.IBaseFile
+import com.msd.domain.explorer.model.NetworkDirectory
+import com.msd.domain.explorer.model.NetworkFile
+import com.msd.domain.explorer.model.NetworkParentDirectory
 import java.util.EnumSet
 
 private const val DOT_DIRECTORY = "."

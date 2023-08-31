@@ -1,19 +1,20 @@
-package com.msd.explorer
+package com.msd.domain.explorer
 
-import com.msd.explorer.model.IBaseFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
+import kotlin.jvm.Throws
 
-class GetFilesAndDirectoriesUseCase @Inject constructor(private val repository: IExplorerRepository) {
+class OpenFileUseCase @Inject constructor(private val repository: IExplorerRepository) {
 
     @Throws(Exception::class)
     suspend operator fun invoke(
         server: String,
         sharedPath: String,
         directoryRelativePath: String,
+        fileName: String,
         user: String,
         psw: String
-    ): List<IBaseFile> =
-        repository.retrieveFilesAndDirectories(server, sharedPath, directoryRelativePath, user, psw)
+    ): File? = repository.openFile(server, sharedPath, directoryRelativePath, fileName, user, psw)
 }

@@ -1,4 +1,4 @@
-package com.msd.smb
+package com.msd.domain.smb
 
 import javax.inject.Inject
 

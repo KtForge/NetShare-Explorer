@@ -1,7 +1,7 @@
 package com.msd.networkconfigurationslist.presenter
 
 import com.msd.presentation.State
-import com.msd.smb.model.SMBConfiguration
+import com.msd.domain.smb.model.SMBConfiguration
 
 sealed interface NetworkConfigurationsListState : State {
 

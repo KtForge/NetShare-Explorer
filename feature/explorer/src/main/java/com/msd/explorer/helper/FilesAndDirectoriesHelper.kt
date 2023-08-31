@@ -1,9 +1,9 @@
 package com.msd.explorer.helper
 
-import com.msd.explorer.GetFilesAndDirectoriesUseCase
-import com.msd.explorer.OpenFileUseCase
-import com.msd.explorer.model.IBaseFile
-import com.msd.smb.model.SMBConfiguration
+import com.msd.domain.explorer.GetFilesAndDirectoriesUseCase
+import com.msd.domain.explorer.OpenFileUseCase
+import com.msd.domain.explorer.model.IBaseFile
+import com.msd.domain.smb.model.SMBConfiguration
 import java.io.File
 import javax.inject.Inject
 

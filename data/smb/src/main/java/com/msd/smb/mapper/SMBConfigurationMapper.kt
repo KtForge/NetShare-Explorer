@@ -1,7 +1,7 @@
 package com.msd.smb.mapper
 
 import com.msd.smb.model.DataSMBConfiguration
-import com.msd.smb.model.SMBConfiguration
+import com.msd.domain.smb.model.SMBConfiguration
 
 object SMBConfigurationMapper {
 

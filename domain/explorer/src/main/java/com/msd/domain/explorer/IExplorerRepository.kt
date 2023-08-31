@@ -1,6 +1,6 @@
-package com.msd.explorer
+package com.msd.domain.explorer
 
-import com.msd.explorer.model.IBaseFile
+import com.msd.domain.explorer.model.IBaseFile
 import java.io.File
 import kotlin.jvm.Throws
 

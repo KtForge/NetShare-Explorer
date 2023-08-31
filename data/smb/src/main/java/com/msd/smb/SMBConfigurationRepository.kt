@@ -1,9 +1,10 @@
 package com.msd.smb
 
+import com.msd.domain.smb.ISMBConfigurationRepository
 import com.msd.smb.local.SMBConfigurationDao
 import com.msd.smb.mapper.SMBConfigurationMapper.toData
 import com.msd.smb.mapper.SMBConfigurationMapper.toDomain
-import com.msd.smb.model.SMBConfiguration
+import com.msd.domain.smb.model.SMBConfiguration
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

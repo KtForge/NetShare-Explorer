@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.msd.explorer.helper.FilesAndDirectoriesHelper
-import com.msd.explorer.model.IBaseFile
-import com.msd.explorer.model.NetworkDirectory
-import com.msd.explorer.model.NetworkFile
-import com.msd.explorer.model.NetworkParentDirectory
-import com.msd.explorer.model.SMBException
+import com.msd.domain.explorer.model.IBaseFile
+import com.msd.domain.explorer.model.NetworkDirectory
+import com.msd.domain.explorer.model.NetworkFile
+import com.msd.domain.explorer.model.NetworkParentDirectory
+import com.msd.domain.explorer.model.SMBException
 import com.msd.explorer.presenter.ExplorerState.Error
 import com.msd.explorer.presenter.ExplorerState.Loaded
 import com.msd.explorer.presenter.ExplorerState.Loading
@@ -19,7 +19,7 @@ import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNameArg
 import com.msd.navigation.OpenFile
 import com.msd.presentation.IPresenterCore
 import com.msd.presentation.Presenter
-import com.msd.smb.GetSMBConfigurationUseCase
+import com.msd.domain.smb.GetSMBConfigurationUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject

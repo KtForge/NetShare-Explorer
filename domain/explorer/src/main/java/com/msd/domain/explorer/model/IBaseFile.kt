@@ -1,4 +1,4 @@
-package com.msd.explorer.model
+package com.msd.domain.explorer.model
 
 sealed interface IBaseFile {
     val name: String
