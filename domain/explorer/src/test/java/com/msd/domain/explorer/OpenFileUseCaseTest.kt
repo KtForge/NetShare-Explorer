@@ -1,7 +1,5 @@
 package com.msd.domain.explorer
 
-import com.msd.domain.explorer.IExplorerRepository
-import com.msd.domain.explorer.OpenFileUseCase
 import com.msd.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest

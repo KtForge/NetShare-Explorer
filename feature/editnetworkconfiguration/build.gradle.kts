@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.msd.editnetworkconfiguration"
+    namespace = "com.msd.feature.editnetworkconfiguration"
     compileSdk = Configuration.compileSdk
 
     defaultConfig {

@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.msd.explorer"
+    namespace = "com.msd.feature.explorer"
     compileSdk = Configuration.compileSdk
 
     defaultConfig {

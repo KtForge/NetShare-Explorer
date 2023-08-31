@@ -2,8 +2,8 @@ package com.msd.network.explorer.di
 
 import android.content.Context
 import androidx.room.Room
-import com.msd.smb.local.SMBConfigurationDao
-import com.msd.smb.local.SMBConfigurationDatabase
+import com.msd.data.smb_data.local.SMBConfigurationDao
+import com.msd.data.smb_data.local.SMBConfigurationDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

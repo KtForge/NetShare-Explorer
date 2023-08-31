@@ -1,6 +1,6 @@
 package com.msd.network.explorer.di
 
-import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListState
+import com.msd.feature.networkconfigurationslist.presenter.NetworkConfigurationsListState
 import com.msd.presentation.IPresenterCore
 import com.msd.presentation.PresenterCore
 import dagger.Module

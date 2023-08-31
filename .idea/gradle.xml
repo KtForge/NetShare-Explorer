@@ -19,8 +19,8 @@
             <option value="$PROJECT_DIR$/core/ui" />
             <option value="$PROJECT_DIR$/core/unittest" />
             <option value="$PROJECT_DIR$/data" />
-            <option value="$PROJECT_DIR$/data/explorer" />
-            <option value="$PROJECT_DIR$/data/smb" />
+            <option value="$PROJECT_DIR$/data/explorer_data" />
+            <option value="$PROJECT_DIR$/data/smb_data" />
             <option value="$PROJECT_DIR$/domain" />
             <option value="$PROJECT_DIR$/domain/explorer" />
             <option value="$PROJECT_DIR$/domain/smb" />

@@ -100,9 +100,8 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:navigation"))
     implementation(project(":core:presentation"))
-
-    implementation(project(":data:smb"))
-    implementation(project(":data:explorer"))
+    implementation(project(":data:smb_data"))
+    implementation(project(":data:explorer_data"))
 
     implementation(project(":domain:smb"))
     implementation(project(":domain:explorer"))

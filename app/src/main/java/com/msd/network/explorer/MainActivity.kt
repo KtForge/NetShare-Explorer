@@ -26,10 +26,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.msd.editnetworkconfiguration.presenter.EditNetworkConfigurationPresenter
-import com.msd.editnetworkconfiguration.ui.EditNetworkConfigurationView
-import com.msd.explorer.presenter.ExplorerPresenter
-import com.msd.explorer.ui.ExplorerView
+import com.msd.feature.editnetworkconfiguration.presenter.EditNetworkConfigurationPresenter
+import com.msd.feature.editnetworkconfiguration.ui.EditNetworkConfigurationView
+import com.msd.feature.explorer.presenter.ExplorerPresenter
+import com.msd.feature.explorer.ui.ExplorerView
 import com.msd.navigation.Idle
 import com.msd.navigation.Navigate
 import com.msd.navigation.NavigateBack
@@ -40,8 +40,8 @@ import com.msd.navigation.NavigationConstants.NetworkSettingsList
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteIdArg
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNameArg
 import com.msd.navigation.OpenFile
-import com.msd.networkconfigurationslist.presenter.NetworkConfigurationsListPresenter
-import com.msd.networkconfigurationslist.ui.NetworkConfigurationsListView
+import com.msd.feature.networkconfigurationslist.presenter.NetworkConfigurationsListPresenter
+import com.msd.feature.networkconfigurationslist.ui.NetworkConfigurationsListView
 import com.msd.presentation.Presenter
 import com.msd.presentation.State
 import com.msd.ui.theme.NetworkStorageConfigurationTheme
@@ -50,7 +50,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.components.ActivityComponent
-import kotlinx.coroutines.flow.collectLatest
 
 
 @AndroidEntryPoint

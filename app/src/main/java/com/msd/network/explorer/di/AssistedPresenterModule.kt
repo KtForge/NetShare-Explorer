@@ -1,7 +1,7 @@
 package com.msd.network.explorer.di
 
-import com.msd.editnetworkconfiguration.presenter.EditNetworkConfigurationState
-import com.msd.explorer.presenter.ExplorerState
+import com.msd.feature.editnetworkconfiguration.presenter.EditNetworkConfigurationState
+import com.msd.feature.explorer.presenter.ExplorerState
 import com.msd.presentation.IPresenterCore
 import com.msd.presentation.PresenterCore
 import dagger.Module
