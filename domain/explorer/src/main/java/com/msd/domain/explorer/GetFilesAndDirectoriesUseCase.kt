@@ -1,8 +1,6 @@
 package com.msd.domain.explorer
 
 import com.msd.domain.explorer.model.IBaseFile
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GetFilesAndDirectoriesUseCase @Inject constructor(private val repository: IExplorerRepository) {

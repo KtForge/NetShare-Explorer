@@ -1,20 +1,20 @@
 package com.msd.feature.main.presenter
 
 import androidx.lifecycle.viewModelScope
+import com.msd.domain.smb.DeleteSMBConfigurationUseCase
+import com.msd.domain.smb.GetSMBConfigurationsUseCase
+import com.msd.domain.smb.model.SMBConfiguration
+import com.msd.feature.main.presenter.MainState.Empty
+import com.msd.feature.main.presenter.MainState.Loaded
+import com.msd.feature.main.presenter.MainState.Loading
 import com.msd.navigation.Navigate
 import com.msd.navigation.NavigationConstants.EditNetworkConfiguration
 import com.msd.navigation.NavigationConstants.Explorer
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteIdArgToReplace
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNameArgToReplace
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNoIdArg
-import com.msd.feature.main.presenter.MainState.Empty
-import com.msd.feature.main.presenter.MainState.Loaded
-import com.msd.feature.main.presenter.MainState.Loading
 import com.msd.presentation.IPresenterCore
 import com.msd.presentation.Presenter
-import com.msd.domain.smb.DeleteSMBConfigurationUseCase
-import com.msd.domain.smb.GetSMBConfigurationsUseCase
-import com.msd.domain.smb.model.SMBConfiguration
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -70,9 +70,7 @@ class NetworkConfigurationsListPresenter @Inject constructor(
 
     override fun onDeleteNetworkConfigurationItemClicked(smbConfiguration: SMBConfiguration) {
         (currentState as? Loaded)?.let { loaded ->
-            viewModelScope.launch {
-                tryEmit(loaded.copy(smbConfigurationItemIdToDelete = smbConfiguration.id))
-            }
+            tryEmit(loaded.copy(smbConfigurationItemIdToDelete = smbConfiguration.id))
         }
     }
 
@@ -88,9 +86,7 @@ class NetworkConfigurationsListPresenter @Inject constructor(
 
     override fun dismissDeleteDialog() {
         (currentState as? Loaded)?.let { loaded ->
-            viewModelScope.launch {
-                tryEmit(loaded.copy(smbConfigurationItemIdToDelete = null))
-            }
+            tryEmit(loaded.copy(smbConfigurationItemIdToDelete = null))
         }
     }
 

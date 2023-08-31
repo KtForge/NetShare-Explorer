@@ -18,6 +18,7 @@ import com.msd.domain.smb.model.SMBConfiguration
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class EditPresenter @AssistedInject constructor(
@@ -31,26 +32,26 @@ class EditPresenter @AssistedInject constructor(
         if (isInitialized()) return
 
         tryEmit(Loading)
-        viewModelScope.launch {
-            if (smbConfigurationId.toString() == SmbConfigurationRouteNoIdArg) {
-                val smbConfiguration = SMBConfiguration(
-                    id = null,
-                    name = "",
-                    server = "",
-                    sharedPath = "",
-                    user = "",
-                    psw = ""
-                )
+        if (smbConfigurationId.toString() == SmbConfigurationRouteNoIdArg) {
+            val smbConfiguration = SMBConfiguration(
+                id = null,
+                name = "",
+                server = "",
+                sharedPath = "",
+                user = "",
+                psw = ""
+            )
 
-                tryEmit(
-                    Loaded(
-                        smbConfiguration,
-                        actionButtonLabel = R.string.save_configuration_button,
-                        serverError = false,
-                        sharedPathError = false,
-                    )
+            tryEmit(
+                Loaded(
+                    smbConfiguration,
+                    actionButtonLabel = R.string.save_configuration_button,
+                    serverError = false,
+                    sharedPathError = false,
                 )
-            } else {
+            )
+        } else {
+            viewModelScope.launch(Dispatchers.IO) {
                 getSMBConfigurationUseCase(smbConfigurationId)?.let { smbConfiguration ->
                     tryEmit(
                         Loaded(
@@ -78,18 +79,18 @@ class EditPresenter @AssistedInject constructor(
     ) {
         (currentState as? Loaded)?.let { loaded ->
             tryEmit(Loading)
-            viewModelScope.launch {
-                val serverError = validateServer(server)
-                val sharedPathError = validateSharedPath(sharedPath)
+            val serverError = validateServer(server)
+            val sharedPathError = validateSharedPath(sharedPath)
 
-                if (serverError || sharedPathError) {
-                    tryEmit(
-                        loaded.copy(
-                            serverError = serverError,
-                            sharedPathError = sharedPathError
-                        )
+            if (serverError || sharedPathError) {
+                tryEmit(
+                    loaded.copy(
+                        serverError = serverError,
+                        sharedPathError = sharedPathError
                     )
-                } else {
+                )
+            } else {
+                viewModelScope.launch {
                     storeSMBConfigurationUseCase(
                         id = loaded.smbConfiguration.id,
                         name = name,

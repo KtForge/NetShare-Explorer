@@ -1,10 +1,12 @@
 package com.msd.feature.explorer.presenter
 
-import com.msd.feature.explorer.helper.FilesAndDirectoriesHelper
 import com.msd.domain.explorer.model.NetworkDirectory
 import com.msd.domain.explorer.model.NetworkFile
 import com.msd.domain.explorer.model.NetworkParentDirectory
 import com.msd.domain.explorer.model.SMBException
+import com.msd.domain.smb.GetSMBConfigurationUseCase
+import com.msd.domain.smb.model.SMBConfiguration
+import com.msd.feature.explorer.helper.FilesAndDirectoriesHelper
 import com.msd.feature.explorer.presenter.ExplorerState.Error
 import com.msd.feature.explorer.presenter.ExplorerState.Loaded
 import com.msd.feature.explorer.presenter.ExplorerState.Loading
@@ -12,12 +14,9 @@ import com.msd.navigation.NavigateBack
 import com.msd.navigation.NavigateUp
 import com.msd.navigation.OpenFile
 import com.msd.presentation.IPresenterCore
-import com.msd.domain.smb.GetSMBConfigurationUseCase
-import com.msd.domain.smb.model.SMBConfiguration
-import com.msd.feature.explorer.presenter.ExplorerPresenter
-import com.msd.feature.explorer.presenter.ExplorerState
 import com.msd.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -47,6 +46,7 @@ class ExplorerPresenterTest : CoroutineTest() {
             core,
             getSMBConfigurationUseCase,
             filesAndDirectoriesHelper,
+            StandardTestDispatcher(),
             smbConfigurationId,
             smbConfigurationName
         )
@@ -94,11 +94,10 @@ class ExplorerPresenterTest : CoroutineTest() {
     }
 
     @Test
-    fun `when initializing with invalid id should navigate back`() = runTest {
+    fun `when initializing with invalid id should navigate back`() {
         smbConfigurationId = -1
 
         presenter.initialize()
-        advanceUntilIdle()
 
         verifyNoInteractions(getSMBConfigurationUseCase)
         verifyNoInteractions(filesAndDirectoriesHelper)
@@ -179,11 +178,10 @@ class ExplorerPresenterTest : CoroutineTest() {
         }
 
     @Test
-    fun `when already initialized should do nothing`() = runTest {
+    fun `when already initialized should do nothing`() {
         whenever(core.isInitialized()).thenReturn(true)
 
         presenter.initialize()
-        advanceUntilIdle()
 
         verifyNoInteractions(getSMBConfigurationUseCase)
         verifyNoInteractions(filesAndDirectoriesHelper)
@@ -268,21 +266,18 @@ class ExplorerPresenterTest : CoroutineTest() {
         }
 
     @Test
-    fun `when clicking on a parent directory in loaded state and in root path should navigate back`() =
-        runTest {
-            whenever(core.currentState()).thenReturn(loaded)
+    fun `when clicking on a parent directory in loaded state and in root path should navigate back`() {
+        whenever(core.currentState()).thenReturn(loaded)
 
-            presenter.onItemClicked(parentDirectory)
-            advanceUntilIdle()
+        presenter.onItemClicked(parentDirectory)
 
-            verify(core, times(0)).tryEmit(any())
-            verify(core).navigate(NavigateBack)
-        }
+        verify(core, times(0)).tryEmit(any())
+        verify(core).navigate(NavigateBack)
+    }
 
     @Test
-    fun `when clicking on a parent directory not in loaded state should do nothing`() = runTest {
+    fun `when clicking on a parent directory not in loaded state should do nothing`() {
         presenter.onItemClicked(parentDirectory)
-        advanceUntilIdle()
 
         verify(core, times(0)).tryEmit(any())
         verify(core, times(0)).navigate(any())
@@ -361,9 +356,8 @@ class ExplorerPresenterTest : CoroutineTest() {
         }
 
     @Test
-    fun `when clicking on a directory not in loaded state should do nothing`() = runTest {
+    fun `when clicking on a directory not in loaded state should do nothing`() {
         presenter.onItemClicked(directory)
-        advanceUntilIdle()
 
         verify(core, times(0)).tryEmit(any())
         verify(core, times(0)).navigate(any())
@@ -471,25 +465,22 @@ class ExplorerPresenterTest : CoroutineTest() {
         }
 
     @Test
-    fun `when clicking on a file not in loaded state should do nothing`() = runTest {
+    fun `when clicking on a file not in loaded state should do nothing`() {
         presenter.onItemClicked(file)
-        advanceUntilIdle()
 
         verify(core, times(0)).tryEmit(any())
         verify(core, times(0)).navigate(any())
     }
 
     @Test
-    fun `when back pressed in a parent directory in loaded state and in root path should navigate back`() =
-        runTest {
-            whenever(core.currentState()).thenReturn(loaded)
+    fun `when back pressed in a parent directory in loaded state and in root path should navigate back`() {
+        whenever(core.currentState()).thenReturn(loaded)
 
-            presenter.onBackPressed()
-            advanceUntilIdle()
+        presenter.onBackPressed()
 
-            verify(core, times(0)).tryEmit(any())
-            verify(core).navigate(NavigateBack)
-        }
+        verify(core, times(0)).tryEmit(any())
+        verify(core).navigate(NavigateBack)
+    }
 
     @Test
     fun `when clicking on back arrow should navigate up`() {

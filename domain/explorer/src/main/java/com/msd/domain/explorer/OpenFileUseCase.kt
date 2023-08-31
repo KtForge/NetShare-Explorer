@@ -1,10 +1,7 @@
 package com.msd.domain.explorer
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
-import kotlin.jvm.Throws
 
 class OpenFileUseCase @Inject constructor(private val repository: IExplorerRepository) {
 

@@ -4,8 +4,6 @@ import com.msd.domain.smb.GetSMBConfigurationUseCase
 import com.msd.domain.smb.StoreSMBConfigurationUseCase
 import com.msd.domain.smb.model.SMBConfiguration
 import com.msd.feature.edit.R
-import com.msd.feature.edit.presenter.EditPresenter
-import com.msd.feature.edit.presenter.EditState
 import com.msd.feature.edit.presenter.EditState.Loaded
 import com.msd.feature.edit.presenter.EditState.Loading
 import com.msd.feature.edit.presenter.EditState.Uninitialized
@@ -72,7 +70,7 @@ class EditPresenterTest : CoroutineTest() {
     }
 
     @Test
-    fun `when initializing with no id should emit the loaded state`() = runTest {
+    fun `when initializing with no id should emit the loaded state`() {
         smbConfigurationId = -1
         val emptySmbConfiguration = SMBConfiguration(
             id = null,
@@ -84,7 +82,6 @@ class EditPresenterTest : CoroutineTest() {
         )
 
         presenter.initialize()
-        advanceUntilIdle()
 
         verifyNoInteractions(getSMBConfigurationUseCase)
         verify(core).tryEmit(Loading)
@@ -156,7 +153,7 @@ class EditPresenterTest : CoroutineTest() {
     }
 
     @Test
-    fun `when confirming invalid server in loaded state should update the state`() = runTest {
+    fun `when confirming invalid server in loaded state should update the state`() {
         whenever(core.currentState()).thenReturn(loaded)
 
         presenter.onConfirmButtonClicked(
@@ -166,7 +163,6 @@ class EditPresenterTest : CoroutineTest() {
             user = "User",
             psw = "Password",
         )
-        advanceUntilIdle()
 
         verifyNoInteractions(storeSMBConfigurationUseCase)
         verify(core).tryEmit(Loading)
@@ -174,7 +170,7 @@ class EditPresenterTest : CoroutineTest() {
     }
 
     @Test
-    fun `when confirming invalid sharedPath in loaded state should update the state`() = runTest {
+    fun `when confirming invalid sharedPath in loaded state should update the state`() {
         whenever(core.currentState()).thenReturn(loaded)
 
         presenter.onConfirmButtonClicked(
@@ -184,7 +180,6 @@ class EditPresenterTest : CoroutineTest() {
             user = "User",
             psw = "Password",
         )
-        advanceUntilIdle()
 
         verifyNoInteractions(storeSMBConfigurationUseCase)
         verify(core).tryEmit(Loading)
@@ -192,23 +187,21 @@ class EditPresenterTest : CoroutineTest() {
     }
 
     @Test
-    fun `when confirming invalid server and sharedPath in loaded state should update the state`() =
-        runTest {
-            whenever(core.currentState()).thenReturn(loaded)
+    fun `when confirming invalid server and sharedPath in loaded state should update the state`() {
+        whenever(core.currentState()).thenReturn(loaded)
 
-            presenter.onConfirmButtonClicked(
-                name = "Name",
-                server = "",
-                sharedPath = "",
-                user = "User",
-                psw = "Password",
-            )
-            advanceUntilIdle()
+        presenter.onConfirmButtonClicked(
+            name = "Name",
+            server = "",
+            sharedPath = "",
+            user = "User",
+            psw = "Password",
+        )
 
-            verifyNoInteractions(storeSMBConfigurationUseCase)
-            verify(core).tryEmit(Loading)
-            verify(core).tryEmit(loaded.copy(serverError = true, sharedPathError = true))
-        }
+        verifyNoInteractions(storeSMBConfigurationUseCase)
+        verify(core).tryEmit(Loading)
+        verify(core).tryEmit(loaded.copy(serverError = true, sharedPathError = true))
+    }
 
     @Test
     fun `when confirming without optional fields in loaded state should save and navigate back`() =

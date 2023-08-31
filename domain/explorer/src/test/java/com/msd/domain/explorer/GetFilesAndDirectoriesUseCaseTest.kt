@@ -5,6 +5,7 @@ import com.msd.domain.explorer.IExplorerRepository
 import com.msd.domain.explorer.model.IBaseFile
 import com.msd.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.mockito.kotlin.mock
