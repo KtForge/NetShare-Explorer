@@ -1,4 +1,4 @@
-package com.msd.feature.networkconfigurationslist.presenter
+package com.msd.feature.main.presenter
 
 import com.msd.navigation.Navigate
 import com.msd.feature.main.presenter.MainState.Empty
@@ -8,8 +8,6 @@ import com.msd.presentation.IPresenterCore
 import com.msd.domain.smb.DeleteSMBConfigurationUseCase
 import com.msd.domain.smb.GetSMBConfigurationsUseCase
 import com.msd.domain.smb.model.SMBConfiguration
-import com.msd.feature.main.presenter.NetworkConfigurationsListPresenter
-import com.msd.feature.main.presenter.MainState
 import com.msd.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
