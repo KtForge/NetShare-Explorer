@@ -13,7 +13,7 @@ import dagger.hilt.android.components.ViewModelComponent
 class PresenterModule {
 
     @Provides
-    fun provideNetworkConfigurationsListPresenterCore(): IPresenterCore<MainState> {
+    fun provideMainPresenterCore(): IPresenterCore<MainState> {
         return PresenterCore(MainState.Uninitialized)
     }
 }

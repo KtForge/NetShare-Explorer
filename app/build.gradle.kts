@@ -122,5 +122,7 @@ dependencies {
 
     implementation(Dependencies.roomRuntime)
 
+    implementation(Dependencies.smbj)
+
     testImplementation(project(":core:unittest"))
 }

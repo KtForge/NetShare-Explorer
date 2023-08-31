@@ -21,8 +21,12 @@ import javax.inject.Inject
 
 private const val ROOT_PATH = ""
 
-class ExplorerDataSource @Inject constructor(@ApplicationContext private val appContext: Context) {
+class ExplorerDataSource @Inject constructor(
+    @ApplicationContext private val appContext: Context,
+    private val client: SMBClient,
+) {
 
+    @Throws(Exception::class)
     fun getFilesAndDirectories(
         server: String,
         sharedPath: String,
@@ -30,8 +34,6 @@ class ExplorerDataSource @Inject constructor(@ApplicationContext private val app
         user: String,
         psw: String
     ): List<IBaseFile> {
-        val client = SMBClient()
-
         return try {
             client.connect(server).use { connection ->
                 val authenticationContext = AuthenticationContext(user, psw.toCharArray(), server)
@@ -61,6 +63,7 @@ class ExplorerDataSource @Inject constructor(@ApplicationContext private val app
         }
     }
 
+    @Throws(Exception::class)
     fun openFile(
         server: String,
         sharedPath: String,

@@ -14,7 +14,7 @@ import dagger.hilt.components.SingletonComponent
 class AssistedPresenterModule {
 
     @Provides
-    fun provideEditNetworkConfigurationPresenterCore(): IPresenterCore<EditState> {
+    fun provideEditPresenterCore(): IPresenterCore<EditState> {
         return PresenterCore(EditState.Uninitialized)
     }
 
