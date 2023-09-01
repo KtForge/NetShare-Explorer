@@ -3,7 +3,6 @@ package com.msd.network.explorer
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,10 +25,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.msd.core.ui.theme.NetworkStorageConfigurationTheme
 import com.msd.feature.edit.presenter.EditPresenter
 import com.msd.feature.edit.ui.EditView
 import com.msd.feature.explorer.presenter.ExplorerPresenter
 import com.msd.feature.explorer.ui.ExplorerView
+import com.msd.feature.main.presenter.MainPresenter
+import com.msd.feature.main.ui.MainView
 import com.msd.navigation.Idle
 import com.msd.navigation.Navigate
 import com.msd.navigation.NavigateBack
@@ -40,11 +42,8 @@ import com.msd.navigation.NavigationConstants.NetworkSettingsList
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteIdArg
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNameArg
 import com.msd.navigation.OpenFile
-import com.msd.feature.main.presenter.MainPresenter
-import com.msd.feature.main.ui.MainView
 import com.msd.presentation.Presenter
 import com.msd.presentation.State
-import com.msd.core.ui.theme.NetworkStorageConfigurationTheme
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
@@ -195,7 +194,6 @@ class MainActivity : ComponentActivity() {
             val navigationEvent by presenter.getNavigation().collectAsState(initial = Idle)
 
             LaunchedEffect(navigationEvent) {
-                Log.d("NAVI", navigationEvent.toString())
                 when (navigationEvent) {
                     is Idle -> Unit
                     is Navigate -> {
