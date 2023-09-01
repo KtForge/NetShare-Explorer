@@ -6,7 +6,7 @@ plugins {
 android {
     namespace = "com.msd.presentation"
     compileSdk = Configuration.compileSdk
-    compileSdkPreview = "UpsideDownCake"
+
 
     defaultConfig {
         minSdk = Configuration.minSdk

@@ -7,7 +7,7 @@ plugins {
 android {
     namespace = "com.msd.data.explorer_data"
     compileSdk = Configuration.compileSdk
-    compileSdkPreview = "UpsideDownCake"
+
 
     defaultConfig {
         minSdk = Configuration.minSdk

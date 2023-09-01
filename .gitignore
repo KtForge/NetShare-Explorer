@@ -15,6 +15,7 @@
 .cxx
 local.properties
 key.properties
+/app/release
 /app/nfe_android_keystore
 google_play_key.json
 /fastlane/metadata/android/en-US/images

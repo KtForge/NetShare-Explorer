@@ -6,7 +6,7 @@ plugins {
 android {
     namespace = "com.msd.core.uitest"
     compileSdk = Configuration.compileSdk
-    compileSdkPreview = "UpsideDownCake"
+
 
     defaultConfig {
         minSdk = Configuration.minSdk

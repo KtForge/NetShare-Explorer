@@ -27,7 +27,7 @@ if (propertiesFile.canRead()) {
 android {
     namespace = Configuration.namespace
     compileSdk = Configuration.compileSdk
-    compileSdkPreview = "UpsideDownCake"
+
 
     signingConfigs {
         create("release") {
