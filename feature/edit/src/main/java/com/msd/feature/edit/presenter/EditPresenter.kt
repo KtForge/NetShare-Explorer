@@ -84,6 +84,13 @@ class EditPresenter @AssistedInject constructor(
             if (serverError || sharedPathError) {
                 tryEmit(
                     loaded.copy(
+                        smbConfiguration = loaded.smbConfiguration.copy(
+                            name = name,
+                            server = server,
+                            sharedPath = sharedPath,
+                            user = user,
+                            psw = psw,
+                        ),
                         serverError = serverError,
                         sharedPathError = sharedPathError
                     )

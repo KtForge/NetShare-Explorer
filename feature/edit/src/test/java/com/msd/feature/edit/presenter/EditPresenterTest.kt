@@ -155,6 +155,16 @@ class EditPresenterTest : CoroutineTest() {
     @Test
     fun `when confirming invalid server in loaded state should update the state`() {
         whenever(core.currentState()).thenReturn(loaded)
+        val expectedState = loaded.copy(
+            smbConfiguration = loaded.smbConfiguration.copy(
+                name = "Name",
+                server = "",
+                sharedPath = "SharedPath",
+                user = "User",
+                psw = "Password",
+            ),
+            serverError = true
+        )
 
         presenter.onConfirmButtonClicked(
             name = "Name",
@@ -166,12 +176,22 @@ class EditPresenterTest : CoroutineTest() {
 
         verifyNoInteractions(storeSMBConfigurationUseCase)
         verify(core).tryEmit(Loading)
-        verify(core).tryEmit(loaded.copy(serverError = true))
+        verify(core).tryEmit(expectedState)
     }
 
     @Test
     fun `when confirming invalid sharedPath in loaded state should update the state`() {
         whenever(core.currentState()).thenReturn(loaded)
+        val expectedState = loaded.copy(
+            smbConfiguration = loaded.smbConfiguration.copy(
+                name = "Name",
+                server = "Server",
+                sharedPath = "",
+                user = "User",
+                psw = "Password",
+            ),
+            sharedPathError = true
+        )
 
         presenter.onConfirmButtonClicked(
             name = "Name",
@@ -183,12 +203,23 @@ class EditPresenterTest : CoroutineTest() {
 
         verifyNoInteractions(storeSMBConfigurationUseCase)
         verify(core).tryEmit(Loading)
-        verify(core).tryEmit(loaded.copy(sharedPathError = true))
+        verify(core).tryEmit(expectedState)
     }
 
     @Test
     fun `when confirming invalid server and sharedPath in loaded state should update the state`() {
         whenever(core.currentState()).thenReturn(loaded)
+        val expectedState = loaded.copy(
+            smbConfiguration = loaded.smbConfiguration.copy(
+                name = "Name",
+                server = "",
+                sharedPath = "",
+                user = "User",
+                psw = "Password"
+            ),
+            serverError = true,
+            sharedPathError = true,
+        )
 
         presenter.onConfirmButtonClicked(
             name = "Name",
@@ -200,7 +231,7 @@ class EditPresenterTest : CoroutineTest() {
 
         verifyNoInteractions(storeSMBConfigurationUseCase)
         verify(core).tryEmit(Loading)
-        verify(core).tryEmit(loaded.copy(serverError = true, sharedPathError = true))
+        verify(core).tryEmit(expectedState)
     }
 
     @Test
