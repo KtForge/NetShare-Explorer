@@ -1,6 +1,6 @@
-Feature: Test setup
-  Test cucumber setup
+Feature: Feature description
 
-  Scenario: Run a defined step
-    Given I have a MainActivity
-    Then I should see "sajsj" on the display
+  @android
+  Scenario: Scenario description
+    When I open compose activity
+    Given I am here

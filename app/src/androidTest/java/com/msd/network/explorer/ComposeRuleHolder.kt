@@ -1,4 +1,4 @@
-package com.msd.core.uitest
+package com.msd.network.explorer
 
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import io.cucumber.junit.WithJunitRule

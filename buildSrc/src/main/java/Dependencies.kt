@@ -18,6 +18,7 @@ object Dependencies {
     val composeMaterialIcons by lazy { "androidx.compose.material:material-icons-extended:${Versions.materialIconsExtended}" }
 
     val daggerHiltAndroid by lazy { "com.google.dagger:hilt-android:${Versions.daggerHilt}" }
+    val daggerHiltAndroidTesting by lazy { "com.google.dagger:hilt-android-testing:${Versions.daggerHilt}" }
     val daggerHiltAndroidCompiler by lazy { "com.google.dagger:hilt-android-compiler:${Versions.daggerHilt}" }
     val daggerHiltNavigation by lazy { "androidx.hilt:hilt-navigation-compose:${Versions.daggerHiltNavigation}" }
     val inject by lazy { "javax.inject:javax.inject:${Versions.inject}" }
@@ -33,6 +34,7 @@ object Dependencies {
     val espressoCore by lazy { "androidx.test.espresso:espresso-core:${Versions.espressoCore}" }
     val uiTooling by lazy { "androidx.compose.ui:ui-tooling" }
 
+    val cucumberCore by lazy { "io.cucumber:cucumber-core:7.13.0" }
     val cucumberAndroid by lazy { "io.cucumber:cucumber-android:${Versions.cucumberAndroid}" }
     val cucumberJava by lazy { "io.cucumber:cucumber-java:7.13.0" }
     val cucumberJUnit by lazy { "io.cucumber:cucumber-junit:7.13.0" }

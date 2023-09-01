@@ -30,12 +30,6 @@ android {
 }
 
 dependencies {
-
-    api(Dependencies.cucumberAndroid)
-    api(Dependencies.cucumberHilt)
-    api(Dependencies.cucumberJava)
-    api(Dependencies.cucumberJUnit)
-
     api(Dependencies.androidxTestRunner)
 
     api(Dependencies.espressoCore)

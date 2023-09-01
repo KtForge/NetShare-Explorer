@@ -53,12 +53,13 @@ android {
 
     defaultConfig {
         applicationId = Configuration.namespace
+        testApplicationId = Configuration.namespace + ".test"
         minSdk = Configuration.minSdk
         targetSdk = Configuration.targetSdk
         versionCode = major.times(10000) + minor.times(1000) + patch.times(100) + build
         versionName = "$major.$minor.$patch"
 
-        testInstrumentationRunner = Configuration.testInstrumentationRunner
+        testInstrumentationRunner = "com.msd.network.explorer.test.ExplorerCucumberTestRunner" // Configuration.testInstrumentationRunner
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -101,14 +102,15 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:navigation"))
     implementation(project(":core:presentation"))
+
     implementation(project(":data:smb_data"))
     implementation(project(":data:explorer_data"))
 
     implementation(project(":domain:smb"))
     implementation(project(":domain:explorer"))
+
     implementation(project(":feature:main"))
     implementation(project(":feature:edit"))
-
     implementation(project(":feature:explorer"))
 
     implementation(platform(Dependencies.kotlinBom))
@@ -126,4 +128,10 @@ dependencies {
 
     testImplementation(project(":core:unittest"))
     androidTestImplementation(project(":core:uitest"))
+
+    androidTestImplementation(Dependencies.cucumberAndroid)
+    androidTestImplementation(Dependencies.cucumberHilt)
+
+    androidTestImplementation(Dependencies.daggerHiltAndroidTesting)
+    kaptAndroidTest(Dependencies.daggerHiltAndroidCompiler)
 }
