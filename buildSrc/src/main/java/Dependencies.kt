@@ -33,6 +33,10 @@ object Dependencies {
     val espressoCore by lazy { "androidx.test.espresso:espresso-core:${Versions.espressoCore}" }
     val uiTooling by lazy { "androidx.compose.ui:ui-tooling" }
 
+    val cucumberAndroid by lazy { "io.cucumber:cucumber-android:${Versions.cucumberAndroid}" }
+    val cucumberJava by lazy { "io.cucumber:cucumber-java:7.13.0" }
+    val cucumberJUnit by lazy { "io.cucumber:cucumber-junit:7.13.0" }
+    val cucumberHilt by lazy { "io.cucumber:cucumber-android-hilt:${Versions.cucumberAndroid}" }
     val androidxTestRunner by lazy { "androidx.test:runner:${Versions.androidxTestRunner} "}
     val uiTest by lazy { "androidx.compose.ui:ui-test" }
     val uiTestJUnit4 by lazy { "androidx.compose.ui:ui-test-junit4:${Versions.composeUiJUnit4}" }

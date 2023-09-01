@@ -9,5 +9,6 @@ object Configuration {
     const val versionCode = 1
     const val versionName = "1.0"
     const val testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    // const val testInstrumentationRunner = "io.cucumber.android.runner.CucumberAndroidJUnitRunner"
     val javaVersion = JavaVersion.VERSION_17
 }

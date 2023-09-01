@@ -29,6 +29,7 @@ object Versions {
     const val mockitoKotlin = "4.0.0"
     const val coroutines = "1.6.4"
 
+    const val cucumberAndroid = "4.10.0"
     const val androidxTestRunner = "1.5.2"
 
     const val jUnitKtx = "1.1.5"
