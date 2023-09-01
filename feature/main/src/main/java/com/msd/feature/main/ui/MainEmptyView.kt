@@ -2,6 +2,7 @@ package com.msd.feature.main.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.OutlinedButton
@@ -25,7 +26,9 @@ fun MainEmptyView(userInteractions: UserInteractions) {
         Card {
             Text(
                 text = stringResource(id = R.string.empty_network_configurations),
-                modifier = Modifier.padding(sizeXL)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(sizeXL)
             )
         }
 
