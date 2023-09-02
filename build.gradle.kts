@@ -40,3 +40,31 @@ allprojects {
         dependsOn(subprojectTasks)
     }
 }
+
+allprojects {
+    tasks.register("debugUiTest") {
+        val subprojectTasks = subprojects.mapNotNull { subproject ->
+            if (subproject.plugins.hasPlugin(Plugins.androidLibrary)) {
+                "${subproject.path}:${subproject.tasks.findByName("connectedDebugAndroidTest")?.name}"
+            } else {
+                null
+            }
+        }
+
+        dependsOn(subprojectTasks)
+    }
+}
+
+allprojects {
+    tasks.register("cucumber") {
+        val subprojectTasks = subprojects.mapNotNull { subproject ->
+            if (subproject.plugins.hasPlugin(Plugins.androidApplication)) {
+                "${subproject.path}:${subproject.tasks.findByName("connectedDebugAndroidTest")?.name}"
+            } else {
+                null
+            }
+        }
+
+        dependsOn(subprojectTasks)
+    }
+}
