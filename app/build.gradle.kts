@@ -59,7 +59,8 @@ android {
         versionCode = major.times(10000) + minor.times(1000) + patch.times(100) + build
         versionName = "$major.$minor.$patch"
 
-        testInstrumentationRunner = "com.msd.network.explorer.test.ExplorerCucumberTestRunner" // Configuration.testInstrumentationRunner
+        // testInstrumentationRunner = Configuration.testInstrumentationRunner
+        testInstrumentationRunner = "com.msd.network.explorer.test.HiltAndroidTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -128,6 +129,7 @@ dependencies {
 
     testImplementation(project(":core:unittest"))
     androidTestImplementation(project(":core:uitest"))
+    androidTestImplementation("androidx.navigation:navigation-testing:2.7.1")
 
     androidTestImplementation(Dependencies.cucumberAndroid)
     androidTestImplementation(Dependencies.cucumberHilt)

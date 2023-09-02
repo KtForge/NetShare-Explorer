@@ -25,8 +25,6 @@ abstract class Presenter<S : State>(private val core: IPresenterCore<S>) : ViewM
     fun isInitialized(): Boolean = core.isInitialized()
 
     open fun initialize() = Unit
-    open fun onStart() = Unit
-    open fun onResume() = Unit
 
     fun cleanNavigation() {
         core.navigate(Idle)

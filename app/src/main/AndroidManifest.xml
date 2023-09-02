@@ -29,6 +29,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".MainActivityTest" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.msd.network.explorer.provider"
