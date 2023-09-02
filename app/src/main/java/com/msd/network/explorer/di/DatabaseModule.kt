@@ -1,7 +1,6 @@
 package com.msd.network.explorer.di
 
 import android.content.Context
-import androidx.room.Room
 import com.msd.data.smb_data.local.SMBConfigurationDao
 import com.msd.data.smb_data.local.SMBConfigurationDatabase
 import dagger.Module
@@ -23,10 +22,6 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideSMBConfigurationDatabase(@ApplicationContext appContext: Context): SMBConfigurationDatabase {
-        return Room.databaseBuilder(
-            appContext,
-            SMBConfigurationDatabase::class.java,
-            "SMBConfiguration"
-        ).build()
+        return SMBConfigurationDatabase.getInstance(appContext)
     }
 }

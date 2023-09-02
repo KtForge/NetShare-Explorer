@@ -60,9 +60,14 @@ android {
         versionName = "$major.$minor.$patch"
 
         testInstrumentationRunner = "com.msd.network.explorer.test.ExplorerCucumberTestRunner"
+        testInstrumentationRunnerArguments["clearPackageData"] = "true"
         vectorDrawables {
             useSupportLibrary = true
         }
+    }
+
+    testOptions {
+        execution = "ANDROIDX_TEST_ORCHESTRATOR"
     }
 
     buildTypes {
@@ -129,6 +134,7 @@ dependencies {
     testImplementation(project(":core:unittest"))
     androidTestImplementation(project(":core:uitest"))
 
+    androidTestUtil("androidx.test:orchestrator:1.4.2")
     androidTestImplementation(Dependencies.cucumberAndroid)
     androidTestImplementation(Dependencies.cucumberHilt)
 

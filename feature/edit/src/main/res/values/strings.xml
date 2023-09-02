@@ -4,10 +4,22 @@
     <string name="navigate_up_content_description">Back</string>
 
     <string name="name_label">Name (optional)</string>
+    <string name="name_field_a11y">Enter an optional name</string>
+
     <string name="server_label">Server</string>
+    <string name="server_field_a11y">Enter the server address</string>
+    <string name="server_field_error">Server can\'t be empty</string>
+
     <string name="shared_path_label">Shared path</string>
+    <string name="shared_path_label_a11y">Enter the shared path</string>
+    <string name="shared_path_error">Shared path can\'t be empty</string>
+
     <string name="user_label">User (optional)</string>
+    <string name="user_label_a11y">Enter the optional user credential</string>
+
     <string name="password_label">Password (optional)</string>
+    <string name="password_label_a11y">Enter the optional password credential</string>
+
     <string name="show_password_a11y">Show password</string>
     <string name="hide_password_a11y">Hide password</string>
 
