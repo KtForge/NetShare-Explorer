@@ -1,3 +1,5 @@
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.util.Properties
 
 plugins {
@@ -140,4 +142,119 @@ dependencies {
 
     androidTestImplementation(Dependencies.daggerHiltAndroidTesting)
     kaptAndroidTest(Dependencies.daggerHiltAndroidCompiler)
+}
+
+tasks.create("downloadCucumberReports") {
+    group = "Verification"
+    description =
+        "Downloads the rich Cucumber report files (HTML, XML, JSON) from the connected device"
+
+    doLast {
+        val deviceSourcePath = getCucumberDevicePath()
+        println("Device source path: $deviceSourcePath")
+        val localReportPath = File(buildDir, "reports/cucumber")
+        println("local report path: $localReportPath")
+        if (!localReportPath.exists()) {
+            localReportPath.mkdirs()
+        }
+        if (!localReportPath.exists()) {
+            throw GradleException("Could not create $localReportPath")
+        }
+        val adb = getAdbPath()
+        val files = getCucumberReportFileNames()
+        files.forEach { fileName ->
+            println(fileName)
+            exec {
+                commandLine(adb, "pull", "$deviceSourcePath/$fileName", localReportPath)
+            }
+        }
+    }
+}
+
+/**
+ * Deletes existing Cucumber reports on the device.
+ */
+tasks.create("deleteExistingCucumberReports") {
+    group = "Verification"
+    description =
+        "Removes the rich Cucumber report files (HTML, XML, JSON) from the connected device"
+    doLast {
+        val deviceSourcePath = getCucumberDevicePath()
+        val files = getCucumberReportFileNames()
+        files.forEach { fileName ->
+            val deviceFileName = "$deviceSourcePath/$fileName"
+            val output2 =
+                executeAdb("if [ -d $deviceFileName ]; then rm -r $deviceFileName; else rm -r $deviceFileName ; fi")
+            println(output2)
+        }
+    }
+}
+
+/**
+ * Sets the required permissions for Cucumber to write on the internal storage.
+ */
+tasks.create("grantPermissions") {
+    dependsOn("installDebug")
+
+    doLast {
+        val adb = getAdbPath()
+        // We only set the permissions for the main application
+        val mainPackageName = "com.msd.network.explorer"
+        val readPermission = "android.permission.READ_EXTERNAL_STORAGE"
+        val writePermission = "android.permission.WRITE_EXTERNAL_STORAGE"
+        exec { commandLine(adb, "shell", "pm", "grant", mainPackageName, readPermission) }
+        exec { commandLine(adb, "shell", "pm", "grant", mainPackageName, writePermission) }
+    }
+}
+
+
+// ==================================================================
+// Utility methods
+// ==================================================================
+
+/**
+ * Utility method to get the full ADB path
+ * @return the absolute ADB path
+ */
+fun getAdbPath(): String {
+    val adb = "${System.getenv("ANDROID_HOME")}/platform-tools/adb"
+    if (adb.isEmpty()) {
+        throw GradleException("Could not detect adb path")
+    }
+    return adb
+}
+
+/**
+ * Sometime adb returns '\r' character multiple times.
+ * @param s the original string returned by adb
+ * @return the fixed string without '\r'
+ */
+fun fixAdbOutput(s: String): String {
+    return s.replace("[\r\n]+", "\n").trim()
+}
+
+/**
+ * Runs the adb tool
+ * @param program the program which is executed on the connected device
+ * @return the output of the adb tool
+ */
+fun executeAdb(program: String): String {
+    val process = ProcessBuilder(getAdbPath(), "shell", program).redirectErrorStream(true).start()
+    val text = BufferedReader(InputStreamReader(process.inputStream)).toString()
+    return fixAdbOutput(text)
+}
+
+/**
+ * The path which is used to store the Cucumber files.
+ * @return
+ */
+fun getCucumberDevicePath(): String {
+    return "/storage/emulated/0/Documents/reports"
+}
+
+/**
+ * @return the known Cucumber report files/directories
+ */
+fun getCucumberReportFileNames(): Array<String> {
+    return arrayOf("cucumber.xml", "cucumber.html")
 }

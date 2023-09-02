@@ -66,5 +66,10 @@ allprojects {
         }
 
         dependsOn(subprojectTasks)
+
+        // group = "verification"
+        // mustRunAfter(":app:deleteExistingCucumberReports")
+        // dependsOn(":app:deleteExistingCucumberReports", ":app:grantPermissions", ":app:connectedDebugAndroidTest") // ":app:grantPermissions",
+        // finalizedBy(":app:downloadCucumberReports")
     }
 }
