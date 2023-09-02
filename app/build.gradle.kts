@@ -60,7 +60,7 @@ android {
         versionName = "$major.$minor.$patch"
 
         // testInstrumentationRunner = Configuration.testInstrumentationRunner
-        testInstrumentationRunner = "com.msd.network.explorer.test.HiltAndroidTestRunner"
+        testInstrumentationRunner = "com.msd.network.explorer.test.ExplorerCucumberTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -130,7 +130,7 @@ dependencies {
     testImplementation(project(":core:unittest"))
     androidTestImplementation(project(":core:uitest"))
     androidTestImplementation("androidx.navigation:navigation-testing:2.7.1")
-
+    androidTestImplementation("androidx.test.ext:junit-ktx:1.1.5")
     androidTestImplementation(Dependencies.cucumberAndroid)
     androidTestImplementation(Dependencies.cucumberHilt)
 

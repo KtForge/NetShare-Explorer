@@ -1,6 +1,6 @@
 package com.msd.network.explorer
 
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.webkit.MimeTypeMap
 import androidx.compose.animation.core.ExperimentalTransitionApi
@@ -39,7 +39,7 @@ import com.msd.presentation.State
 @ExperimentalComposeUiApi
 @Composable
 fun MainActivityView(
-    activity: Activity,
+    context: Context,
     navController: NavHostController = rememberNavController(),
     editPresenter: @Composable (Int) -> EditPresenter,
     explorerPresenter: @Composable (Int, String) -> ExplorerPresenter
@@ -49,20 +49,20 @@ fun MainActivityView(
             navController = navController,
             startDestination = NavigationConstants.NetworkSettingsList
         ) {
-            main(activity, builder = this, navController)
-            editNetworkConfiguration(activity, builder = this, navController, editPresenter)
-            explorer(activity, builder = this, navController, explorerPresenter)
+            main(context, builder = this, navController)
+            editNetworkConfiguration(context, builder = this, navController, editPresenter)
+            explorer(context, builder = this, navController, explorerPresenter)
         }
     }
 }
 
 private fun main(
-    activity: Activity,
+    context: Context,
     builder: NavGraphBuilder,
     navController: NavHostController,
 ) {
     composable(
-        activity,
+        context,
         builder,
         route = NavigationConstants.NetworkSettingsList,
         arguments = emptyList(),
@@ -75,13 +75,13 @@ private fun main(
 @ExperimentalTransitionApi
 @ExperimentalComposeUiApi
 private fun editNetworkConfiguration(
-    activity: Activity,
+    context: Context,
     builder: NavGraphBuilder,
     navController: NavHostController,
     editPresenter: @Composable (Int) -> EditPresenter,
 ) {
     composable(
-        activity,
+        context,
         builder,
         route = NavigationConstants.EditNetworkConfiguration,
         arguments = listOf(
@@ -102,13 +102,13 @@ private fun editNetworkConfiguration(
 @ExperimentalTransitionApi
 @ExperimentalComposeUiApi
 private fun explorer(
-    activity: Activity,
+    context: Context,
     builder: NavGraphBuilder,
     navController: NavHostController,
     explorerPresenter: @Composable (Int, String) -> ExplorerPresenter,
 ) {
     composable(
-        activity,
+        context,
         builder,
         route = NavigationConstants.Explorer,
         arguments = listOf(
@@ -129,7 +129,7 @@ private fun explorer(
 }
 
 private fun <S : State, V : Presenter<S>> composable(
-    activity: Activity,
+    context: Context,
     builder: NavGraphBuilder,
     route: String,
     arguments: List<NamedNavArgument>,
@@ -158,8 +158,8 @@ private fun <S : State, V : Presenter<S>> composable(
 
                 is OpenFile -> {
                     val uri = FileProvider.getUriForFile(
-                        activity,
-                        activity.applicationContext.packageName + ".provider",
+                        context,
+                        context.packageName + ".provider",
                         (navigationEvent as OpenFile).file
                     )
                     val intent = Intent(Intent.ACTION_VIEW)
@@ -170,7 +170,7 @@ private fun <S : State, V : Presenter<S>> composable(
                     )
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     val intentChooser = Intent.createChooser(intent, "Open file")
-                    activity.startActivity(intentChooser)
+                    context.startActivity(intentChooser)
                 }
             }
             presenter.cleanNavigation()
