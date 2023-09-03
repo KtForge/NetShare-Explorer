@@ -23,42 +23,36 @@ allprojects {
     }
 }
 
-allprojects {
-    tasks.register("debugUnitTest") {
-        val subprojectTasks = subprojects.mapNotNull { subproject ->
-            if (subproject.plugins.hasPlugin(Plugins.androidLibrary)) {
-                "${subproject.path}:${subproject.tasks.findByName("testDebugUnitTest")?.name}"
-            } else if (subproject.plugins.hasPlugin(Plugins.javaLibrary)) {
-                "${subproject.path}:${subproject.tasks.findByName("test")?.name}"
-            } else {
-                null
-            }
+tasks.register("debugUnitTest") {
+    val subprojectTasks = subprojects.mapNotNull { subproject ->
+        if (subproject.plugins.hasPlugin(Plugins.androidLibrary)) {
+            "${subproject.path}:${subproject.tasks.findByName("testDebugUnitTest")?.name}"
+        } else if (subproject.plugins.hasPlugin(Plugins.javaLibrary)) {
+            "${subproject.path}:${subproject.tasks.findByName("test")?.name}"
+        } else {
+            null
         }
-
-        dependsOn(subprojectTasks)
     }
+
+    dependsOn(subprojectTasks)
 }
 
-allprojects {
-    tasks.register("debugUiTest") {
-        val subprojectTasks = subprojects.mapNotNull { subproject ->
-            if (subproject.plugins.hasPlugin(Plugins.androidLibrary)) {
-                "${subproject.path}:${subproject.tasks.findByName("connectedDebugAndroidTest")?.name}"
-            } else {
-                null
-            }
+tasks.register("debugUiTest") {
+    val subprojectTasks = subprojects.mapNotNull { subproject ->
+        if (subproject.plugins.hasPlugin(Plugins.androidLibrary)) {
+            "${subproject.path}:${subproject.tasks.findByName("connectedDebugAndroidTest")?.name}"
+        } else {
+            null
         }
-
-        dependsOn(subprojectTasks)
     }
+
+    dependsOn(subprojectTasks)
 }
 
-allprojects {
-    tasks.register("cucumber") {
+tasks.register("cucumber") {
 
-        group = "verification"
-        mustRunAfter(":app:deleteExistingCucumberReports")
-        dependsOn(":app:deleteExistingCucumberReports", ":app:connectedDebugAndroidTest") // ":app:grantPermissions"
-        finalizedBy(":app:downloadCucumberReports", ":app:generateCucumberReports")
-    }
+    group = "verification"
+    mustRunAfter(":app:deleteExistingCucumberReports")
+    dependsOn(":app:deleteExistingCucumberReports", ":app:connectedDebugAndroidTest")
+    finalizedBy(":app:generateCucumberReports")
 }

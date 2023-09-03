@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.scope.ProjectInfo.Companion.getBaseName
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.Properties
@@ -145,6 +146,12 @@ dependencies {
     kaptAndroidTest(Dependencies.daggerHiltAndroidCompiler)
 }
 
+afterEvaluate {
+    tasks.getByName("generateCucumberReports") {
+        dependsOn("downloadCucumberReports")
+    }
+}
+
 cucumberReports {
     outputDir = file(buildDir.path + "/reports/cucumber/cucumber.html")
     buildId = "0"
@@ -179,8 +186,7 @@ tasks.create("downloadCucumberReports") {
  */
 tasks.create("deleteExistingCucumberReports") {
     group = "Verification"
-    description =
-        "Removes the rich Cucumber report files (HTML, XML, JSON) from the connected device"
+    description = "Removes the rich Cucumber report files from the connected device"
     doLast {
         val deviceSourcePath = getCucumberDevicePath()
         val output2 = executeAdb("rm -r $deviceSourcePath")
@@ -191,19 +197,19 @@ tasks.create("deleteExistingCucumberReports") {
 /**
  * Sets the required permissions for Cucumber to write on the internal storage.
  */
-tasks.create("grantPermissions") {
-    dependsOn("installDebug")
-
-    doLast {
-        val adb = getAdbPath()
-        // We only set the permissions for the main application
-        val mainPackageName = "com.msd.network.explorer"
-        val readPermission = "android.permission.READ_EXTERNAL_STORAGE"
-        val writePermission = "android.permission.WRITE_EXTERNAL_STORAGE"
-        exec { commandLine(adb, "shell", "pm", "grant", mainPackageName, readPermission) }
-        exec { commandLine(adb, "shell", "pm", "grant", mainPackageName, writePermission) }
-    }
-}
+//tasks.create("grantPermissions") {
+//    dependsOn("installDebug")
+//
+//    doLast {
+//        val adb = getAdbPath()
+//        // We only set the permissions for the main application
+//        val mainPackageName = "com.msd.network.explorer"
+//        val readPermission = "android.permission.READ_EXTERNAL_STORAGE"
+//        val writePermission = "android.permission.WRITE_EXTERNAL_STORAGE"
+//        exec { commandLine(adb, "shell", "pm", "grant", mainPackageName, readPermission) }
+//        exec { commandLine(adb, "shell", "pm", "grant", mainPackageName, writePermission) }
+//    }
+//}
 
 
 // ==================================================================
@@ -248,11 +254,4 @@ fun executeAdb(program: String): String {
  */
 fun getCucumberDevicePath(): String {
     return "/storage/emulated/0/Documents/reports/cucumber"
-}
-
-/**
- * @return the known Cucumber report files/directories
- */
-fun getCucumberReportFileNames(): Array<String> {
-    return arrayOf("cucumber.xml", "cucumber.html")
 }
