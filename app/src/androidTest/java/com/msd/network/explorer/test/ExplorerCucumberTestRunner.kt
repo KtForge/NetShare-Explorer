@@ -11,6 +11,7 @@ import io.cucumber.junit.Cucumber
 import io.cucumber.junit.CucumberOptions
 import org.junit.runner.RunWith
 import java.io.File
+import java.util.UUID
 
 @RunWith(Cucumber::class)
 @CucumberOptions(
@@ -35,20 +36,19 @@ class ExplorerCucumberTestRunner : CucumberAndroidJUnitRunner() {
      *
      * @return the plugin string for the configuration, which contains XML, HTML and JSON paths
      */
-    private fun getPluginConfigurationString(): String? {
+    private fun getPluginConfigurationString(): String {
         val cucumber = "cucumber"
         val separator = "--"
-        return "pretty"
-        // return "junit:" + getCucumberXml(cucumber) + separator +
-        //         "html:" + getCucumberHtml(cucumber)
+        return "json:" + getCucumberJson(cucumber) + separator +
+                "html:" + getCucumberHtml(cucumber)
     }
 
     private fun getCucumberHtml(cucumber: String): String {
         return getAbsoluteFilesPath() + "/" + cucumber + ".html"
     }
 
-    private fun getCucumberXml(cucumber: String): String {
-        return getAbsoluteFilesPath() + "/" + cucumber + ".xml"
+    private fun getCucumberJson(cucumber: String): String {
+        return getAbsoluteFilesPath() + "/" + cucumber + ".json"
     }
 
     /**
@@ -58,7 +58,7 @@ class ExplorerCucumberTestRunner : CucumberAndroidJUnitRunner() {
      */
     private fun getAbsoluteFilesPath(): String {
         val directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-        return File(directory, "reports").absolutePath
+        return File(directory, "reports/cucumber").absolutePath
     }
 
     override fun newApplication(

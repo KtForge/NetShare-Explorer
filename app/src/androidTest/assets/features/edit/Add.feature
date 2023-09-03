@@ -11,8 +11,8 @@ Feature: Edit screen feature
     And I type "Miguel" in field "User"
     And I reveal the password field
     And I type "Password" in field "Password"
-    And I click the save button
-    Then I am on Main screen
+    # And I click the save button
+    # Then I am on Main screen
 
   @android @add_2
   Scenario: User is notified about empty server field

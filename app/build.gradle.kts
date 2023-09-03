@@ -7,6 +7,7 @@ plugins {
     id(Plugins.androidApplication)
     id(Plugins.kotlinAndroid)
     id(Plugins.daggerHiltAndroid)
+    id("com.github.spacialcircumstances.gradle-cucumber-reporting") version "0.1.25"
 }
 
 val properties = Properties()
@@ -62,15 +63,15 @@ android {
         versionName = "$major.$minor.$patch"
 
         testInstrumentationRunner = "com.msd.network.explorer.test.ExplorerCucumberTestRunner"
-        testInstrumentationRunnerArguments["clearPackageData"] = "true"
+        // testInstrumentationRunnerArguments["clearPackageData"] = "true"
         vectorDrawables {
             useSupportLibrary = true
         }
     }
 
-    testOptions {
-        execution = "ANDROIDX_TEST_ORCHESTRATOR"
-    }
+    // testOptions {
+    //     execution = "ANDROIDX_TEST_ORCHESTRATOR"
+    // }
 
     buildTypes {
         release {
@@ -144,6 +145,12 @@ dependencies {
     kaptAndroidTest(Dependencies.daggerHiltAndroidCompiler)
 }
 
+cucumberReports {
+    outputDir = file(buildDir.path + "/reports/cucumber/cucumber.html")
+    buildId = "0"
+    reports = files(buildDir.path + "/reports/cucumber/cucumber/cucumber.json")
+}
+
 tasks.create("downloadCucumberReports") {
     group = "Verification"
     description =
@@ -161,12 +168,8 @@ tasks.create("downloadCucumberReports") {
             throw GradleException("Could not create $localReportPath")
         }
         val adb = getAdbPath()
-        val files = getCucumberReportFileNames()
-        files.forEach { fileName ->
-            println(fileName)
-            exec {
-                commandLine(adb, "pull", "$deviceSourcePath/$fileName", localReportPath)
-            }
+        exec {
+            commandLine(adb, "pull", deviceSourcePath, localReportPath)
         }
     }
 }
@@ -180,13 +183,8 @@ tasks.create("deleteExistingCucumberReports") {
         "Removes the rich Cucumber report files (HTML, XML, JSON) from the connected device"
     doLast {
         val deviceSourcePath = getCucumberDevicePath()
-        val files = getCucumberReportFileNames()
-        files.forEach { fileName ->
-            val deviceFileName = "$deviceSourcePath/$fileName"
-            val output2 =
-                executeAdb("if [ -d $deviceFileName ]; then rm -r $deviceFileName; else rm -r $deviceFileName ; fi")
-            println(output2)
-        }
+        val output2 = executeAdb("rm -r $deviceSourcePath")
+        println(output2)
     }
 }
 
@@ -249,7 +247,7 @@ fun executeAdb(program: String): String {
  * @return
  */
 fun getCucumberDevicePath(): String {
-    return "/storage/emulated/0/Documents/reports"
+    return "/storage/emulated/0/Documents/reports/cucumber"
 }
 
 /**

@@ -57,19 +57,10 @@ allprojects {
 
 allprojects {
     tasks.register("cucumber") {
-        val subprojectTasks = subprojects.mapNotNull { subproject ->
-            if (subproject.plugins.hasPlugin(Plugins.androidApplication)) {
-                "${subproject.path}:${subproject.tasks.findByName("connectedDebugAndroidTest")?.name}"
-            } else {
-                null
-            }
-        }
 
-        dependsOn(subprojectTasks)
-
-        // group = "verification"
-        // mustRunAfter(":app:deleteExistingCucumberReports")
-        // dependsOn(":app:deleteExistingCucumberReports", ":app:grantPermissions", ":app:connectedDebugAndroidTest") // ":app:grantPermissions",
-        // finalizedBy(":app:downloadCucumberReports")
+        group = "verification"
+        mustRunAfter(":app:deleteExistingCucumberReports")
+        dependsOn(":app:deleteExistingCucumberReports", ":app:grantPermissions", ":app:connectedDebugAndroidTest")
+        finalizedBy(":app:downloadCucumberReports", ":app:generateCucumberReports")
     }
 }
