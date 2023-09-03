@@ -3,8 +3,6 @@ package com.msd.network.explorer.test
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
-import android.os.Environment
-import android.os.Environment.getExternalStoragePublicDirectory
 import dagger.hilt.android.testing.HiltTestApplication
 import io.cucumber.android.runner.CucumberAndroidJUnitRunner
 import io.cucumber.junit.Cucumber
@@ -37,8 +35,9 @@ class ExplorerCucumberTestRunner : CucumberAndroidJUnitRunner() {
     }
 
     private fun getAbsoluteFilesPath(): String {
-        val directory = getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-        return File(directory, "reports/cucumber").absolutePath
+        val directory = targetContext.cacheDir
+        val file = File(directory, "/reports/cucumber")
+        return file.absolutePath
     }
 
     override fun newApplication(

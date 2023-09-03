@@ -1,4 +1,6 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
@@ -52,7 +54,6 @@ tasks.register("debugUiTest") {
 tasks.register("cucumber") {
 
     group = "verification"
-    mustRunAfter(":app:deleteExistingCucumberReports")
-    dependsOn(":app:deleteExistingCucumberReports", ":app:connectedDebugAndroidTest")
+    dependsOn(":app:runCucumber")
     finalizedBy(":app:generateCucumberReports")
 }
