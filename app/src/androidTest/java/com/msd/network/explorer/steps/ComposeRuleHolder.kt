@@ -44,6 +44,15 @@ class ComposeRuleHolder {
 
     @After
     fun close() {
+        clearDatabase()
         scenarioRule?.close()
+    }
+
+    private fun clearDatabase() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        CoroutineScope(Job()).launch {
+            SMBConfigurationDatabase.getInstance(context.applicationContext).smbConfigurationDao()
+                .deleteAll()
+        }
     }
 }

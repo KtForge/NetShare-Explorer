@@ -21,4 +21,7 @@ interface SMBConfigurationDao {
 
     @Query("DELETE FROM datasmbconfiguration WHERE id = :id")
     suspend fun delete(id: Int)
+
+    @Query("DELETE FROM datasmbconfiguration")
+    suspend fun deleteAll()
 }

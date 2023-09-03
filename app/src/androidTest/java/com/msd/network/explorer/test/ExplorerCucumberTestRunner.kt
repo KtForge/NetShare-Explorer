@@ -24,8 +24,7 @@ class ExplorerCucumberTestRunner : CucumberAndroidJUnitRunner() {
         bundle.putString(
             "plugin",
             getPluginConfigurationString()
-        ) // we programmatically create the plugin configuration
-        //it crashes on Android R without it
+        )
         File(getAbsoluteFilesPath()).mkdirs()
         super.onCreate(bundle)
     }
