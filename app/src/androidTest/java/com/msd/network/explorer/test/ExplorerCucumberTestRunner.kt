@@ -4,14 +4,12 @@ import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
 import dagger.hilt.android.testing.HiltTestApplication
 import io.cucumber.android.runner.CucumberAndroidJUnitRunner
 import io.cucumber.junit.Cucumber
 import io.cucumber.junit.CucumberOptions
 import org.junit.runner.RunWith
 import java.io.File
-import java.util.UUID
 
 @RunWith(Cucumber::class)
 @CucumberOptions(
@@ -56,7 +54,8 @@ class ExplorerCucumberTestRunner : CucumberAndroidJUnitRunner() {
      * @return the absolute path for the report files
      */
     private fun getAbsoluteFilesPath(): String {
-        val directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+        val directory =
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
         return File(directory, "reports/cucumber").absolutePath
     }
 

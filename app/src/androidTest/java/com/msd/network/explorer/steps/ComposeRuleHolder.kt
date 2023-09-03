@@ -13,6 +13,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.junit.Rule
 
+
 @WithJunitRule
 class ComposeRuleHolder {
 
