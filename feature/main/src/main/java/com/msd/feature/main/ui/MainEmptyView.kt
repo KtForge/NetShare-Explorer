@@ -11,10 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.msd.feature.main.R
-import com.msd.feature.main.presenter.UserInteractions
 import com.msd.core.ui.theme.Dimensions.sizeXL
 import com.msd.core.ui.theme.Dimensions.sizeXXL
+import com.msd.feature.main.R
+import com.msd.feature.main.presenter.UserInteractions
 
 @Composable
 fun MainEmptyView(userInteractions: UserInteractions) {
@@ -23,12 +23,13 @@ fun MainEmptyView(userInteractions: UserInteractions) {
             .fillMaxSize()
             .padding(sizeXL)
     ) {
-        Card {
+        Card(modifier = Modifier.fillMaxWidth()) {
             Text(
                 text = stringResource(id = R.string.empty_network_configurations),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(sizeXL)
+                    .align(Alignment.CenterHorizontally)
             )
         }
 

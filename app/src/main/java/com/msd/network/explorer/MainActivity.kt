@@ -72,7 +72,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MainActivityView(
-                context = this,
+                mainActivity = this,
                 editPresenter = { id ->
                     editPresenter(smbConfigurationId = id)
                 },

@@ -39,7 +39,7 @@ import com.msd.presentation.State
 @ExperimentalComposeUiApi
 @Composable
 fun MainActivityView(
-    context: Context,
+    mainActivity: MainActivity,
     navController: NavHostController = rememberNavController(),
     editPresenter: @Composable (Int) -> EditPresenter,
     explorerPresenter: @Composable (Int, String) -> ExplorerPresenter
@@ -49,20 +49,20 @@ fun MainActivityView(
             navController = navController,
             startDestination = NavigationConstants.NetworkSettingsList
         ) {
-            main(context, builder = this, navController)
-            editNetworkConfiguration(context, builder = this, navController, editPresenter)
-            explorer(context, builder = this, navController, explorerPresenter)
+            main(mainActivity, builder = this, navController)
+            editNetworkConfiguration(mainActivity, builder = this, navController, editPresenter)
+            explorer(mainActivity, builder = this, navController, explorerPresenter)
         }
     }
 }
 
 private fun main(
-    context: Context,
+    mainActivity: MainActivity,
     builder: NavGraphBuilder,
     navController: NavHostController,
 ) {
     composable(
-        context,
+        mainActivity,
         builder,
         route = NavigationConstants.NetworkSettingsList,
         arguments = emptyList(),
@@ -75,13 +75,13 @@ private fun main(
 @ExperimentalTransitionApi
 @ExperimentalComposeUiApi
 private fun editNetworkConfiguration(
-    context: Context,
+    mainActivity: MainActivity,
     builder: NavGraphBuilder,
     navController: NavHostController,
     editPresenter: @Composable (Int) -> EditPresenter,
 ) {
     composable(
-        context,
+        mainActivity,
         builder,
         route = NavigationConstants.EditNetworkConfiguration,
         arguments = listOf(
@@ -102,13 +102,13 @@ private fun editNetworkConfiguration(
 @ExperimentalTransitionApi
 @ExperimentalComposeUiApi
 private fun explorer(
-    context: Context,
+    mainActivity: MainActivity,
     builder: NavGraphBuilder,
     navController: NavHostController,
     explorerPresenter: @Composable (Int, String) -> ExplorerPresenter,
 ) {
     composable(
-        context,
+        mainActivity,
         builder,
         route = NavigationConstants.Explorer,
         arguments = listOf(
@@ -129,7 +129,7 @@ private fun explorer(
 }
 
 private fun <S : State, V : Presenter<S>> composable(
-    context: Context,
+    mainActivity: MainActivity,
     builder: NavGraphBuilder,
     route: String,
     arguments: List<NamedNavArgument>,
@@ -158,8 +158,8 @@ private fun <S : State, V : Presenter<S>> composable(
 
                 is OpenFile -> {
                     val uri = FileProvider.getUriForFile(
-                        context,
-                        context.packageName + ".provider",
+                        mainActivity,
+                        mainActivity.applicationContext.packageName + ".provider",
                         (navigationEvent as OpenFile).file
                     )
                     val intent = Intent(Intent.ACTION_VIEW)
@@ -170,7 +170,7 @@ private fun <S : State, V : Presenter<S>> composable(
                     )
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     val intentChooser = Intent.createChooser(intent, "Open file")
-                    context.startActivity(intentChooser)
+                    mainActivity.startActivity(intentChooser)
                 }
             }
             presenter.cleanNavigation()
