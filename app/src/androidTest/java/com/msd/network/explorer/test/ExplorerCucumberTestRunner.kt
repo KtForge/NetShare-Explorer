@@ -37,6 +37,7 @@ class ExplorerCucumberTestRunner : CucumberAndroidJUnitRunner() {
     private fun getAbsoluteFilesPath(): String {
         val directory = targetContext.cacheDir
         val file = File(directory, "/reports/cucumber")
+
         return file.absolutePath
     }
 

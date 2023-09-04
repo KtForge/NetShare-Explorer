@@ -1,5 +1,7 @@
 package com.msd.network.explorer.steps
 
+import android.content.Intent
+import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.test.core.app.ActivityScenario
 import androidx.test.platform.app.InstrumentationRegistry
@@ -17,13 +19,20 @@ import org.junit.Rule
 @WithJunitRule
 class ComposeRuleHolder {
 
-    private var scenarioRule: ActivityScenario<MainActivity>? = null
+    private var scenarioRule: ActivityScenario<ComponentActivity>? = null
 
     @get:Rule
     val composeRule = createEmptyComposeRule()
 
     fun launchApp() {
-        scenarioRule = ActivityScenario.launch(MainActivity::class.java)
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext
+        val startIntent = appContext.packageManager.getLaunchIntentForPackage(appContext.packageName)
+        if (startIntent != null) {
+            startIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            scenarioRule = ActivityScenario.launch(startIntent)
+        } else {
+            throw IllegalArgumentException()
+        }
     }
 
     fun insertInitialData() {
