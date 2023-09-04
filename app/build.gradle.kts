@@ -226,7 +226,7 @@ tasks.create("downloadCucumberReports") {
             commandLine(
                 adb,
                 "shell",
-                "su 0 \"cat ${getCucumberJsonDevicePath()} > $devicePath\""
+                "su 0 cat ${getCucumberJsonDevicePath()} > $devicePath"
             )
         }
         exec { commandLine(adb, "pull", devicePath, localPath) }
