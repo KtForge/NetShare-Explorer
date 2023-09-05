@@ -26,19 +26,3 @@ meta:
   bitrise.io:
     stack: linux-docker-android-20.04
     machine_type_id: standard
-app:
-  envs:
-  - opts:
-      is_expand: false
-    PROJECT_LOCATION: .
-  - opts:
-      is_expand: false
-    MODULE: app
-  - opts:
-      is_expand: false
-    VARIANT: release
-trigger_map:
-- push_branch: main
-  workflow: run_tests
-- pull_request_source_branch: '*'
-  workflow: run_tests
