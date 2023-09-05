@@ -54,6 +54,6 @@ tasks.register("debugUiTest") {
 tasks.register("cucumber") {
 
     group = "verification"
-    dependsOn(":app:runCucumber")
-    finalizedBy(":app:generateCucumberReports")
+    dependsOn(":cucumber:runCucumber")
+    finalizedBy(":cucumber:generateCucumberReports")
 }
