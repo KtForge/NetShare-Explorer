@@ -10,9 +10,6 @@ workflows:
       - activate-ssh-key@4: {}
       - git-clone@8: {}
       - restore-gradle-cache@1: {}
-      - install-missing-android-tools@3:
-          inputs:
-            - gradlew_path: $PROJECT_LOCATION/gradlew
       - wait-for-android-emulator@1:
       - gradle-runner@2:
           inputs:
