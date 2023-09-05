@@ -106,3 +106,28 @@ workflows:
         notify:
           success: true
           failure: true
+  cucumber-tests:
+    environment:
+      java: 17
+      android_signing:
+        - network-file-explorer
+    scripts:
+      - name: Launch emulator
+        script: |
+          cd $ANDROID_HOME/tools
+          emulator -avd emulator &
+          adb wait-for-device
+      - name: Run cucumber tests
+        script: |
+          set -e
+          ./gradlew cucumber
+          adb logcat -d > emulator.log
+    artifacts:
+      - cucumber/build/cucumber_report.zip
+    publishing:
+      email:
+        recipients:
+          - msd117c@gmail.com
+        notify:
+          success: true
+          failure: true
