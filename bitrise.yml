@@ -1,0 +1,44 @@
+format_version: "13"
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+project_type: android
+workflows:
+  cucumber-tests:
+    summary: Run cucumber tests.
+    description: The workflow will first clone your Git repository, cache your Gradle dependencies, install Android tools, run your Cucumber tests and save the test report.
+    steps:
+      - avd-manager@1: {}
+      - activate-ssh-key@4: {}
+      - git-clone@8: {}
+      - restore-gradle-cache@1: {}
+      - install-missing-android-tools@3:
+          inputs:
+            - gradlew_path: $PROJECT_LOCATION/gradlew
+      - wait-for-android-emulator@1:
+      - gradle-runner@2:
+          inputs:
+            - gradlew_path: "./gradlew"
+            - gradle_task: cucumber
+      - save-gradle-cache@1: {}
+      - deploy-to-bitrise-io:
+          inputs:
+            - deploy_path: /cucumber/build/cucumber_report.zip
+meta:
+  bitrise.io:
+    stack: linux-docker-android-20.04
+    machine_type_id: standard
+app:
+  envs:
+  - opts:
+      is_expand: false
+    PROJECT_LOCATION: .
+  - opts:
+      is_expand: false
+    MODULE: app
+  - opts:
+      is_expand: false
+    VARIANT: release
+trigger_map:
+- push_branch: main
+  workflow: run_tests
+- pull_request_source_branch: '*'
+  workflow: run_tests

@@ -107,6 +107,7 @@ workflows:
           success: true
           failure: true
   cucumber-tests:
+    instance_type: mac_mini_m1
     environment:
       java: 17
       android_signing:
