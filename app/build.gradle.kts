@@ -60,15 +60,9 @@ android {
         versionCode = major.times(10000) + minor.times(1000) + patch.times(100) + build
         versionName = "$major.$minor.$patch"
 
-        testInstrumentationRunner = "com.msd.network.explorer.test.ExplorerCucumberTestRunner"
-        testInstrumentationRunnerArguments["clearPackageData"] = "false"
         vectorDrawables {
             useSupportLibrary = true
         }
-    }
-
-    testOptions {
-        execution = "ANDROIDX_TEST_ORCHESTRATOR"
     }
 
     buildTypes {
@@ -131,16 +125,6 @@ dependencies {
     implementation(Dependencies.roomRuntime)
 
     implementation(Dependencies.smbj)
-
-    testImplementation(project(":core:unittest"))
-    androidTestImplementation(project(":core:uitest"))
-
-    androidTestUtil("androidx.test:orchestrator:1.4.2")
-    androidTestImplementation(Dependencies.cucumberAndroid)
-    androidTestImplementation(Dependencies.cucumberHilt)
-
-    androidTestImplementation(Dependencies.daggerHiltAndroidTesting)
-    kaptAndroidTest(Dependencies.daggerHiltAndroidCompiler)
 }
 
 afterEvaluate {

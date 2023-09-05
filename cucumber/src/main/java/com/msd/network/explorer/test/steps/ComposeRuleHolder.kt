@@ -1,4 +1,4 @@
-package com.msd.network.explorer.steps
+package com.msd.network.explorer.test.steps
 
 import android.content.Intent
 import androidx.activity.ComponentActivity
@@ -7,14 +7,12 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.platform.app.InstrumentationRegistry
 import com.msd.data.smb_data.local.SMBConfigurationDatabase
 import com.msd.data.smb_data.model.DataSMBConfiguration
-import com.msd.network.explorer.MainActivity
 import io.cucumber.java.After
 import io.cucumber.junit.WithJunitRule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.junit.Rule
-
 
 @WithJunitRule
 class ComposeRuleHolder {
@@ -25,8 +23,10 @@ class ComposeRuleHolder {
     val composeRule = createEmptyComposeRule()
 
     fun launchApp() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext
-        val startIntent = appContext.packageManager.getLaunchIntentForPackage(appContext.packageName)
+        val appContext =
+            InstrumentationRegistry.getInstrumentation().targetContext.applicationContext
+        val startIntent =
+            appContext.packageManager.getLaunchIntentForPackage("com.msd.network.explorer")
         if (startIntent != null) {
             startIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
             scenarioRule = ActivityScenario.launch(startIntent)

@@ -1,4 +1,4 @@
-package com.msd.network.explorer.steps.edit
+package com.msd.network.explorer.test.steps.edit
 
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.assertIsDisplayed
@@ -6,7 +6,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
-import com.msd.network.explorer.steps.ComposeRuleHolder
+import com.msd.network.explorer.test.steps.ComposeRuleHolder
 import dagger.hilt.android.testing.HiltAndroidTest
 import io.cucumber.java.en.Then
 import io.cucumber.junit.WithJunitRule
@@ -16,7 +16,6 @@ import io.cucumber.junit.WithJunitRule
 class EditSteps(
     val composeRuleHolder: ComposeRuleHolder
 ) : SemanticsNodeInteractionsProvider by composeRuleHolder.composeRule {
-
 
     @Then("I type {string} in field {string}")
     fun i_type_text_in_position_field(text: String, label: String) {
@@ -29,9 +28,10 @@ class EditSteps(
             else -> throw IllegalArgumentException()
         }
 
-        onNodeWithContentDescription(contentDescription, useUnmergedTree = true).performTextInput(
-            text
-        )
+        onNodeWithContentDescription(contentDescription, useUnmergedTree = true)
+            .performTextInput(
+                text
+            )
         onNodeWithText(text).assertIsDisplayed()
     }
 

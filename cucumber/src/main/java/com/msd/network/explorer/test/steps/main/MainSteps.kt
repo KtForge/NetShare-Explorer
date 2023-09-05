@@ -1,10 +1,10 @@
-package com.msd.network.explorer.steps.main
+package com.msd.network.explorer.test.steps.main
 
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.msd.network.explorer.steps.ComposeRuleHolder
+import com.msd.network.explorer.test.steps.ComposeRuleHolder
 import dagger.hilt.android.testing.HiltAndroidTest
 import io.cucumber.java.en.Then
 import io.cucumber.junit.WithJunitRule

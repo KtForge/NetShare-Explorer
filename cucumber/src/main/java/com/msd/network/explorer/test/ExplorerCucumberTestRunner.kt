@@ -13,7 +13,7 @@ import java.io.File
 @RunWith(Cucumber::class)
 @CucumberOptions(
     features = ["features"],
-    glue = ["com.msd.network.explorer.steps"],
+    glue = ["com.msd.network.explorer.test.steps"],
 )
 class ExplorerCucumberTestRunner : CucumberAndroidJUnitRunner() {
 

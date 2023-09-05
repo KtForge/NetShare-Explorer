@@ -19,6 +19,7 @@
             <option value="$PROJECT_DIR$/core/ui" />
             <option value="$PROJECT_DIR$/core/uitest" />
             <option value="$PROJECT_DIR$/core/unittest" />
+            <option value="$PROJECT_DIR$/cucumber" />
             <option value="$PROJECT_DIR$/data" />
             <option value="$PROJECT_DIR$/data/explorer_data" />
             <option value="$PROJECT_DIR$/data/smb_data" />
