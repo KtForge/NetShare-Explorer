@@ -11,60 +11,107 @@ import java.io.InputStreamReader
 object LoggerReader {
 
     private var counter = 0
-    private val log = StringBuilder()
-    private val alreadyWrittenLog = StringBuilder()
     private var filter: String = ""
     private var fileName: String = ""
+    private val events: MutableList<String> = mutableListOf()
+    private var record: Boolean = false
+    private var logToRecord: StringBuilder = StringBuilder()
 
-    fun initialize() {
+    fun setMode(record: Boolean) {
+        this.record = record
+    }
+
+    fun initialize(record: Boolean) {
         Runtime.getRuntime().exec("logcat -c")
-        log.clear()
-        alreadyWrittenLog.clear()
+        this.record = record
         counter = 0
         filter = ""
         fileName = ""
+        logToRecord.clear()
+        events.clear()
     }
 
     fun listenToEvents(filter: String, fileName: String) {
         this.filter = filter
         this.fileName = fileName
+        if (!record) {
+            val context = InstrumentationRegistry.getInstrumentation().context
+            context.assets.open("logs/$fileName").bufferedReader().use { reader ->
+                reader.forEachLine { line -> events.add(line) }
+            }
+        }
     }
 
     fun readLogCat() {
         if (filter.isNotEmpty()) {
             try {
-                val process = Runtime.getRuntime().exec("logcat -d") // ${filter.uppercase()}
+                val process = Runtime.getRuntime().exec("logcat -d")
                 val bufferedReader = BufferedReader(
                     InputStreamReader(process.inputStream)
                 )
+                val log = StringBuilder()
                 var line: String?
                 while (bufferedReader.readLine().also { line = it } != null) {
                     val shouldWriteLine = !line.isNullOrEmpty() &&
-                            line?.contains("$filter:", ignoreCase = true) == true &&
-                            !alreadyWrittenLog.contains(line.orEmpty())
+                            line?.contains("$filter:", ignoreCase = true) == true
                     if (shouldWriteLine) {
                         log.appendLine("STEP: $counter -> $line")
                     }
                 }
-                printLog()
+                processLog(log)
+                // Clean logcat for next step
+                Runtime.getRuntime().exec("logcat -c")
             } catch (e: IOException) {
                 throw RuntimeException("Can't read the logcat")
             }
         }
     }
 
-    private fun printLog() {
-        if (log.isNotEmpty()) {
-            writeFile()
-            counter++
-            log.lines().forEach { line ->
-                alreadyWrittenLog.appendLine(line)
-            }
-            log.clear()
+    private fun processLog(log: StringBuilder) {
+        if (record) {
+            saveLogs(log)
+        } else {
+            compareEvents(log)
         }
     }
 
-    private fun writeFile() {
+    private fun saveLogs(log: StringBuilder) {
+        val byteArray = ByteArrayInputStream(log.toString().toByteArray())
+        byteArray.bufferedReader().use { reader ->
+            reader.forEachLine { line ->
+                logToRecord.appendLine(line)
+            }
+        }
+    }
+
+    // compare first line from comparison file with event and discard first line of file if match
+    private fun compareEvents(log: StringBuilder) {
+        val byteArray = ByteArrayInputStream(log.toString().toByteArray())
+        byteArray.bufferedReader().use { reader ->
+            reader.forEachLine { line ->
+                if (line == events.first()) {
+                    events.drop(1)
+                } else {
+                    throw RuntimeException("Expected: ${events.first()}, found: $line")
+                }
+            }
+        }
+    }
+
+    fun writeLogsIfRecording() {
+        if (record) {
+            // write events on specified file
+            if (fileName.isEmpty()) {
+                throw RuntimeException("No file to write the logs")
+            }
+            if (logToRecord.isNotEmpty()) {
+                writeFile(logToRecord)
+                counter++
+            }
+        }
+    }
+
+    private fun writeFile(log: StringBuilder) {
         if (fileName.isNotEmpty()) {
             val outputDir = InstrumentationRegistry.getInstrumentation().targetContext.cacheDir
             val folder = File(outputDir, "logs")

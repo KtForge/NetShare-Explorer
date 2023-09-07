@@ -25,9 +25,15 @@ class ComposeRuleHolder {
     @get:Rule
     val composeRule = createEmptyComposeRule()
 
+    // Before each Scenario
     @Before
     fun restartLoggerReader() {
-        LoggerReader.initialize()
+        LoggerReader.initialize(false)
+    }
+
+    @After
+    fun writeLogsIfRecording() {
+        LoggerReader.writeLogsIfRecording()
     }
 
     @AfterStep
