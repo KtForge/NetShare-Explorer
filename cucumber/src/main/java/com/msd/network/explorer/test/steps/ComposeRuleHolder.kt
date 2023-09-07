@@ -26,7 +26,7 @@ class ComposeRuleHolder {
     val composeRule = createEmptyComposeRule()
 
     @Before
-    fun clearLogs() {
+    fun restartLoggerReader() {
         LoggerReader.initialize()
     }
 

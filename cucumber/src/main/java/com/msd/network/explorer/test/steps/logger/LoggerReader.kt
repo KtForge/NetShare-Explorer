@@ -1,6 +1,5 @@
 package com.msd.network.explorer.test.steps.logger
 
-import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import java.io.BufferedReader
 import java.io.ByteArrayInputStream
@@ -15,24 +14,20 @@ object LoggerReader {
     private val log = StringBuilder()
     private val alreadyWrittenLog = StringBuilder()
     private var filter: String = ""
-    private var comparisonFile: String = ""
+    private var fileName: String = ""
 
     fun initialize() {
         Runtime.getRuntime().exec("logcat -c")
         log.clear()
         alreadyWrittenLog.clear()
         counter = 0
-        val outputDir = InstrumentationRegistry.getInstrumentation().targetContext.cacheDir
-        val folder = File(outputDir.absolutePath + "/logs")
-        folder.listFiles()?.forEach { file ->
-            if (file.isFile) {
-                file.delete()
-            }
-        }
+        filter = ""
+        fileName = ""
     }
 
-    fun listenToEvents(filter: String, comparisonFile: String) {
+    fun listenToEvents(filter: String, fileName: String) {
         this.filter = filter
+        this.fileName = fileName
     }
 
     fun readLogCat() {
@@ -44,12 +39,11 @@ object LoggerReader {
                 )
                 var line: String?
                 while (bufferedReader.readLine().also { line = it } != null) {
-                    Log.d("SUSU", line.orEmpty())
                     val shouldWriteLine = !line.isNullOrEmpty() &&
                             line?.contains("$filter:", ignoreCase = true) == true &&
                             !alreadyWrittenLog.contains(line.orEmpty())
                     if (shouldWriteLine) {
-                        log.appendLine(line)
+                        log.appendLine("STEP: $counter -> $line")
                     }
                 }
                 printLog()
@@ -71,18 +65,20 @@ object LoggerReader {
     }
 
     private fun writeFile() {
-        val outputDir = InstrumentationRegistry.getInstrumentation().targetContext.cacheDir
-        val folder = File(outputDir, "logs")
-        if (!folder.exists()) {
-            folder.mkdir()
-        }
+        if (fileName.isNotEmpty()) {
+            val outputDir = InstrumentationRegistry.getInstrumentation().targetContext.cacheDir
+            val folder = File(outputDir, "logs")
+            if (!folder.exists()) {
+                folder.mkdir()
+            }
 
-        val file = File(outputDir, "logs/logcat_$counter.txt")
+            val file = File(folder, fileName)
 
-        val byteArray = ByteArrayInputStream(log.toString().toByteArray())
-        byteArray.use { _is ->
-            FileOutputStream(file).use { output ->
-                _is.copyTo(output)
+            val byteArray = ByteArrayInputStream(log.toString().toByteArray())
+            byteArray.use { _is ->
+                FileOutputStream(file).use { output ->
+                    _is.copyTo(output)
+                }
             }
         }
     }

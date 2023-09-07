@@ -1,4 +1,11 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
+import java.io.BufferedReader
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
+import java.io.InputStreamReader
+import java.io.OutputStream
+import java.util.ArrayList
+
 
 plugins {
     kotlin(Plugins.kapt)
@@ -130,6 +137,41 @@ tasks.create("downloadCucumberReports") {
     }
 }
 
+tasks.register("downloadLogs") {
+    doLast {
+        val localLogsPath = File(projectDir, "src/main/assets/logs")
+        println("local report path: $localLogsPath")
+
+        if (!localLogsPath.exists()) {
+            localLogsPath.mkdirs()
+        }
+
+        val adb = getAdbPath()
+
+        val stdout = ByteArrayOutputStream()
+        exec {
+            commandLine(
+                adb,
+                "shell",
+                "su 0 ls ${getCucumberLogsDevicePath()}"
+            )
+            standardOutput = stdout
+        }
+        val files = String(stdout.toByteArray())
+        val filesList = files.lines().filter { it.isNotEmpty() }.forEach { line ->
+            println("Line: $line")
+            exec {
+                commandLine(
+                    adb,
+                    "shell",
+                    "su 0 cat ${getCucumberLogsDevicePath()}$line > ${getCucumberLogSdCardDevicePath()}$line"
+                )
+            }
+            exec { commandLine(adb, "pull", getCucumberLogSdCardDevicePath() + line, File(localLogsPath, line)) }
+        }
+    }
+}
+
 tasks.register<Zip>("compressCucumberReport") {
 
     archivesName.set("cucumber_report")
@@ -161,6 +203,14 @@ fun getAdbPath(): String {
         throw GradleException("Could not detect adb path")
     }
     return adb
+}
+
+fun getCucumberLogsDevicePath(): String {
+    return "/data/user/0/com.msd.network.explorer/cache/logs/"
+}
+
+fun getCucumberLogSdCardDevicePath(): String {
+    return "/sdcard/"
 }
 
 /**
