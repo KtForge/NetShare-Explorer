@@ -1,10 +1,6 @@
+import org.gradle.internal.classpath.Instrumented.systemProperty
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
-import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
-import java.io.InputStream
-import java.io.InputStreamReader
-import java.io.OutputStream
-import java.util.ArrayList
 
 
 plugins {
@@ -91,6 +87,8 @@ tasks.register("runCucumber") {
             println("No tags provided, running all tests")
             ""
         }
+        systemProperty("record", (project.property("record") as? String) ?: "false")
+        println("Record: ${System.getProperty("record")}")
 
         val adb = getAdbPath()
         exec {
@@ -167,7 +165,14 @@ tasks.register("downloadLogs") {
                     "su 0 cat ${getCucumberLogsDevicePath()}$line > ${getCucumberLogSdCardDevicePath()}$line"
                 )
             }
-            exec { commandLine(adb, "pull", getCucumberLogSdCardDevicePath() + line, File(localLogsPath, line)) }
+            exec {
+                commandLine(
+                    adb,
+                    "pull",
+                    getCucumberLogSdCardDevicePath() + line,
+                    File(localLogsPath, line)
+                )
+            }
         }
     }
 }

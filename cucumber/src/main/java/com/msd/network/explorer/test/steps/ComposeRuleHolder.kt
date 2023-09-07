@@ -1,6 +1,7 @@
 package com.msd.network.explorer.test.steps
 
 import android.content.Intent
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.test.core.app.ActivityScenario
@@ -28,6 +29,8 @@ class ComposeRuleHolder {
     // Before each Scenario
     @Before
     fun restartLoggerReader() {
+        val record = System.getProperty("record").orEmpty()
+        Log.d("SUSU", record)
         LoggerReader.initialize(false)
     }
 
