@@ -12,6 +12,7 @@ Feature: Edit screen feature
     And I type "Miguel" in field "User"
     And I reveal the password field
     And I type "Password" in field "Password"
+    And I start listening for "Tracking"
     And I click the save button
     Then I am on Main screen
 

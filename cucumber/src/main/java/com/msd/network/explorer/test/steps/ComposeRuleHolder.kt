@@ -7,7 +7,10 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.platform.app.InstrumentationRegistry
 import com.msd.data.smb_data.local.SMBConfigurationDatabase
 import com.msd.data.smb_data.model.DataSMBConfiguration
+import com.msd.network.explorer.test.steps.logger.LoggerReader
 import io.cucumber.java.After
+import io.cucumber.java.AfterStep
+import io.cucumber.java.Before
 import io.cucumber.junit.WithJunitRule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -21,6 +24,16 @@ class ComposeRuleHolder {
 
     @get:Rule
     val composeRule = createEmptyComposeRule()
+
+    @Before
+    fun clearLogs() {
+        LoggerReader.initialize()
+    }
+
+    @AfterStep
+    fun readLogCat() {
+        LoggerReader.readLogCat()
+    }
 
     fun launchApp() {
         val appContext =
