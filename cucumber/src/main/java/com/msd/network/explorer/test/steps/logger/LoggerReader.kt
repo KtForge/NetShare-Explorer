@@ -17,10 +17,6 @@ object LoggerReader {
     private var record: Boolean = false
     private var logToRecord: StringBuilder = StringBuilder()
 
-    fun setMode(record: Boolean) {
-        this.record = record
-    }
-
     fun initialize(record: Boolean) {
         Runtime.getRuntime().exec("logcat -c")
         this.record = record
