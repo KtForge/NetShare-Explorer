@@ -97,7 +97,7 @@ object LoggerReader {
     }
 
     fun writeLogsIfRecording() {
-        if (record) {
+        if (record && filter.isNotEmpty()) {
             // write events on specified file
             if (fileName.isEmpty()) {
                 throw RuntimeException("No file to write the logs")

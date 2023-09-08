@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
-import java.io.ByteArrayOutputStream
 
 plugins {
     kotlin(Plugins.kapt)
@@ -67,59 +66,7 @@ afterEvaluate {
     }
 }
 
-cucumberReports {
-    outputDir = file(buildDir.path + "/reports/cucumber/cucumber.html")
-    buildId = "0"
-    reports = files(buildDir.path + "/reports/cucumber/cucumber.json")
-}
-
-tasks.register("cucumber") {
-
-    group = "verification"
-    dependsOn(":cucumber:runCucumber")
-    finalizedBy(":cucumber:generateCucumberReports", ":cucumber:downloadLogs")
-}
-
-tasks.register<WriteProperties>("setRecordingMode") {
-    record = (project.property("record") as? String)?.toBoolean() ?: false
-    println("Recording mode: $record")
-    outputFile = file("src/main/assets/config/recording.properties")
-    property("record", record)
-}
-
-tasks.register("installTestApp") {
-    dependsOn("deleteDeviceCucumberReports", "installDebug", ":app:installDebug")
-}
-
-tasks.register("runCucumber") {
-
-    dependsOn("installTestApp")
-
-    doLast {
-        val tagsParameter = if (project.hasProperty("tags")) {
-            val tags = project.property("tags")
-            println("Running tests tagged with: $tags")
-            "-e tags $tags"
-        } else {
-            println("No tags provided, running all tests")
-            ""
-        }
-
-        val adb = getAdbPath()
-        exec {
-            commandLine(
-                adb,
-                "shell",
-                "am",
-                "instrument",
-                "-w",
-                tagsParameter,
-                "com.msd.network.explorer.test/.ExplorerCucumberTestRunner"
-            )
-        }
-    }
-}
-
+// Run before generating cucumber reports
 tasks.create("downloadCucumberReports") {
     group = "Verification"
     description = "Downloads the rich Cucumber report files from the connected device"
@@ -137,64 +84,12 @@ tasks.create("downloadCucumberReports") {
             throw GradleException("Could not create $localReportPath")
         }
 
-        val adb = getAdbPath()
-
-        exec {
-            commandLine(
-                adb,
-                "shell",
-                "su 0 cat ${getCucumberJsonDevicePath()} > ${getCucumberJsonSdCardDevicePath()}"
-            )
-        }
-        exec { commandLine(adb, "pull", getCucumberJsonSdCardDevicePath(), localPath) }
+        // Pull cucumber.json file
+        exec { commandLine(getAdbPath(), "pull", getCucumberJsonDevicePath(), localPath) }
     }
 }
 
-tasks.register("downloadLogs") {
-    doLast {
-        if (record) {
-            val localLogsPath = File(projectDir, "src/main/assets/logs")
-            println("local report path: $localLogsPath")
-
-            if (!localLogsPath.exists()) {
-                localLogsPath.mkdirs()
-            }
-
-            val adb = getAdbPath()
-
-            val stdout = ByteArrayOutputStream()
-            exec {
-                commandLine(
-                    adb,
-                    "shell",
-                    "su 0 ls ${getCucumberLogsDevicePath()}"
-                )
-                standardOutput = stdout
-            }
-            val files = String(stdout.toByteArray())
-            val filesList = files.lines().filter { it.isNotEmpty() }.forEach { line ->
-                println("Line: $line")
-                exec {
-                    commandLine(
-                        adb,
-                        "shell",
-                        "su 0 cat ${getCucumberLogsDevicePath()}$line > ${getCucumberLogSdCardDevicePath()}$line"
-                    )
-                }
-                exec {
-                    commandLine(
-                        adb,
-                        "pull",
-                        getCucumberLogSdCardDevicePath() + line,
-                        File(localLogsPath, line)
-                    )
-                }
-            }
-        } else {
-            println("Not recording, skipping logs...")
-        }
-    }
-}
+// Run after generating cucumber reports
 
 tasks.register<Zip>("compressCucumberReport") {
 
@@ -203,52 +98,123 @@ tasks.register<Zip>("compressCucumberReport") {
     from(files("$buildDir/reports/cucumber/cucumber.html"))
 }
 
-tasks.register("deleteDeviceCucumberReports") {
-    val adb = getAdbPath()
+// Run before mergeDebugAssets
 
-    println("Deleting previous sdcard report...")
-    exec { commandLine(adb, "shell", "rm -f ${getCucumberJsonSdCardDevicePath()}") }
+tasks.register<WriteProperties>("setRecordingMode") {
+    record = if (project.hasProperty("record")) {
+        (project.property("record") as String).toBoolean()
+    } else {
+        false
+    }
 
-    println("Deleting previous cached report...")
-    exec { commandLine(adb, "shell", "su 0 rm -f ${getCucumberJsonDevicePath()}") }
+    println("Recording mode: $record")
+    outputFile = file("src/main/assets/config/recording.properties")
+    property("record", record)
 }
 
-// ==================================================================
-// Utility methods
-// ==================================================================
+tasks.register("installTestApp") {
+    dependsOn("deleteDeviceCucumberReportsAndLogs", "installDebug", ":app:installDebug")
+}
 
-/**
- * Utility method to get the full ADB path
- * @return the absolute ADB path
- */
-fun getAdbPath(): String {
-    val adb = "${System.getenv("ANDROID_HOME")}/platform-tools/adb"
-    if (adb.isEmpty()) {
-        throw GradleException("Could not detect adb path")
+// Delete previous cucumber reports
+
+tasks.register("deleteDeviceCucumberReportsAndLogs") {
+    println("Deleting previous cached report...")
+    exec { commandLine(getAdbPath(), "shell", "rm -f ${getCucumberJsonDevicePath()}") }
+    exec { commandLine(getAdbPath(), "shell", "rm -f -r ${getCucumberLogsDevicePath()}") }
+}
+
+fun getCucumberJsonDevicePath(): String {
+    return "/data/user/0/com.msd.network.explorer/cache/reports/cucumber/cucumber.json"
+}
+
+// Cucumber report plugin configuration
+
+cucumberReports {
+    outputDir = file(buildDir.path + "/reports/cucumber/cucumber.html")
+    buildId = "0"
+    reports = files(buildDir.path + "/reports/cucumber/cucumber.json")
+}
+
+tasks.register("cucumber") {
+
+    group = "verification"
+    dependsOn("grantRootAccess", "runCucumber")
+    finalizedBy("generateCucumberReports", "downloadLogs")
+}
+
+// Grant root access to allow pulling the reports and log files
+
+tasks.register("grantRootAccess") {
+    val adb = getAdbPath()
+
+    // Enable root on the device to pull files from app's folder
+    exec { commandLine(adb, "root") }
+    // Wait for the device to be restarted as root
+    exec { commandLine(adb, "wait-for-device") }
+}
+
+// Run when invoking cucumber task
+
+tasks.register("runCucumber") {
+
+    dependsOn("installTestApp")
+
+    doLast {
+        val tagsParameter = if (project.hasProperty("tags")) {
+            val tags = project.property("tags")
+            println("Running tests tagged with: $tags")
+            "-e tags $tags"
+        } else {
+            println("No tags provided, running all tests")
+            ""
+        }
+
+        exec {
+            commandLine(
+                getAdbPath(),
+                "shell",
+                "am",
+                "instrument",
+                "-w",
+                tagsParameter,
+                "com.msd.network.explorer.test/.ExplorerCucumberTestRunner"
+            )
+        }
     }
-    return adb
+}
+
+// Run after generating cucumber reports
+
+tasks.register("downloadLogs") {
+    doLast {
+        if (record) {
+            // Define the path to the local logs directory
+            val localLogsDirectory = file("${projectDir.absolutePath}/src/main/assets/")
+
+            // Create the logs directory if it doesn't exist
+            if (!localLogsDirectory.exists()) {
+                localLogsDirectory.mkdirs()
+            }
+
+            // Pull all files inside /data/user/0/packageId/cache/logs folder
+            exec {
+                commandLine(getAdbPath(), "pull", getCucumberLogsDevicePath(), localLogsDirectory)
+            }
+        } else {
+            println("Not recording, skipping logs...")
+        }
+    }
 }
 
 fun getCucumberLogsDevicePath(): String {
     return "/data/user/0/com.msd.network.explorer/cache/logs/"
 }
 
-fun getCucumberLogSdCardDevicePath(): String {
-    return "/sdcard/"
-}
-
-/**
- * The path which is used to store the Cucumber files.
- * @return
- */
-fun getCucumberJsonDevicePath(): String {
-    return "/data/user/0/com.msd.network.explorer/cache/reports/cucumber/cucumber.json"
-}
-
-/**
- * The path which is used to store the Cucumber files.
- * @return
- */
-fun getCucumberJsonSdCardDevicePath(): String {
-    return "/sdcard/cucumber.json"
+fun getAdbPath(): String {
+    val adb = "${System.getenv("ANDROID_HOME")}/platform-tools/adb"
+    if (adb.isEmpty()) {
+        throw GradleException("Could not detect adb path")
+    }
+    return adb
 }
