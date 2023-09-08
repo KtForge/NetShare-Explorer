@@ -1,5 +1,6 @@
 package com.msd.feature.main.presenter
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.msd.domain.smb.DeleteSMBConfigurationUseCase
 import com.msd.domain.smb.GetSMBConfigurationsUseCase
@@ -38,6 +39,7 @@ class MainPresenter @Inject constructor(
     }
 
     override fun onAddButtonClicked() {
+        Log.i("TRACKING", "Adding configuration")
         val route = EditNetworkConfiguration
             .replace(SmbConfigurationRouteIdArgToReplace, SmbConfigurationRouteNoIdArg)
 

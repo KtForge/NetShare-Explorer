@@ -55,7 +55,8 @@ object LoggerReader {
                     val shouldWriteLine = !line.isNullOrEmpty() &&
                             line?.contains("$filter:", ignoreCase = true) == true
                     if (shouldWriteLine) {
-                        log.appendLine("STEP: $counter -> $line")
+                        val cleanLine = line?.replaceBefore("${filter.uppercase()}:", "")
+                        log.appendLine("STEP: $counter -> $cleanLine")
                     }
                 }
                 processLog(log)
@@ -64,6 +65,7 @@ object LoggerReader {
             } catch (e: IOException) {
                 throw RuntimeException("Can't read the logcat")
             }
+            counter++
         }
     }
 
@@ -90,7 +92,7 @@ object LoggerReader {
         byteArray.bufferedReader().use { reader ->
             reader.forEachLine { line ->
                 if (line == events.first()) {
-                    events.drop(1)
+                    events.removeFirst()
                 } else {
                     throw RuntimeException("Expected: ${events.first()}, found: $line")
                 }
@@ -106,7 +108,6 @@ object LoggerReader {
             }
             if (logToRecord.isNotEmpty()) {
                 writeFile(logToRecord)
-                counter++
             }
         }
     }

@@ -1,1 +1,2 @@
-STEP: 0 -> 09-08 09:54:49.347  7571  7571 I TRACKING: Configuration saved!
+STEP: 1 -> TRACKING: Adding configuration
+STEP: 8 -> TRACKING: Configuration saved!
