@@ -1,7 +1,5 @@
-import org.gradle.internal.classpath.Instrumented.systemProperty
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
 import java.io.ByteArrayOutputStream
-
 
 plugins {
     kotlin(Plugins.kapt)
@@ -57,10 +55,15 @@ dependencies {
     kapt(Dependencies.daggerHiltAndroidCompiler)
 }
 
+var record: Boolean = false
+
 afterEvaluate {
     tasks.getByName("generateCucumberReports") {
         dependsOn("downloadCucumberReports")
         finalizedBy("compressCucumberReport")
+    }
+    tasks.getByName("mergeDebugAssets") {
+        dependsOn("setRecordingMode")
     }
 }
 
@@ -68,6 +71,20 @@ cucumberReports {
     outputDir = file(buildDir.path + "/reports/cucumber/cucumber.html")
     buildId = "0"
     reports = files(buildDir.path + "/reports/cucumber/cucumber.json")
+}
+
+tasks.register("cucumber") {
+
+    group = "verification"
+    dependsOn(":cucumber:runCucumber")
+    finalizedBy(":cucumber:generateCucumberReports", ":cucumber:downloadLogs")
+}
+
+tasks.register<WriteProperties>("setRecordingMode") {
+    record = (project.property("record") as? String)?.toBoolean() ?: false
+    println("Recording mode: $record")
+    outputFile = file("src/main/assets/config/recording.properties")
+    property("record", record)
 }
 
 tasks.register("installTestApp") {
@@ -87,8 +104,6 @@ tasks.register("runCucumber") {
             println("No tags provided, running all tests")
             ""
         }
-        systemProperty("record", (project.property("record") as? String) ?: "false")
-        println("Record: ${System.getProperty("record")}")
 
         val adb = getAdbPath()
         exec {
@@ -137,42 +152,46 @@ tasks.create("downloadCucumberReports") {
 
 tasks.register("downloadLogs") {
     doLast {
-        val localLogsPath = File(projectDir, "src/main/assets/logs")
-        println("local report path: $localLogsPath")
+        if (record) {
+            val localLogsPath = File(projectDir, "src/main/assets/logs")
+            println("local report path: $localLogsPath")
 
-        if (!localLogsPath.exists()) {
-            localLogsPath.mkdirs()
-        }
+            if (!localLogsPath.exists()) {
+                localLogsPath.mkdirs()
+            }
 
-        val adb = getAdbPath()
+            val adb = getAdbPath()
 
-        val stdout = ByteArrayOutputStream()
-        exec {
-            commandLine(
-                adb,
-                "shell",
-                "su 0 ls ${getCucumberLogsDevicePath()}"
-            )
-            standardOutput = stdout
-        }
-        val files = String(stdout.toByteArray())
-        val filesList = files.lines().filter { it.isNotEmpty() }.forEach { line ->
-            println("Line: $line")
+            val stdout = ByteArrayOutputStream()
             exec {
                 commandLine(
                     adb,
                     "shell",
-                    "su 0 cat ${getCucumberLogsDevicePath()}$line > ${getCucumberLogSdCardDevicePath()}$line"
+                    "su 0 ls ${getCucumberLogsDevicePath()}"
                 )
+                standardOutput = stdout
             }
-            exec {
-                commandLine(
-                    adb,
-                    "pull",
-                    getCucumberLogSdCardDevicePath() + line,
-                    File(localLogsPath, line)
-                )
+            val files = String(stdout.toByteArray())
+            val filesList = files.lines().filter { it.isNotEmpty() }.forEach { line ->
+                println("Line: $line")
+                exec {
+                    commandLine(
+                        adb,
+                        "shell",
+                        "su 0 cat ${getCucumberLogsDevicePath()}$line > ${getCucumberLogSdCardDevicePath()}$line"
+                    )
+                }
+                exec {
+                    commandLine(
+                        adb,
+                        "pull",
+                        getCucumberLogSdCardDevicePath() + line,
+                        File(localLogsPath, line)
+                    )
+                }
             }
+        } else {
+            println("Not recording, skipping logs...")
         }
     }
 }

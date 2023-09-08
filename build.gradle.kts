@@ -46,10 +46,3 @@ tasks.register("debugUiTest") {
 
     dependsOn(subprojectTasks)
 }
-
-tasks.register("cucumber") {
-
-    group = "verification"
-    dependsOn(":cucumber:runCucumber")
-    finalizedBy(":cucumber:generateCucumberReports")
-}
