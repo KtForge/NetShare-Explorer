@@ -5,6 +5,7 @@ plugins {
     id(Plugins.androidApplication)
     id(Plugins.kotlinAndroid)
     id(Plugins.daggerHiltAndroid)
+    id(Plugins.googleServices)
 }
 
 val properties = Properties()
@@ -116,6 +117,9 @@ dependencies {
     implementation(Dependencies.coreKtx)
     implementation(Dependencies.composeActivity)
     implementation(Dependencies.composeNavigation)
+
+    implementation(platform(Dependencies.firebaseBom))
+    implementation(Dependencies.firebaseAnalytics)
 
     implementation(Dependencies.daggerHiltAndroid)
     kapt(Dependencies.daggerHiltAndroidCompiler)

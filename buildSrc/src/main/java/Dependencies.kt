@@ -17,6 +17,9 @@ object Dependencies {
     val composeMaterial3 by lazy { "androidx.compose.material3:material3:${Versions.material3}" }
     val composeMaterialIcons by lazy { "androidx.compose.material:material-icons-extended:${Versions.materialIconsExtended}" }
 
+    val firebaseBom by lazy { "com.google.firebase:firebase-bom:${Versions.firebaseBom}" }
+    val firebaseAnalytics by lazy { "com.google.firebase:firebase-analytics-ktx" }
+
     val daggerHiltAndroid by lazy { "com.google.dagger:hilt-android:${Versions.daggerHilt}" }
     val daggerHiltAndroidTesting by lazy { "com.google.dagger:hilt-android-testing:${Versions.daggerHilt}" }
     val daggerHiltAndroidCompiler by lazy { "com.google.dagger:hilt-android-compiler:${Versions.daggerHilt}" }

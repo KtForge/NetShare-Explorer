@@ -20,6 +20,8 @@ object Versions {
     const val materialIconsExtended = "1.3.1"
     const val composeUiJUnit4 = "1.5.0"
 
+    const val firebaseBom = "32.2.3"
+
     const val daggerHilt = "2.44"
     const val daggerHiltNavigation = "1.0.0"
     const val inject = "1"

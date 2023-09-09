@@ -93,23 +93,27 @@ tasks.create("downloadCucumberReports") {
 
 tasks.register<Zip>("compressCucumberReport") {
 
-    archivesName.set("cucumber_report")
-    destinationDirectory.set(file(buildDir))
-    from(files("$buildDir/reports/cucumber/cucumber.html"))
+    doLast {
+        archivesName.set("cucumber_report")
+        destinationDirectory.set(file(buildDir))
+        from(files("$buildDir/reports/cucumber/cucumber.html"))
+    }
 }
 
 // Run before mergeDebugAssets
 
 tasks.register<WriteProperties>("setRecordingMode") {
-    record = if (project.hasProperty("record")) {
-        (project.property("record") as String).toBoolean()
-    } else {
-        false
-    }
+    doLast {
+        record = if (project.hasProperty("record")) {
+            (project.property("record") as String).toBoolean()
+        } else {
+            false
+        }
 
-    println("Recording mode: $record")
-    outputFile = file("src/main/assets/config/recording.properties")
-    property("record", record)
+        println("Recording mode: $record")
+        outputFile = file("src/main/assets/config/recording.properties")
+        property("record", record)
+    }
 }
 
 tasks.register("installTestApp") {
@@ -119,9 +123,12 @@ tasks.register("installTestApp") {
 // Delete previous cucumber reports
 
 tasks.register("deleteDeviceCucumberReportsAndLogs") {
-    println("Deleting previous cached report...")
-    exec { commandLine(getAdbPath(), "shell", "rm -f ${getCucumberJsonDevicePath()}") }
-    exec { commandLine(getAdbPath(), "shell", "rm -f -r ${getCucumberLogsDevicePath()}") }
+
+    doLast {
+        println("Deleting previous cached report...")
+        exec { commandLine(getAdbPath(), "shell", "rm -f ${getCucumberJsonDevicePath()}") }
+        exec { commandLine(getAdbPath(), "shell", "rm -f -r ${getCucumberLogsDevicePath()}") }
+    }
 }
 
 fun getCucumberJsonDevicePath(): String {
@@ -146,12 +153,15 @@ tasks.register("cucumber") {
 // Grant root access to allow pulling the reports and log files
 
 tasks.register("grantRootAccess") {
-    val adb = getAdbPath()
 
-    // Enable root on the device to pull files from app's folder
-    exec { commandLine(adb, "root") }
-    // Wait for the device to be restarted as root
-    exec { commandLine(adb, "wait-for-device") }
+    doLast {
+        val adb = getAdbPath()
+
+        // Enable root on the device to pull files from app's folder
+        exec { commandLine(adb, "root") }
+        // Wait for the device to be restarted as root
+        exec { commandLine(adb, "wait-for-device") }
+    }
 }
 
 // Run when invoking cucumber task

@@ -11,4 +11,6 @@ object Plugins {
     const val kotlinJvm = "org.jetbrains.kotlin.jvm"
 
     const val cucumberReporting = "com.github.spacialcircumstances.gradle-cucumber-reporting"
+
+    const val googleServices = "com.google.gms.google-services"
 }

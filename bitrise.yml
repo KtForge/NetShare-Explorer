@@ -1,24 +1,105 @@
-format_version: "13"
+---
+format_version: '13'
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 project_type: android
 workflows:
+  _deploy_alpha_google_play_store:
+    steps:
+    - file-downloader@1:
+        inputs:
+        - destination: "$BITRISE_SOURCE_DIR/google_play_key.json"
+        - source: "$BITRISEIO_GOOGLE_PLAY_KEY_JSON_URL"
+    - fastlane@3:
+        inputs:
+        - lane: upload_alpha
+  create-release-candidate:
+    steps:
+    - activate-ssh-key@4: {}
+    - git-clone@8: {}
+    - script-runner@0:
+        title: Increase minor version
+        inputs:
+        - file_path: "$BITRISE_SOURCE_DIR/tooling/scripts/increase_minor_version"
+    - file-downloader@1:
+        inputs:
+        - destination: "$BITRISE_SOURCE_DIR/app/nfe_android_keystore"
+        - source: "$BITRISEIO_ANDROID_KEYSTORE_URL"
+    - set-java-version@1:
+        inputs:
+        - set_java_version: '17'
+        title: Set Java to version 17
+    - gradle-runner@2:
+        title: Create release apk and aab
+        inputs:
+        - gradlew_path: "./gradlew"
+        - gradle_file: ''
+        - gradle_task: assembleRelease bundleRelease
+    - deploy-to-bitrise-io@2:
+        inputs:
+        - deploy_path: "$BITRISE_SOURCE_DIR/app/build/outputs/apk/release/app-release.apk"
+    - deploy-to-bitrise-io@2:
+        inputs:
+        - deploy_path: "$BITRISE_SOURCE_DIR/app/build/outputs/bundle/release/app-release.aab"
+    - script-runner@0:
+        title: Push new version tag
+        inputs:
+        - file_path: "$BITRISE_SOURCE_DIR/tooling/scripts/update_version_and_tag"
+    - script@1:
+        title: Install Github CLI
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            # fail if any commands fails
+            set -e
+
+            type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
+            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+            && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+            && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+            && sudo apt update \
+            && sudo apt install gh -y
+    - script-runner@0:
+        title: Create new Github release
+        inputs:
+        - file_path: "$BITRISE_SOURCE_DIR/tooling/scripts/publish_github_release"
+    after_run:
+    - _deploy_alpha_google_play_store
   cucumber-tests:
     summary: Run cucumber tests.
-    description: The workflow will first clone your Git repository, cache your Gradle dependencies, install Android tools, run your Cucumber tests and save the test report.
+    description: The workflow will first clone your Git repository, cache your Gradle
+      dependencies, install Android tools, run your Cucumber tests and save the test
+      report.
     steps:
-      - avd-manager@1: {}
-      - activate-ssh-key@4: {}
-      - git-clone@8: {}
-      - restore-gradle-cache@1: {}
-      - wait-for-android-emulator@1:
-      - gradle-runner@2:
-          inputs:
-            - gradlew_path: "./gradlew"
-            - gradle_task: cucumber
-      - save-gradle-cache@1: {}
-      - deploy-to-bitrise-io:
-          inputs:
-            - deploy_path: /cucumber/build/cucumber_report.zip
+    - avd-manager@1: {}
+    - set-java-version@1:
+        inputs:
+        - set_java_version: '17'
+    - activate-ssh-key@4: {}
+    - git-clone@8: {}
+    - restore-gradle-cache@1: {}
+    - wait-for-android-emulator@1: {}
+    - gradle-runner@2:
+        inputs:
+        - gradlew_path: "./gradlew"
+        - gradle_task: cucumber
+    - save-gradle-cache@1: {}
+    - deploy-to-bitrise-io:
+        inputs:
+        - deploy_path: "./cucumber/build/reports/cucumber/cucumber.html/"
+  test_gh:
+    steps:
+    - activate-ssh-key@4: {}
+    - git-clone@8: {}
+    - file-downloader@1:
+        inputs:
+        - destination: "$BITRISE_SOURCE_DIR/google_play_key.json"
+        - source: "$BITRISEIO_GOOGLE_PLAY_KEY_JSON_URL"
+    - script@1:
+        inputs:
+        - content: "#!/usr/bin/env bash\n# fail if any commands fails\nset -e\n# make
+            pipelines' return status equal the last command to exit with a non-zero
+            status, or zero if all commands exit successfully\nset -o pipefail\n#
+            debug log\nset -x\n\nfastlane run validate_play_store_json_key "
 meta:
   bitrise.io:
     stack: linux-docker-android-20.04
