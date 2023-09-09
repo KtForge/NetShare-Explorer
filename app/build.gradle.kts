@@ -32,10 +32,10 @@ android {
     signingConfigs {
         create("release") {
             if (System.getenv("CI").toBoolean()) {
-                // storeFile = file(System.getenv()["CM_KEYSTORE_PATH"] as String)
-                // storePassword = System.getenv()["CM_KEYSTORE_PASSWORD"]
-                // keyAlias = System.getenv()["CM_KEY_ALIAS"]
-                // keyPassword = System.getenv()["CM_KEY_PASSWORD"]
+                storeFile = file(System.getenv()["BITRISEIO_ANDROID_KEYSTORE_URL"] as String)
+                storePassword = System.getenv()["BITRISEIO_ANDROID_KEYSTORE_PASSWORD"]
+                keyAlias = System.getenv()["BITRISEIO_ANDROID_KEYSTORE_ALIAS"]
+                keyPassword = System.getenv()["BITRISEIO_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD"]
             } else {
                 val properties = Properties()
                 val propertiesFile = File("key.properties")
