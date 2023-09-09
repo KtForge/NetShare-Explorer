@@ -2,7 +2,6 @@ package com.msd.network.explorer.test.steps
 
 import android.content.Intent
 import android.content.res.AssetManager
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.test.core.app.ActivityScenario
@@ -38,7 +37,6 @@ class ComposeRuleHolder {
         val inputStream = assetManager.open("config/recording.properties")
         properties.load(inputStream)
         val record = properties.getProperty("record").toBoolean()
-        Log.d("SUSU", record.toString())
 
         LoggerReader.initialize(record)
     }

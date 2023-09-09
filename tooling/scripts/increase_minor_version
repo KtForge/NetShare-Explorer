@@ -1,0 +1,22 @@
+#!/bin/bash
+
+file="./version"
+
+while IFS='=' read -r key value
+do
+  key=$(echo "$key" | tr '.' '_')
+  eval "${key}"=\${value}
+done < "$file"
+
+next_minor_version=$((version_minor + 1))
+
+cat <<END > "$file"
+version.major=$version_major
+version.minor=$next_minor_version
+version.patch=$version_patch
+version.build=$version_build
+END
+
+cat "$file"
+
+echo "$version_major.$next_minor_version.$version_patch.$version_build" > version.txt

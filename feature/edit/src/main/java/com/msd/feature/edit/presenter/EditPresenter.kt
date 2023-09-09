@@ -1,6 +1,5 @@
 package com.msd.feature.edit.presenter
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -107,7 +106,6 @@ class EditPresenter @AssistedInject constructor(
                         psw = psw,
                     )
 
-                    Log.i("TRACKING", "Configuration saved!")
                     navigate(NavigateBack)
                 }
             }
