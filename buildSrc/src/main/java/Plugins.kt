@@ -13,4 +13,5 @@ object Plugins {
     const val cucumberReporting = "com.github.spacialcircumstances.gradle-cucumber-reporting"
 
     const val googleServices = "com.google.gms.google-services"
+    const val firebaseCrashlytics = "com.google.firebase.crashlytics"
 }

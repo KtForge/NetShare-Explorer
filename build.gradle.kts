@@ -10,6 +10,12 @@ plugins {
     id("com.google.gms.google-services") version "4.3.15" apply false
 }
 
+buildscript {
+    dependencies {
+        classpath("com.google.firebase:firebase-crashlytics-gradle:2.9.9")
+    }
+}
+
 allprojects {
     subprojects.forEach { subproject ->
         subproject.tasks.withType(Test::class.java) {

@@ -19,6 +19,7 @@ object Dependencies {
 
     val firebaseBom by lazy { "com.google.firebase:firebase-bom:${Versions.firebaseBom}" }
     val firebaseAnalytics by lazy { "com.google.firebase:firebase-analytics-ktx" }
+    val firebaseCrashlytics by lazy { "com.google.firebase:firebase-crashlytics-ktx" }
 
     val daggerHiltAndroid by lazy { "com.google.dagger:hilt-android:${Versions.daggerHilt}" }
     val daggerHiltAndroidTesting by lazy { "com.google.dagger:hilt-android-testing:${Versions.daggerHilt}" }

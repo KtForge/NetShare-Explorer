@@ -6,6 +6,7 @@ plugins {
     id(Plugins.kotlinAndroid)
     id(Plugins.daggerHiltAndroid)
     id(Plugins.googleServices)
+    id(Plugins.firebaseCrashlytics)
 }
 
 val properties = Properties()
@@ -28,7 +29,6 @@ if (propertiesFile.canRead()) {
 android {
     namespace = Configuration.namespace
     compileSdk = Configuration.compileSdk
-
 
     signingConfigs {
         create("release") {
@@ -85,6 +85,7 @@ android {
         jvmTarget = Versions.jvmTarget
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
     composeOptions {
@@ -120,6 +121,7 @@ dependencies {
 
     implementation(platform(Dependencies.firebaseBom))
     implementation(Dependencies.firebaseAnalytics)
+    implementation(Dependencies.firebaseCrashlytics)
 
     implementation(Dependencies.daggerHiltAndroid)
     kapt(Dependencies.daggerHiltAndroidCompiler)
