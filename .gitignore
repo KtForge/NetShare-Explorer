@@ -17,6 +17,7 @@ local.properties
 key.properties
 /app/release
 /app/nfe_android_keystore
+/app/google_services.json
 google_play_key.json
 /fastlane/metadata/android/en-US/images
 /fastlane/*.xml
