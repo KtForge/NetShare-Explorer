@@ -21,16 +21,10 @@ platform :android do
   lane :upload_alpha do
     require 'open-uri'
 
-    # json_key = File.new("google_play_key.json")
-
-    open('google_play_key.json', 'wb') do |file|
-        file << open(ENV["BITRISEIO_GOOGLE_PLAY_KEY_JSON_URL"]).read
-    end
-
-
-    # upload_to_play_store(
-    #     track: "alpha",
-    #     json_key: json_key,
-    # )
+    upload_to_play_store(
+        track: "alpha",
+        json_key: "google_play_key.json",
+        aab: "app/build/outputs/bundle/release/app-release.aab"
+    )
   end
 end
