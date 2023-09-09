@@ -103,15 +103,16 @@ tasks.register<Zip>("compressCucumberReport") {
 // Run before mergeDebugAssets
 
 tasks.register<WriteProperties>("setRecordingMode") {
-    doLast {
-        record = if (project.hasProperty("record")) {
-            (project.property("record") as String).toBoolean()
-        } else {
-            false
-        }
 
+    record = if (project.hasProperty("record")) {
+        (project.property("record") as String).toBoolean()
+    } else {
+        false
+    }
+    outputFile = file("src/main/assets/config/recording.properties")
+
+    doLast {
         println("Recording mode: $record")
-        outputFile = file("src/main/assets/config/recording.properties")
         property("record", record)
     }
 }
