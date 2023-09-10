@@ -10,9 +10,15 @@ workflows:
   _create-release-candidate:
     steps:
       - file-downloader@1:
+          title: Download keystore
           inputs:
             - destination: "$BITRISE_SOURCE_DIR/app/nfe_android_keystore"
             - source: "$BITRISEIO_ANDROID_KEYSTORE_URL"
+      - file-downloader@1:
+          title: Download Firebase json file
+          inputs:
+            - destination: "$BITRISE_SOURCE_DIR/app/google-services.json"
+            - source: "$BITRISEIO_FIREBASE_JSON_URL"
       - set-java-version@1:
           inputs:
             - set_java_version: '17'
@@ -24,9 +30,11 @@ workflows:
             - gradle_file: ''
             - gradle_task: assembleRelease bundleRelease
       - deploy-to-bitrise-io@2:
+          title: Deploy release apk
           inputs:
             - deploy_path: "$BITRISE_SOURCE_DIR/app/build/outputs/apk/release/app-release.apk"
       - deploy-to-bitrise-io@2:
+          title: Deploy release aab
           inputs:
             - deploy_path: "$BITRISE_SOURCE_DIR/app/build/outputs/bundle/release/app-release.aab"
       - script-runner@0:
@@ -56,10 +64,12 @@ workflows:
   _deploy_alpha_google_play_store:
     steps:
     - file-downloader@1:
+        title: Download fastlane api key json file
         inputs:
         - destination: "$BITRISE_SOURCE_DIR/google_play_key.json"
         - source: "$BITRISEIO_GOOGLE_PLAY_KEY_JSON_URL"
     - fastlane@3:
+        title: Upload app to Google PlayStore's alpha track
         inputs:
         - lane: upload_alpha
   _start_emulator:
@@ -70,7 +80,7 @@ workflows:
       - _clone_repository
     steps:
       - script-runner@0:
-          title: Increase minor version
+          title: Increase major version
           inputs:
             - file_path: "$BITRISE_SOURCE_DIR/tooling/scripts/increase_major_version"
     after_run:
@@ -90,7 +100,7 @@ workflows:
       - _clone_repository
     steps:
       - script-runner@0:
-          title: Increase minor version
+          title: Increase patch version
           inputs:
             - file_path: "$BITRISE_SOURCE_DIR/tooling/scripts/increase_patch_version"
     after_run:
@@ -110,27 +120,15 @@ workflows:
     - restore-gradle-cache@1: {}
     - wait-for-android-emulator@1: {}
     - gradle-runner@2:
+        title: Run cucumber tests
         inputs:
         - gradlew_path: "./gradlew"
         - gradle_task: cucumber
     - save-gradle-cache@1: {}
     - deploy-to-bitrise-io:
+        title: Deploy cucumber report zip file
         inputs:
-        - deploy_path: "./cucumber/build/reports/cucumber/cucumber.html/"
-  test_gh:
-    steps:
-    - activate-ssh-key@4: {}
-    - git-clone@8: {}
-    - file-downloader@1:
-        inputs:
-        - destination: "$BITRISE_SOURCE_DIR/google_play_key.json"
-        - source: "$BITRISEIO_GOOGLE_PLAY_KEY_JSON_URL"
-    - script@1:
-        inputs:
-        - content: "#!/usr/bin/env bash\n# fail if any commands fails\nset -e\n# make
-            pipelines' return status equal the last command to exit with a non-zero
-            status, or zero if all commands exit successfully\nset -o pipefail\n#
-            debug log\nset -x\n\nfastlane run validate_play_store_json_key "
+        - deploy_path: "./cucumber/build/cucumber_report.zip"
 meta:
   bitrise.io:
     stack: linux-docker-android-20.04
