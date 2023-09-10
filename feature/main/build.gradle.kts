@@ -37,6 +37,7 @@ dependencies {
     implementation(project(":core:navigation"))
     implementation(project(":core:ui"))
     implementation(project(":core:presentation"))
+    implementation(project(":core:tracking"))
 
     implementation(project(":domain:smb"))
 

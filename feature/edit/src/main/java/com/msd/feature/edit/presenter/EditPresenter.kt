@@ -9,6 +9,7 @@ import com.msd.domain.smb.model.SMBConfiguration
 import com.msd.feature.edit.R
 import com.msd.feature.edit.presenter.EditState.Loaded
 import com.msd.feature.edit.presenter.EditState.Loading
+import com.msd.feature.edit.tracker.EditTracker
 import com.msd.navigation.NavigateBack
 import com.msd.navigation.NavigateUp
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteIdArg
@@ -24,6 +25,7 @@ class EditPresenter @AssistedInject constructor(
     core: IPresenterCore<EditState>,
     private val getSMBConfigurationUseCase: GetSMBConfigurationUseCase,
     private val storeSMBConfigurationUseCase: StoreSMBConfigurationUseCase,
+    private val editTracker: EditTracker,
     @Assisted(SmbConfigurationRouteIdArg) val smbConfigurationId: Int,
 ) : Presenter<EditState>(core), UserInteractions {
 
@@ -105,6 +107,12 @@ class EditPresenter @AssistedInject constructor(
                         user = user,
                         psw = psw,
                     )
+
+                    if (smbConfigurationId.toString() == SmbConfigurationRouteNoIdArg) {
+                        editTracker.logSMBConfigurationCreatedEvent()
+                    } else {
+                        editTracker.logSMBConfigurationEditedEvent()
+                    }
 
                     navigate(NavigateBack)
                 }

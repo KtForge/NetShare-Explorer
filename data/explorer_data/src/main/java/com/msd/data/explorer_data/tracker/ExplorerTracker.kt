@@ -8,11 +8,9 @@ import javax.inject.Inject
 class ExplorerTracker @Inject constructor(private val eventsTracker: EventsTracker) {
 
     fun logListFilesAndDirectoriesEvent(filesNumber: Int, openTime: Long) {
-        val readableOpenTime = openTime.toDouble().div(1000)
-
         val parameters = bundleOf(
             Constants.FILES_NUMBER to filesNumber,
-            Constants.OPEN_TIME to readableOpenTime
+            Constants.OPEN_TIME to getReadableTime(openTime)
         )
 
         eventsTracker.logEvent(Constants.LIST_FILES_AND_DIRECTORIES_EVENT, parameters)
@@ -20,13 +18,16 @@ class ExplorerTracker @Inject constructor(private val eventsTracker: EventsTrack
 
     fun logOpenFileEvent(fileSize: Long, openTime: Long) {
         val readableFileSize = fileSize.toDouble().div(1000000)
-        val readableOpenTime = openTime.toDouble().div(1000)
 
         val parameters = bundleOf(
             Constants.FILE_SIZE to readableFileSize,
-            Constants.OPEN_TIME to readableOpenTime
+            Constants.OPEN_TIME to getReadableTime(openTime)
         )
 
         eventsTracker.logEvent(Constants.OPEN_FILE_EVENT, parameters)
+    }
+
+    private fun getReadableTime(milliseconds: Long): Double {
+        return milliseconds.toDouble().div(1000)
     }
 }

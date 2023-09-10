@@ -7,6 +7,7 @@ import com.msd.domain.smb.model.SMBConfiguration
 import com.msd.feature.main.presenter.MainState.Empty
 import com.msd.feature.main.presenter.MainState.Loaded
 import com.msd.feature.main.presenter.MainState.Loading
+import com.msd.feature.main.tracker.MainTracker
 import com.msd.navigation.Navigate
 import com.msd.navigation.NavigationConstants.EditNetworkConfiguration
 import com.msd.navigation.NavigationConstants.Explorer
@@ -24,6 +25,7 @@ class MainPresenter @Inject constructor(
     core: IPresenterCore<MainState>,
     private val getSMBConfigurationsUseCase: GetSMBConfigurationsUseCase,
     private val deleteSMBConfigurationUseCase: DeleteSMBConfigurationUseCase,
+    private val mainTracker: MainTracker,
 ) : Presenter<MainState>(core), UserInteractions {
 
     override fun initialize() {
@@ -42,6 +44,7 @@ class MainPresenter @Inject constructor(
             .replace(SmbConfigurationRouteIdArgToReplace, SmbConfigurationRouteNoIdArg)
 
         navigate(Navigate(route))
+        mainTracker.logAddConfigurationClickedEvent()
     }
 
     override fun onNetworkConfigurationItemClicked(smbConfiguration: SMBConfiguration) {
@@ -56,6 +59,7 @@ class MainPresenter @Inject constructor(
             )
 
         navigate(Navigate(route))
+        mainTracker.logOpenConfigurationClickedEvent()
     }
 
     override fun onEditNetworkConfigurationItemClicked(smbConfiguration: SMBConfiguration) {
@@ -66,11 +70,13 @@ class MainPresenter @Inject constructor(
             )
 
         navigate(Navigate(route))
+        mainTracker.logEditConfigurationClickedEvent()
     }
 
     override fun onDeleteNetworkConfigurationItemClicked(smbConfiguration: SMBConfiguration) {
         (currentState as? Loaded)?.let { loaded ->
             tryEmit(loaded.copy(smbConfigurationItemIdToDelete = smbConfiguration.id))
+            mainTracker.logOnDeleteConfigurationClickedEvent()
         }
     }
 
@@ -79,6 +85,7 @@ class MainPresenter @Inject constructor(
             loaded.smbConfigurationItemIdToDelete?.let { id ->
                 viewModelScope.launch {
                     deleteSMBConfigurationUseCase(id)
+                    mainTracker.logConfigurationDeletedEvent()
                 }
             }
         }
