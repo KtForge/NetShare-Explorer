@@ -91,12 +91,13 @@ class ExplorerPresenter @AssistedInject constructor(
                 tryEmit(Loading(loaded.name))
                 val smbConfiguration = loaded.smbConfiguration
                 try {
-                    tryEmit(loaded)
                     filesAndDirectoriesHelper.openFile(smbConfiguration, file, loaded.path)?.let {
                         navigate(OpenFile(it))
                     }
                 } catch (e: Exception) {
                     handleError(e, loaded.name)
+                } finally {
+                    tryEmit(loaded)
                 }
             }
         }
@@ -116,6 +117,7 @@ class ExplorerPresenter @AssistedInject constructor(
     private fun emitFilesAndDirectories(loaded: Loaded, path: String) {
         val smbConfiguration = loaded.smbConfiguration
         viewModelScope.launch(ioDispatcher) {
+            tryEmit(Loading(smbConfigurationName))
             try {
                 val filesAndDirectories = filesAndDirectoriesHelper.getFilesAndDirectories(
                     smbConfiguration,

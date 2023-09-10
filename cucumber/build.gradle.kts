@@ -17,6 +17,7 @@ android {
 
         testInstrumentationRunner = "com.msd.network.explorer.test.ExplorerCucumberTestRunner"
     }
+
     compileOptions {
         sourceCompatibility = Configuration.javaVersion
         targetCompatibility = Configuration.javaVersion
