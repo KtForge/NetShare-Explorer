@@ -7,6 +7,7 @@ import com.msd.feature.edit.R
 import com.msd.feature.edit.presenter.EditState.Loaded
 import com.msd.feature.edit.presenter.EditState.Loading
 import com.msd.feature.edit.presenter.EditState.Uninitialized
+import com.msd.feature.edit.tracker.EditTracker
 import com.msd.navigation.NavigateBack
 import com.msd.navigation.NavigateUp
 import com.msd.presentation.IPresenterCore
@@ -31,12 +32,14 @@ class EditPresenterTest : CoroutineTest() {
     }
     private val getSMBConfigurationUseCase: GetSMBConfigurationUseCase = mock()
     private val storeSMBConfigurationUseCase: StoreSMBConfigurationUseCase = mock()
+    private val editTracker: EditTracker = mock()
     private var smbConfigurationId = 0
     private val presenter by lazy {
         EditPresenter(
             core,
             getSMBConfigurationUseCase,
             storeSMBConfigurationUseCase,
+            editTracker,
             smbConfigurationId,
         )
     }

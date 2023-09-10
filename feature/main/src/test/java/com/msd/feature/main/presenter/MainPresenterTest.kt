@@ -6,6 +6,7 @@ import com.msd.domain.smb.model.SMBConfiguration
 import com.msd.feature.main.presenter.MainState.Empty
 import com.msd.feature.main.presenter.MainState.Loaded
 import com.msd.feature.main.presenter.MainState.Loading
+import com.msd.feature.main.tracker.MainTracker
 import com.msd.navigation.Navigate
 import com.msd.presentation.IPresenterCore
 import com.msd.unittest.CoroutineTest
@@ -31,10 +32,12 @@ class MainPresenterTest : CoroutineTest() {
     }
     private val getSMBConfigurationsUseCase: GetSMBConfigurationsUseCase = mock()
     private val deleteSMBConfigurationUseCase: DeleteSMBConfigurationUseCase = mock()
+    private val mainTracker: MainTracker = mock()
     private val presenter = MainPresenter(
         core,
         getSMBConfigurationsUseCase,
-        deleteSMBConfigurationUseCase
+        deleteSMBConfigurationUseCase,
+        mainTracker
     )
 
     private val smbConfigurations = listOf(

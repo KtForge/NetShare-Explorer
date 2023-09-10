@@ -32,6 +32,7 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:navigation"))
     implementation(project(":core:presentation"))
+    implementation(project(":core:tracking"))
 
     implementation(project(":data:smb_data"))
     implementation(project(":data:explorer_data"))
@@ -42,6 +43,10 @@ dependencies {
     implementation(project(":feature:main"))
     implementation(project(":feature:edit"))
     implementation(project(":feature:explorer"))
+
+    implementation(platform(Dependencies.firebaseBom))
+    implementation(Dependencies.firebaseAnalytics)
+    implementation(Dependencies.firebaseCrashlytics)
 
     implementation(Dependencies.roomRuntime)
 

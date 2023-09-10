@@ -13,6 +13,7 @@ import com.hierynomus.smbj.session.Session
 import com.hierynomus.smbj.share.Directory
 import com.hierynomus.smbj.share.DiskShare
 import com.hierynomus.smbj.share.File
+import com.msd.data.explorer_data.tracker.ExplorerTracker
 import com.msd.domain.explorer.model.NetworkFile
 import org.junit.Test
 import org.mockito.kotlin.any
@@ -26,7 +27,8 @@ class ExplorerDataSourceTest {
 
     private val applicationContext: Context = mock()
     private val client: SMBClient = mock()
-    private val dataSource = ExplorerDataSource(applicationContext, client)
+    private val explorerTracker: ExplorerTracker = mock()
+    private val dataSource = ExplorerDataSource(applicationContext, client, explorerTracker)
 
     private val server = "192.168.1.1"
     private val sharedPath = "Public"
