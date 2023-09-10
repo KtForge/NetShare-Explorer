@@ -4,6 +4,7 @@ import java.io.File
 import java.util.Locale
 import org.gradle.api.GradleException
 import org.gradle.api.Project
+import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.extra
 import org.gradle.kotlin.dsl.register
@@ -47,11 +48,11 @@ project.afterEvaluate {
                 sourceName = buildTypeName
                 sourcePath = buildTypeName
             } else {
-                sourceName = "${flavorName}${buildTypeName.capitalize(Locale.ENGLISH)}"
+                sourceName = "${flavorName}${buildTypeName.capitalized()}"
                 sourcePath = "${flavorName}/${buildTypeName}"
             }
 
-            val testTaskName = "test${sourceName.capitalize(Locale.ENGLISH)}UnitTest"
+            val testTaskName = "test${sourceName.capitalized()}UnitTest"
 
             registerCodeCoverageTask(
                 testTaskName = testTaskName,
