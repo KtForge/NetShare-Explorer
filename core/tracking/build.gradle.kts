@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.msd.data.explorer_data"
+    namespace = "com.msd.core.tracking"
     compileSdk = Configuration.compileSdk
 
 
@@ -27,17 +27,9 @@ android {
 
 dependencies {
 
-    implementation(project(":core:tracking"))
-
-    implementation(project(":domain:explorer"))
-
-    implementation(platform(Dependencies.kotlinBom))
-    implementation(Dependencies.coreKtx)
+    implementation(platform(Dependencies.firebaseBom))
+    implementation(Dependencies.firebaseAnalytics)
 
     implementation(Dependencies.daggerHiltAndroid)
     kapt(Dependencies.daggerHiltAndroidCompiler)
-
-    implementation(Dependencies.smbj)
-
-    testImplementation(project(":core:unittest"))
 }

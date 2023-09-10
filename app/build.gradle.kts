@@ -103,6 +103,7 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:navigation"))
     implementation(project(":core:presentation"))
+    implementation(project(":core:tracking"))
 
     implementation(project(":data:smb_data"))
     implementation(project(":data:explorer_data"))

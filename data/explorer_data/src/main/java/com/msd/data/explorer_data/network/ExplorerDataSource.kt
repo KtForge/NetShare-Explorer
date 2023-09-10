@@ -10,11 +10,11 @@ import com.hierynomus.smbj.SMBClient
 import com.hierynomus.smbj.auth.AuthenticationContext
 import com.hierynomus.smbj.share.DiskShare
 import com.msd.data.explorer_data.mapper.FilesAndDirectoriesMapper.toBaseFile
+import com.msd.data.explorer_data.tracker.ExplorerTracker
 import com.msd.domain.explorer.model.IBaseFile
 import com.msd.domain.explorer.model.SMBException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
-import java.io.FileOutputStream
 import java.net.SocketTimeoutException
 import java.util.EnumSet
 import javax.inject.Inject
@@ -24,6 +24,7 @@ private const val ROOT_PATH = ""
 class ExplorerDataSource @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val client: SMBClient,
+    private val explorerTracker: ExplorerTracker,
 ) {
 
     @Throws(Exception::class)
@@ -34,6 +35,8 @@ class ExplorerDataSource @Inject constructor(
         user: String,
         psw: String
     ): List<IBaseFile> {
+        val start = System.currentTimeMillis()
+
         return try {
             client.connect(server).use { connection ->
                 val authenticationContext = AuthenticationContext(user, psw.toCharArray(), server)
@@ -53,9 +56,16 @@ class ExplorerDataSource @Inject constructor(
                         null
                     )
 
-                    directory.list().mapNotNull { file ->
+                    val filesAndDirectories = directory.list().mapNotNull { file ->
                         file.toBaseFile(diskShare, parentPath = parentPath)
                     }
+
+                    val openTime = System.currentTimeMillis() - start
+                    val filesNumber = filesAndDirectories.size
+
+                    explorerTracker.logListFilesAndDirectoriesEvent(filesNumber, openTime)
+
+                    filesAndDirectories
                 } ?: emptyList()
             }
         } catch (e: Exception) {
@@ -72,7 +82,7 @@ class ExplorerDataSource @Inject constructor(
         user: String,
         psw: String,
     ): File? {
-        val client = SMBClient()
+        val start = System.currentTimeMillis()
 
         return try {
             client.connect(server).use { connection ->
@@ -94,17 +104,21 @@ class ExplorerDataSource @Inject constructor(
                         null
                     )
 
-                    val folder = File(appContext.cacheDir, "$server/$sharedPath/$parentPath")
+                    val path = "$server/$sharedPath/$parentPath"
+                    val folder = File(appContext.cacheDir, path)
                     if (!folder.exists()) {
                         folder.mkdirs()
                     }
-                    val newFile =
-                        File(appContext.cacheDir, "$server/$sharedPath/$parentPath/$fileName")
-                    file.inputStream.use { _is ->
-                        FileOutputStream(newFile).use { output ->
-                            _is.copyTo(output)
-                        }
-                    }
+
+                    val newFile = File(appContext.cacheDir, "$path/$fileName")
+
+                    file.inputStream.copyTo(newFile.outputStream())
+
+                    val openTime = System.currentTimeMillis() - start
+                    val fileSize = file.fileInformation.standardInformation.endOfFile
+
+                    explorerTracker.logOpenFileEvent(fileSize, openTime)
+
                     newFile
                 }
             }

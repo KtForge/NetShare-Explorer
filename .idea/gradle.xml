@@ -16,6 +16,7 @@
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core/navigation" />
             <option value="$PROJECT_DIR$/core/presentation" />
+            <option value="$PROJECT_DIR$/core/tracking" />
             <option value="$PROJECT_DIR$/core/ui" />
             <option value="$PROJECT_DIR$/core/uitest" />
             <option value="$PROJECT_DIR$/core/unittest" />
