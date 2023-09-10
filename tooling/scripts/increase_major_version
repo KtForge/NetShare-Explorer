@@ -8,15 +8,15 @@ do
   eval "${key}"=\${value}
 done < "$file"
 
-next_minor_version=$((version_minor + 1))
+next_major_version=$((version_major + 1))
 
 cat <<END > "$file"
-version.major=$version_major
-version.minor=$next_minor_version
+version.major=$next_major_version
+version.minor=0
 version.patch=0
 version.build=0
 END
 
 cat "$file"
 
-echo "$version_major.$next_minor_version.0.0" > version.txt
+echo "$next_major_version.0.0.0" > version.txt
