@@ -4,7 +4,6 @@ import com.msd.network.explorer.test.steps.ComposeRuleHolder
 import com.msd.network.explorer.test.steps.logger.LoggerReader
 import io.cucumber.java.en.Given
 
-
 class AppSteps {
 
     private val composeRuleHolder: ComposeRuleHolder = ComposeRuleHolder()
