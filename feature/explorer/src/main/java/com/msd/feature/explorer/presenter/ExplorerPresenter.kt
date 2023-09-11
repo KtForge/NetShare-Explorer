@@ -13,8 +13,10 @@ import com.msd.feature.explorer.helper.FilesAndDirectoriesHelper
 import com.msd.feature.explorer.presenter.ExplorerState.Error
 import com.msd.feature.explorer.presenter.ExplorerState.Loaded
 import com.msd.feature.explorer.presenter.ExplorerState.Loading
+import com.msd.navigation.Navigate
 import com.msd.navigation.NavigateBack
 import com.msd.navigation.NavigateUp
+import com.msd.navigation.NavigationConstants
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteIdArg
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNameArg
 import com.msd.navigation.OpenFile
@@ -59,11 +61,12 @@ class ExplorerPresenter @AssistedInject constructor(
                                     smbConfiguration,
                                     root = root,
                                     path = root,
-                                    filesAndDirectories
+                                    filesOrDirectories = filesAndDirectories,
+                                    fileAccessError = null,
                                 )
                             )
                         } catch (e: Exception) {
-                            handleError(e, smbConfigurationName)
+                            tryEmit(handleError(e, smbConfigurationName))
                         }
                     }
                 } ?: tryEmit(Error.UnknownError(smbConfigurationName))
@@ -91,13 +94,22 @@ class ExplorerPresenter @AssistedInject constructor(
                 tryEmit(Loading(loaded.name))
                 val smbConfiguration = loaded.smbConfiguration
                 try {
-                    filesAndDirectoriesHelper.openFile(smbConfiguration, file, loaded.path)?.let {
-                        navigate(OpenFile(it))
+                    val fileToOpen = filesAndDirectoriesHelper.openFile(
+                        smbConfiguration,
+                        file,
+                        loaded.path
+                    )
+
+                    if (fileToOpen != null) {
+                        navigate(OpenFile(fileToOpen))
+                        tryEmit(loaded)
+                    } else {
+                        tryEmit(
+                            loaded.copy(fileAccessError = Error.UnknownError(smbConfigurationName))
+                        )
                     }
                 } catch (e: Exception) {
-                    handleError(e, loaded.name)
-                } finally {
-                    tryEmit(loaded)
+                    tryEmit(loaded.copy(fileAccessError = handleError(e, loaded.name)))
                 }
             }
         }
@@ -126,19 +138,35 @@ class ExplorerPresenter @AssistedInject constructor(
 
                 tryEmit(loaded.copy(path = path, filesOrDirectories = filesAndDirectories))
             } catch (e: Exception) {
-                handleError(e, loaded.name)
+                tryEmit(handleError(e, loaded.name))
             }
         }
     }
 
-    private fun handleError(e: Exception, name: String) {
-        val error = when (e) {
+    private fun handleError(e: Exception, name: String): Error {
+        return when (e) {
             SMBException.ConnectionError -> Error.ConnectionError(name)
             SMBException.AccessDenied -> Error.AccessError(name)
             else -> Error.UnknownError(name)
         }
+    }
 
-        tryEmit(error)
+    override fun confirmDialog() {
+        dismissDialog()
+
+        val route = NavigationConstants.EditNetworkConfiguration
+            .replace(
+                NavigationConstants.SmbConfigurationRouteIdArgToReplace,
+                smbConfigurationId.toString()
+            )
+
+        navigate(Navigate(route))
+    }
+
+    override fun dismissDialog() {
+        (currentState as? Loaded)?.let { loaded ->
+            tryEmit(loaded.copy(fileAccessError = null))
+        }
     }
 
     override fun onNavigateUp() {
@@ -173,4 +201,6 @@ interface UserInteractions {
     fun onItemClicked(file: IBaseFile)
     fun onBackPressed()
     fun onNavigateUp()
+    fun confirmDialog()
+    fun dismissDialog()
 }

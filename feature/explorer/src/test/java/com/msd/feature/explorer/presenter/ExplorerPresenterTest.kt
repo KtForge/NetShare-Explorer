@@ -70,7 +70,8 @@ class ExplorerPresenterTest : CoroutineTest() {
         smbConfiguration,
         root = expectedPathAndRoot,
         path = expectedPathAndRoot,
-        filesOrDirectories = emptyList()
+        filesOrDirectories = emptyList(),
+        fileAccessError = null,
     )
 
     @Test
@@ -387,6 +388,9 @@ class ExplorerPresenterTest : CoroutineTest() {
     @Test
     fun `when clicking on a file in loaded state and null file should restore the state`() =
         runTest {
+            val expectedState = loaded.copy(
+                fileAccessError = Error.UnknownError(smbConfigurationName)
+            )
             whenever(core.currentState()).thenReturn(loaded)
             whenever(
                 filesAndDirectoriesHelper.openFile(
@@ -400,13 +404,16 @@ class ExplorerPresenterTest : CoroutineTest() {
             advanceUntilIdle()
 
             verify(core).tryEmit(Loading(smbConfigurationName))
-            verify(core).tryEmit(loaded)
+            verify(core).tryEmit(expectedState)
             verify(core, times(0)).navigate(any())
         }
 
     @Test
     fun `when clicking on a file in loaded state and connection error should emit error state`() =
         runTest {
+            val expectedState = loaded.copy(
+                fileAccessError = Error.ConnectionError(smbConfigurationName)
+            )
             whenever(core.currentState()).thenReturn(loaded)
             whenever(
                 filesAndDirectoriesHelper.openFile(
@@ -420,13 +427,16 @@ class ExplorerPresenterTest : CoroutineTest() {
             advanceUntilIdle()
 
             verify(core).tryEmit(Loading(smbConfigurationName))
-            verify(core).tryEmit(Error.ConnectionError(smbConfigurationName))
+            verify(core).tryEmit(expectedState)
             verify(core, times(0)).navigate(any())
         }
 
     @Test
     fun `when clicking on a file in loaded state and access error should emit error state`() =
         runTest {
+            val expectedState = loaded.copy(
+                fileAccessError = Error.AccessError(smbConfigurationName)
+            )
             whenever(core.currentState()).thenReturn(loaded)
             whenever(
                 filesAndDirectoriesHelper.openFile(
@@ -440,13 +450,16 @@ class ExplorerPresenterTest : CoroutineTest() {
             advanceUntilIdle()
 
             verify(core).tryEmit(Loading(smbConfigurationName))
-            verify(core).tryEmit(Error.AccessError(smbConfigurationName))
+            verify(core).tryEmit(expectedState)
             verify(core, times(0)).navigate(any())
         }
 
     @Test
     fun `when clicking on a file in loaded state and unknown error should emit error state`() =
         runTest {
+            val expectedState = loaded.copy(
+                fileAccessError = Error.UnknownError(smbConfigurationName)
+            )
             whenever(core.currentState()).thenReturn(loaded)
             whenever(
                 filesAndDirectoriesHelper.openFile(
@@ -460,7 +473,7 @@ class ExplorerPresenterTest : CoroutineTest() {
             advanceUntilIdle()
 
             verify(core).tryEmit(Loading(smbConfigurationName))
-            verify(core).tryEmit(Error.UnknownError(smbConfigurationName))
+            verify(core).tryEmit(expectedState)
             verify(core, times(0)).navigate(any())
         }
 

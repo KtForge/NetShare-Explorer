@@ -153,6 +153,7 @@ class EditPresenterTest : CoroutineTest() {
         )
         verify(core).tryEmit(Loading)
         verify(core).navigate(NavigateBack)
+        verify(editTracker).logSMBConfigurationEditedEvent()
     }
 
     @Test

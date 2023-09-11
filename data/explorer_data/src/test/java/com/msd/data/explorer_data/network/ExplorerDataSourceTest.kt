@@ -92,5 +92,6 @@ class ExplorerDataSourceTest {
             null,
         )
         verify(directory).list()
+        verify(explorerTracker).logListFilesAndDirectoriesEvent(any(), any())
     }
 }
