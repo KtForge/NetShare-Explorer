@@ -16,6 +16,9 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
     compileOptions {
         sourceCompatibility = Configuration.javaVersion
         targetCompatibility = Configuration.javaVersion
@@ -27,6 +30,7 @@ android {
 
 dependencies {
 
+    implementation(Dependencies.firebaseCrashlytics)
     implementation(platform(Dependencies.firebaseBom))
     implementation(Dependencies.firebaseAnalytics)
 

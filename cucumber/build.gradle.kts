@@ -115,12 +115,10 @@ tasks.register<WriteProperties>("setRecordingMode") {
     } else {
         false
     }
-    outputFile = file("src/main/assets/config/recording.properties")
 
-    doLast {
-        println("Recording mode: $record")
-        property("record", record)
-    }
+    outputFile = file("src/main/assets/config/recording.properties")
+    println("Recording mode: $record")
+    property("record", record)
 }
 
 tasks.register("installTestApp") {

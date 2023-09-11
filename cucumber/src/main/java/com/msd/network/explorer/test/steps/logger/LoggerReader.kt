@@ -8,6 +8,8 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStreamReader
 
+private const val BEGINNING_TAG = "--------- beginning of main"
+
 object LoggerReader {
 
     private var counter = 0
@@ -15,7 +17,7 @@ object LoggerReader {
     private var fileName: String = ""
     private val events: MutableList<String> = mutableListOf()
     private var record: Boolean = false
-    private var logToRecord: StringBuilder = StringBuilder()
+    private val logToRecord = StringBuilder()
 
     fun initialize(record: Boolean) {
         Runtime.getRuntime().exec("logcat -c")
@@ -41,23 +43,20 @@ object LoggerReader {
     fun readLogCat() {
         if (filter.isNotEmpty()) {
             try {
-                val process = Runtime.getRuntime().exec("logcat -d")
-                val bufferedReader = BufferedReader(
-                    InputStreamReader(process.inputStream)
-                )
+                val process = Runtime.getRuntime().exec("logcat $filter:I *:S -v raw -d")
+                val bufferedReader = BufferedReader(InputStreamReader(process.inputStream))
                 val log = StringBuilder()
                 var line: String?
                 while (bufferedReader.readLine().also { line = it } != null) {
                     val shouldWriteLine = !line.isNullOrEmpty() &&
-                            line?.contains("$filter:", ignoreCase = true) == true
+                            !logToRecord.contains(line.orEmpty()) &&
+                            line != BEGINNING_TAG
+
                     if (shouldWriteLine) {
-                        val cleanLine = line?.replaceBefore("${filter.uppercase()}:", "")
-                        log.appendLine("STEP: $counter -> $cleanLine")
+                        log.appendLine(line)
                     }
                 }
                 processLog(log)
-                // Clean logcat for next step
-                Runtime.getRuntime().exec("logcat -c")
             } catch (e: IOException) {
                 throw RuntimeException("Can't read the logcat")
             }
@@ -87,6 +86,7 @@ object LoggerReader {
         val byteArray = ByteArrayInputStream(log.toString().toByteArray())
         byteArray.bufferedReader().use { reader ->
             reader.forEachLine { line ->
+                logToRecord.appendLine(line)
                 if (line == events.first()) {
                     events.removeFirst()
                 } else {

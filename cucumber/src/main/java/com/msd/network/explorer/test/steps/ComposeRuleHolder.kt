@@ -48,6 +48,7 @@ class ComposeRuleHolder {
 
     @AfterStep
     fun readLogCat() {
+        Thread.sleep(100)
         LoggerReader.readLogCat()
     }
 

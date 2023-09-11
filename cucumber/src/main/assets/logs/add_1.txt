@@ -1,2 +1,2 @@
-STEP: 1 -> TRACKING: Adding configuration
-STEP: 8 -> TRACKING: Configuration saved!
+{"event_name":"add_configuration_clicked","parameters":{}}
+{"event_name":"smb_configuration_created","parameters":{}}

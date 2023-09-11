@@ -5,7 +5,7 @@ Feature: Edit screen feature
   Scenario: User can save a network configuration
     When I initialize the App
     Then I am on Main screen
-    And I start listening for "Tracking" with "add_1.txt" file
+    And I start listening for "TRACKING" with "add_1.txt" file
     And I click on add network configuration button
     Then I type "Linux" in field "Name"
     And I type "192.168.1.1" in field "Server"
