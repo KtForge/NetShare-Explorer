@@ -5,7 +5,7 @@ Feature: Edit screen feature
   Scenario: User can save a network configuration
     When I initialize the App
     Then I am on Main screen
-    And I start listening for "TRACKING" with "add_1.txt" file
+    And I start listening for "TRACKING" with "add/add_1.txt" file
     And I click on add network configuration button
     Then I type "Linux" in field "Name"
     And I type "192.168.1.1" in field "Server"
@@ -20,6 +20,7 @@ Feature: Edit screen feature
   Scenario: User is notified about empty server field
     When I initialize the App
     Then I am on Main screen
+    And I start listening for "TRACKING" with "add/add_2.txt" file
     And I click on add network configuration button
     And I type "Public" in field "Shared path"
     And I click the save button
@@ -28,6 +29,7 @@ Feature: Edit screen feature
   @android @add_3
   Scenario: User is notified about empty shared path field
     When I initialize the App
+    And I start listening for "TRACKING" with "add/add_3.txt" file
     Then I am on Main screen
     And I click on add network configuration button
     And I type "192.168.1.1" in field "Server"

@@ -1,6 +1,12 @@
 package com.msd.network.explorer.test.steps.logger
 
 import androidx.test.platform.app.InstrumentationRegistry
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.BufferedReader
 import java.io.ByteArrayInputStream
 import java.io.File
@@ -12,113 +18,109 @@ private const val BEGINNING_TAG = "--------- beginning of main"
 
 object LoggerReader {
 
-    private var counter = 0
+    private var filePath: String = ""
     private var filter: String = ""
-    private var fileName: String = ""
     private val events: MutableList<String> = mutableListOf()
     private var record: Boolean = false
     private val logToRecord = StringBuilder()
+    private val job = CoroutineScope(Job())
 
     fun initialize(record: Boolean) {
-        Runtime.getRuntime().exec("logcat -c")
         this.record = record
-        counter = 0
         filter = ""
-        fileName = ""
+        filePath = ""
         logToRecord.clear()
         events.clear()
     }
 
-    fun listenToEvents(filter: String, fileName: String) {
+    fun listenToEvents(filter: String, filePath: String) {
+        // Clear logcat
+        Runtime.getRuntime().exec("logcat -c")
+
+        // Set variables
+        this.filePath = filePath
         this.filter = filter
-        this.fileName = fileName
+
+        // Open file to compare if not recording
         if (!record) {
             val context = InstrumentationRegistry.getInstrumentation().context
-            context.assets.open("logs/$fileName").bufferedReader().use { reader ->
+            context.assets.open("logs/$filePath").bufferedReader().use { reader ->
                 reader.forEachLine { line -> events.add(line) }
             }
         }
-    }
 
-    fun readLogCat() {
         if (filter.isNotEmpty()) {
-            try {
-                val process = Runtime.getRuntime().exec("logcat $filter:I *:S -v raw -d")
-                val bufferedReader = BufferedReader(InputStreamReader(process.inputStream))
-                val log = StringBuilder()
-                var line: String?
-                while (bufferedReader.readLine().also { line = it } != null) {
-                    val shouldWriteLine = !line.isNullOrEmpty() &&
-                            !logToRecord.contains(line.orEmpty()) &&
-                            line != BEGINNING_TAG
+            job.launch {
+                withContext(Dispatchers.IO) {
+                    try {
+                        val process =
+                            Runtime.getRuntime().exec("logcat $filter:I *:S -v raw")
+                        val bufferedReader = BufferedReader(InputStreamReader(process.inputStream))
+                        var line: String?
+                        while (bufferedReader.readLine().also { line = it } != null) {
+                            val shouldWriteLine = !line.isNullOrEmpty() &&
+                                    line != BEGINNING_TAG
 
-                    if (shouldWriteLine) {
-                        log.appendLine(line)
+                            if (shouldWriteLine) {
+                                processEvent(line!!)
+                            }
+                        }
+                    } catch (e: IOException) {
+                        throw RuntimeException("Can't read the logcat")
                     }
                 }
-                processLog(log)
-            } catch (e: IOException) {
-                throw RuntimeException("Can't read the logcat")
             }
-            counter++
         }
     }
 
-    private fun processLog(log: StringBuilder) {
+    private fun processEvent(line: String) {
         if (record) {
-            saveLogs(log)
+            saveLine(line)
         } else {
-            compareEvents(log)
+            compareEvent(line)
         }
     }
 
-    private fun saveLogs(log: StringBuilder) {
-        val byteArray = ByteArrayInputStream(log.toString().toByteArray())
-        byteArray.bufferedReader().use { reader ->
-            reader.forEachLine { line ->
-                logToRecord.appendLine(line)
-            }
-        }
+    private fun saveLine(line: String) {
+        logToRecord.appendLine(line)
     }
 
-    // compare first line from comparison file with event and discard first line of file if match
-    private fun compareEvents(log: StringBuilder) {
-        val byteArray = ByteArrayInputStream(log.toString().toByteArray())
-        byteArray.bufferedReader().use { reader ->
-            reader.forEachLine { line ->
-                logToRecord.appendLine(line)
-                if (line == events.first()) {
-                    events.removeFirst()
-                } else {
-                    throw RuntimeException("Expected: ${events.first()}, found: $line")
-                }
-            }
+    private fun compareEvent(line: String) {
+        if (line == events.first()) {
+            events.removeFirst()
+        } else {
+            throw RuntimeException("Expected: ${events.first()}, found: $line")
         }
     }
 
     fun writeLogsIfRecording() {
+        job.cancel()
         if (record && filter.isNotEmpty()) {
             // write events on specified file
-            if (fileName.isEmpty()) {
+            if (filePath.isEmpty()) {
                 throw RuntimeException("No file to write the logs")
             }
             if (logToRecord.isNotEmpty()) {
-                writeFile(logToRecord)
+                writeFile()
             }
         }
     }
 
-    private fun writeFile(log: StringBuilder) {
-        if (fileName.isNotEmpty()) {
+    private fun writeFile() {
+        if (filePath.isNotEmpty()) {
             val outputDir = InstrumentationRegistry.getInstrumentation().targetContext.cacheDir
-            val folder = File(outputDir, "logs")
+
+            val relativePath = filePath.substringBeforeLast("/")
+            val fileName = filePath.substringAfterLast("/")
+
+            val folder = File(outputDir, "logs/$relativePath")
             if (!folder.exists()) {
-                folder.mkdir()
+                folder.mkdirs()
             }
 
             val file = File(folder, fileName)
 
-            val byteArray = ByteArrayInputStream(log.toString().toByteArray())
+            val byteArray = ByteArrayInputStream(logToRecord.toString().toByteArray())
             byteArray.use { _is ->
                 FileOutputStream(file).use { output ->
                     _is.copyTo(output)

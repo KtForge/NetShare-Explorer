@@ -10,7 +10,6 @@ import com.msd.data.smb_data.local.SMBConfigurationDatabase
 import com.msd.data.smb_data.model.DataSMBConfiguration
 import com.msd.network.explorer.test.steps.logger.LoggerReader
 import io.cucumber.java.After
-import io.cucumber.java.AfterStep
 import io.cucumber.java.Before
 import io.cucumber.junit.WithJunitRule
 import kotlinx.coroutines.CoroutineScope
@@ -44,12 +43,6 @@ class ComposeRuleHolder {
     @After
     fun writeLogsIfRecording() {
         LoggerReader.writeLogsIfRecording()
-    }
-
-    @AfterStep
-    fun readLogCat() {
-        Thread.sleep(100)
-        LoggerReader.readLogCat()
     }
 
     fun launchApp() {

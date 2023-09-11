@@ -20,7 +20,7 @@ class AppSteps {
     }
 
     @Given("I start listening for {string} with {string} file")
-    fun i_start_listening_for(filter: String, fileName: String) {
-        LoggerReader.listenToEvents(filter, fileName)
+    fun i_start_listening_for(filter: String, filePath: String) {
+        LoggerReader.listenToEvents(filter, filePath)
     }
 }
