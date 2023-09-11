@@ -57,7 +57,7 @@ android {
         testApplicationId = Configuration.namespace + ".test"
         minSdk = Configuration.minSdk
         targetSdk = Configuration.targetSdk
-        versionCode = major.times(10000) + minor.times(1000) + patch.times(100) + build
+        versionCode = major.times(1000000) + minor.times(10000) + patch.times(100) + build
         versionName = "$major.$minor.$patch"
 
         vectorDrawables {
