@@ -32,7 +32,8 @@ dependencies {
     implementation(platform(Dependencies.kotlinBom))
     implementation(Dependencies.coreKtx)
 
-    implementation(Dependencies.inject)
+    implementation(Dependencies.daggerHiltAndroid)
+    kapt(Dependencies.daggerHiltAndroidCompiler)
 
     implementation(Dependencies.roomRuntime)
     annotationProcessor(Dependencies.roomCompiler)

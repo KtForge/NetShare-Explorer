@@ -41,6 +41,7 @@ object Versions {
 
     // Versions specific to this app
     const val smbj = "0.12.0"
+    const val slf4j = "2.0.9"
     const val room = "2.5.0"
 
     const val cucumberReporting = "0.1.25"

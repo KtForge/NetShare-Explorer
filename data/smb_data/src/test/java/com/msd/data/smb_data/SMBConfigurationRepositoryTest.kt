@@ -1,5 +1,6 @@
 package com.msd.data.smb_data
 
+import android.content.Context
 import com.msd.data.smb_data.local.SMBConfigurationDao
 import com.msd.data.smb_data.model.DataSMBConfiguration
 import com.msd.domain.smb.model.SMBConfiguration
@@ -16,8 +17,9 @@ import org.mockito.kotlin.whenever
 @OptIn(ExperimentalCoroutinesApi::class)
 class SMBConfigurationRepositoryTest : CoroutineTest() {
 
+    private val context: Context = mock()
     private val smbConfigurationDao: SMBConfigurationDao = mock()
-    private val repository = SMBConfigurationRepository(smbConfigurationDao)
+    private val repository = SMBConfigurationRepository(context, smbConfigurationDao)
 
     @Test
     fun `when getting all configurations should invoke the dao object`() = runTest {

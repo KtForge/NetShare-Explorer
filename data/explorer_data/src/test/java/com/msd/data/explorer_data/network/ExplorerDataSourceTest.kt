@@ -25,7 +25,10 @@ import java.util.EnumSet
 
 class ExplorerDataSourceTest {
 
-    private val applicationContext: Context = mock()
+    private val cacheDirFile: java.io.File = mock()
+    private val applicationContext: Context = mock {
+        on { cacheDir } doReturn cacheDirFile
+    }
     private val client: SMBClient = mock()
     private val explorerTracker: ExplorerTracker = mock()
     private val dataSource = ExplorerDataSource(applicationContext, client, explorerTracker)

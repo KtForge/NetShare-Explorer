@@ -16,9 +16,13 @@ import com.msd.domain.explorer.model.IBaseFile
 import com.msd.domain.explorer.model.SMBException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
+import java.io.InputStream
 import java.net.SocketTimeoutException
 import java.util.EnumSet
+import java.util.zip.CRC32
+import java.util.zip.CheckedInputStream
 import javax.inject.Inject
+
 
 private const val ROOT_PATH = ""
 
@@ -66,6 +70,8 @@ class ExplorerDataSource @Inject constructor(
 
                     explorerTracker.logListFilesAndDirectoriesEvent(filesNumber, openTime)
 
+                    cleanFiles(server, sharedPath, parentPath, filesAndDirectories)
+
                     filesAndDirectories
                 } ?: emptyList()
             }
@@ -73,6 +79,25 @@ class ExplorerDataSource @Inject constructor(
             throw handleException(e)
         } finally {
             client.close()
+        }
+    }
+
+    private fun cleanFiles(
+        server: String,
+        sharedPath: String,
+        path: String,
+        filesAndDirectories: List<IBaseFile>
+    ) {
+        val cacheDir = appContext.cacheDir
+        val cacheServerPath = "${cacheDir.absolutePath}/$server/$sharedPath/$path"
+        val cacheServerDirectory = File(cacheServerPath)
+
+        if (cacheServerDirectory.exists()) {
+            cacheServerDirectory.listFiles()?.filter { it.isFile }?.forEach { file ->
+                if (filesAndDirectories.all { file.name != it.name }) {
+                    file.delete()
+                }
+            }
         }
     }
 
@@ -87,7 +112,7 @@ class ExplorerDataSource @Inject constructor(
     ): File? {
         val start = System.currentTimeMillis()
 
-        return try {
+        try {
             client.connect(server).use { connection ->
                 val authenticationContext = AuthenticationContext(user, psw.toCharArray(), server)
                 val session = connection.authenticate(authenticationContext)
@@ -113,23 +138,38 @@ class ExplorerDataSource @Inject constructor(
                         folder.mkdirs()
                     }
 
-                    val newFile = File(appContext.cacheDir, "$path/$fileName")
+                    val localFile = File(appContext.cacheDir, "$path/$fileName")
+                    val fileSize =
+                        file.getFileInformation(FileStandardInformation::class.java).endOfFile
 
-                    file.inputStream.copyTo(newFile.outputStream())
+                    if (localFile.exists() && localFile.length() == fileSize) {
+                        return localFile
+                    }
+
+                    file.inputStream.copyTo(localFile.outputStream())
 
                     val openTime = System.currentTimeMillis() - start
-                    val fileSize = file.getFileInformation(FileStandardInformation::class.java).endOfFile
 
                     explorerTracker.logOpenFileEvent(fileSize, openTime)
 
-                    newFile
-                }
+                    return localFile
+                } ?: return null
             }
         } catch (e: Exception) {
             throw handleException(e)
         } finally {
             client.close()
         }
+    }
+
+    private fun getChecksumCRC32(stream: InputStream, bufferSize: Int = DEFAULT_BUFFER_SIZE): Long {
+        val checkedInputStream = CheckedInputStream(stream, CRC32())
+        val buffer = ByteArray(bufferSize)
+        while (checkedInputStream.read(buffer, 0, buffer.size) >= 0) {
+            // Loop
+        }
+
+        return checkedInputStream.checksum.value
     }
 
     private fun handleException(exception: Exception): Throwable {

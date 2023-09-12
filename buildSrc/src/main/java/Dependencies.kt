@@ -52,6 +52,8 @@ object Dependencies {
 
     // Dependencies specific to this app
     val smbj by lazy { "com.hierynomus:smbj:${Versions.smbj}" }
+    val slf4j by lazy { "org.slf4j:slf4j-api:${Versions.slf4j}" }
+    val slf4jProvider by lazy { "org.slf4j:slf4j-simple:${Versions.slf4j}" }
     val roomRuntime by lazy { "androidx.room:room-runtime:${Versions.room}" }
     val roomCompiler by lazy { "androidx.room:room-compiler:${Versions.room}" }
     val roomKtx by lazy { "androidx.room:room-ktx:${Versions.room}" }

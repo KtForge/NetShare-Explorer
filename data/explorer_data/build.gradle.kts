@@ -40,4 +40,7 @@ dependencies {
     implementation(Dependencies.smbj)
 
     testImplementation(project(":core:unittest"))
+
+    testImplementation(Dependencies.slf4j)
+    testImplementation(Dependencies.slf4jProvider)
 }
