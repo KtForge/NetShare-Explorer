@@ -22,6 +22,7 @@ interface IExplorerRepository {
         absolutePath: String,
         fileName: String,
         user: String,
-        psw: String
-    ): File?
+        psw: String,
+        progressListener: (Float) -> Unit,
+    ): File
 }

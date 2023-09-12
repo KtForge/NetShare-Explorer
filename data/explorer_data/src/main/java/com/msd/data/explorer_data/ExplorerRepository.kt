@@ -4,7 +4,6 @@ import com.msd.data.explorer_data.network.ExplorerDataSource
 import com.msd.domain.explorer.IExplorerRepository
 import com.msd.domain.explorer.model.IBaseFile
 import com.msd.domain.explorer.model.NetworkFile
-import java.io.File
 import javax.inject.Inject
 
 class ExplorerRepository @Inject constructor(
@@ -28,6 +27,7 @@ class ExplorerRepository @Inject constructor(
         absolutePath: String,
         fileName: String,
         user: String,
-        psw: String
-    ): File? = dataSource.openFile(server, sharedPath, absolutePath, fileName, user, psw)
+        psw: String,
+        progressListener: (Float) -> Unit
+    ) = dataSource.openFile(server, sharedPath, absolutePath, fileName, user, psw, progressListener)
 }

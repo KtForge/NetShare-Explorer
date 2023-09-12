@@ -7,6 +7,8 @@ import com.msd.data.files.FileManager
 import com.msd.domain.explorer.model.IBaseFile
 import com.msd.domain.explorer.model.SMBException
 import java.io.File
+import java.io.InputStream
+import java.io.OutputStream
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 import com.hierynomus.smbj.share.File as SMBFile
@@ -56,6 +58,7 @@ class ExplorerDataSource @Inject constructor(
         fileName: String,
         user: String,
         psw: String,
+        progressListener: (Float) -> Unit,
     ): File {
         val start = System.currentTimeMillis()
 
@@ -75,7 +78,11 @@ class ExplorerDataSource @Inject constructor(
                 val fileSize = smbHelper.getFileSize(remoteFile)
 
                 if (!isLocalFileValid(localFile, remoteFile)) {
-                    remoteFile.inputStream.copyTo(localFile.outputStream())
+                    remoteFile.inputStream.copyTo(
+                        localFile.outputStream(),
+                        fileSize,
+                        progressListener
+                    )
                 }
 
                 val openTime = System.currentTimeMillis() - start
@@ -99,6 +106,23 @@ class ExplorerDataSource @Inject constructor(
         }
 
         return false
+    }
+
+    private fun InputStream.copyTo(
+        out: OutputStream,
+        fileSize: Long,
+        progressListener: (progress: Float) -> Unit
+    ) {
+        var bytesCopied: Long = 0
+        val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+        var bytes = read(buffer)
+
+        while (bytes >= 0) {
+            out.write(buffer, 0, bytes)
+            bytesCopied += bytes
+            progressListener(bytesCopied.toFloat().div(fileSize))
+            bytes = read(buffer)
+        }
     }
 
     private fun handleException(exception: Exception): Throwable {

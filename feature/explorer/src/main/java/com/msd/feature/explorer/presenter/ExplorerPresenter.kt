@@ -1,5 +1,6 @@
 package com.msd.feature.explorer.presenter
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -27,6 +28,8 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class ExplorerPresenter @AssistedInject constructor(
@@ -37,6 +40,8 @@ class ExplorerPresenter @AssistedInject constructor(
     @Assisted(SmbConfigurationRouteIdArg) private val smbConfigurationId: Int,
     @Assisted(SmbConfigurationRouteNameArg) private val smbConfigurationName: String,
 ) : Presenter<ExplorerState>(core), UserInteractions {
+
+    private val downloadJob = Job()
 
     override fun initialize() {
         if (isInitialized()) return
@@ -93,23 +98,22 @@ class ExplorerPresenter @AssistedInject constructor(
             viewModelScope.launch(ioDispatcher) {
                 tryEmit(Loading(loaded.name))
                 val smbConfiguration = loaded.smbConfiguration
-                try {
-                    val fileToOpen = filesAndDirectoriesHelper.openFile(
-                        smbConfiguration,
-                        file,
-                        loaded.path
-                    )
+                CoroutineScope(downloadJob).launch {
+                    try {
+                        val fileToOpen = filesAndDirectoriesHelper.openFile(
+                            smbConfiguration,
+                            file,
+                            loaded.path
+                        ) { progress ->
+                            val formattedProgress = progress.times(100)
+                            tryEmit(loaded.copy(fileDownloadProgress = formattedProgress))
+                        }
 
-                    if (fileToOpen != null) {
                         navigate(OpenFile(fileToOpen))
-                        tryEmit(loaded)
-                    } else {
-                        tryEmit(
-                            loaded.copy(fileAccessError = Error.UnknownError(smbConfigurationName))
-                        )
+                        tryEmit(loaded.copy(fileDownloadProgress = null))
+                    } catch (e: Exception) {
+                        tryEmit(loaded.copy(fileAccessError = handleError(e, loaded.name)))
                     }
-                } catch (e: Exception) {
-                    tryEmit(loaded.copy(fileAccessError = handleError(e, loaded.name)))
                 }
             }
         }
@@ -169,6 +173,13 @@ class ExplorerPresenter @AssistedInject constructor(
         }
     }
 
+    override fun dismissProgressDialog() {
+        (currentState as? Loaded)?.let { loaded ->
+            downloadJob.cancel()
+            tryEmit(loaded.copy(fileDownloadProgress = null))
+        }
+    }
+
     override fun onNavigateUp() {
         navigate(NavigateUp)
     }
@@ -203,4 +214,5 @@ interface UserInteractions {
     fun onNavigateUp()
     fun confirmDialog()
     fun dismissDialog()
+    fun dismissProgressDialog()
 }

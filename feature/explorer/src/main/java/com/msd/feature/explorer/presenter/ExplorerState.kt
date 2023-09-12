@@ -16,6 +16,7 @@ sealed class ExplorerState(open val name: String) : State {
         val path: String,
         val filesOrDirectories: List<IBaseFile>,
         val fileAccessError: Error?,
+        val fileDownloadProgress: Float? = null,
     ) : ExplorerState(smbConfiguration.name)
 
     sealed class Error(override val name: String, @StringRes val message: Int) :

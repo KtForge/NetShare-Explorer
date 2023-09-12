@@ -32,14 +32,20 @@ class FilesAndDirectoriesHelper @Inject constructor(
     }
 
     @Throws(Exception::class)
-    suspend fun openFile(smbConfiguration: SMBConfiguration, file: IBaseFile, path: String): File? {
+    suspend fun openFile(
+        smbConfiguration: SMBConfiguration,
+        file: IBaseFile,
+        path: String,
+        progressListener: (Float) -> Unit
+    ): File {
         return openFileUseCase(
             server = smbConfiguration.server,
             sharedPath = smbConfiguration.sharedPath,
             absolutePath = path,
             fileName = file.name,
             user = smbConfiguration.user,
-            psw = smbConfiguration.psw
+            psw = smbConfiguration.psw,
+            progressListener = progressListener,
         )
     }
 }

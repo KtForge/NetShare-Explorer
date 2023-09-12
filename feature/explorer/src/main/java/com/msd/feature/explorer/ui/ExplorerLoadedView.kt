@@ -17,6 +17,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -57,6 +58,24 @@ fun ExplorerLoadedView(loaded: Loaded, userInteractions: UserInteractions) {
                     Text(stringResource(id = R.string.access_file_error_dialog_cancel))
                 }
             }
+        )
+    }
+
+    loaded.fileDownloadProgress?.let { progress ->
+        AlertDialog(
+            title = { Text(text = "Downloading file") },
+            text = {
+                LinearProgressIndicator(
+                    progress = progress.div(100)
+                )
+                Text(text = "$progress %")
+            },
+            onDismissRequest = userInteractions::dismissProgressDialog,
+            confirmButton = {
+                TextButton(onClick = userInteractions::dismissProgressDialog) {
+                    Text(stringResource(id = R.string.access_file_error_dialog_cancel))
+                }
+            },
         )
     }
 
