@@ -23,6 +23,7 @@
             <option value="$PROJECT_DIR$/cucumber" />
             <option value="$PROJECT_DIR$/data" />
             <option value="$PROJECT_DIR$/data/explorer_data" />
+            <option value="$PROJECT_DIR$/data/files" />
             <option value="$PROJECT_DIR$/data/smb_data" />
             <option value="$PROJECT_DIR$/domain" />
             <option value="$PROJECT_DIR$/domain/explorer" />

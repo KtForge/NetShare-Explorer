@@ -1,34 +1,19 @@
 package com.msd.data.explorer_data.network
 
-import android.content.Context
-import com.hierynomus.msdtyp.AccessMask
 import com.hierynomus.mserref.NtStatus
-import com.hierynomus.msfscc.fileinformation.FileStandardInformation
-import com.hierynomus.mssmb2.SMB2CreateDisposition
-import com.hierynomus.mssmb2.SMB2ShareAccess
 import com.hierynomus.mssmb2.SMBApiException
-import com.hierynomus.smbj.SMBClient
-import com.hierynomus.smbj.auth.AuthenticationContext
-import com.hierynomus.smbj.share.DiskShare
-import com.msd.data.explorer_data.mapper.FilesAndDirectoriesMapper.toBaseFile
 import com.msd.data.explorer_data.tracker.ExplorerTracker
+import com.msd.data.files.FileManager
 import com.msd.domain.explorer.model.IBaseFile
 import com.msd.domain.explorer.model.SMBException
-import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
-import java.io.InputStream
 import java.net.SocketTimeoutException
-import java.util.EnumSet
-import java.util.zip.CRC32
-import java.util.zip.CheckedInputStream
 import javax.inject.Inject
-
-
-private const val ROOT_PATH = ""
+import com.hierynomus.smbj.share.File as SMBFile
 
 class ExplorerDataSource @Inject constructor(
-    @ApplicationContext private val appContext: Context,
-    private val client: SMBClient,
+    private val smbHelper: SMBHelper,
+    private val fileManager: FileManager,
     private val explorerTracker: ExplorerTracker,
 ) {
 
@@ -36,68 +21,30 @@ class ExplorerDataSource @Inject constructor(
     fun getFilesAndDirectories(
         server: String,
         sharedPath: String,
-        directoryRelativePath: String,
+        absolutePath: String,
         user: String,
         psw: String
     ): List<IBaseFile> {
         val start = System.currentTimeMillis()
 
         return try {
-            client.connect(server).use { connection ->
-                val authenticationContext = AuthenticationContext(user, psw.toCharArray(), server)
-                val session = connection.authenticate(authenticationContext)
+            smbHelper.onConnection(
+                server = server,
+                sharedPath = sharedPath,
+                user = user,
+                psw = psw
+            ) { diskShare ->
+                val relativePath = smbHelper.getRelativePath(diskShare, absolutePath)
+                val files = smbHelper.listFiles(diskShare, relativePath)
+                fileManager.cleanFiles(server, sharedPath, relativePath, files)
 
-                (session.connectShare(sharedPath) as? DiskShare)?.use { diskShare ->
-                    val parentPath = directoryRelativePath.replace(
-                        diskShare.smbPath.toUncPath(),
-                        ROOT_PATH
-                    )
-                    val directory = diskShare.openDirectory(
-                        parentPath,
-                        EnumSet.of(AccessMask.FILE_READ_DATA),
-                        null,
-                        SMB2ShareAccess.ALL,
-                        SMB2CreateDisposition.FILE_OPEN,
-                        null
-                    )
+                val openTime = System.currentTimeMillis() - start
+                explorerTracker.logListFilesAndDirectoriesEvent(files.size, openTime)
 
-                    val filesAndDirectories = directory.list().mapNotNull { file ->
-                        file.toBaseFile(diskShare, parentPath = parentPath)
-                    }
-
-                    val openTime = System.currentTimeMillis() - start
-                    val filesNumber = filesAndDirectories.size
-
-                    explorerTracker.logListFilesAndDirectoriesEvent(filesNumber, openTime)
-
-                    cleanFiles(server, sharedPath, parentPath, filesAndDirectories)
-
-                    filesAndDirectories
-                } ?: emptyList()
+                files
             }
-        } catch (e: Exception) {
-            throw handleException(e)
-        } finally {
-            client.close()
-        }
-    }
-
-    private fun cleanFiles(
-        server: String,
-        sharedPath: String,
-        path: String,
-        filesAndDirectories: List<IBaseFile>
-    ) {
-        val cacheDir = appContext.cacheDir
-        val cacheServerPath = "${cacheDir.absolutePath}/$server/$sharedPath/$path"
-        val cacheServerDirectory = File(cacheServerPath)
-
-        if (cacheServerDirectory.exists()) {
-            cacheServerDirectory.listFiles()?.filter { it.isFile }?.forEach { file ->
-                if (filesAndDirectories.all { file.name != it.name }) {
-                    file.delete()
-                }
-            }
+        } catch (exception: Exception) {
+            throw handleException(exception)
         }
     }
 
@@ -105,71 +52,53 @@ class ExplorerDataSource @Inject constructor(
     fun openFile(
         server: String,
         sharedPath: String,
-        directoryRelativePath: String,
+        absolutePath: String,
         fileName: String,
         user: String,
         psw: String,
-    ): File? {
+    ): File {
         val start = System.currentTimeMillis()
 
-        try {
-            client.connect(server).use { connection ->
-                val authenticationContext = AuthenticationContext(user, psw.toCharArray(), server)
-                val session = connection.authenticate(authenticationContext)
+        return try {
+            smbHelper.onConnection(
+                server = server,
+                sharedPath = sharedPath,
+                user = user,
+                psw = psw
+            ) { diskShare ->
+                val relativePath = smbHelper.getRelativePath(diskShare, absolutePath)
 
-                (session.connectShare(sharedPath) as? DiskShare)?.use { diskShare ->
-                    val parentPath = directoryRelativePath.replace(
-                        diskShare.smbPath.toUncPath(),
-                        ROOT_PATH
-                    )
+                val remoteFile = smbHelper.openFile(diskShare, relativePath, fileName)
 
-                    val file = diskShare.openFile(
-                        parentPath + "\\" + fileName,
-                        EnumSet.of(AccessMask.FILE_READ_DATA),
-                        null,
-                        SMB2ShareAccess.ALL,
-                        SMB2CreateDisposition.FILE_OPEN,
-                        null
-                    )
+                val localFile =
+                    fileManager.getLocalFileRef(server, sharedPath, relativePath, fileName)
+                val fileSize = smbHelper.getFileSize(remoteFile)
 
-                    val path = "$server/$sharedPath/$parentPath"
-                    val folder = File(appContext.cacheDir, path)
-                    if (!folder.exists()) {
-                        folder.mkdirs()
-                    }
+                if (!isLocalFileValid(localFile, remoteFile)) {
+                    remoteFile.inputStream.copyTo(localFile.outputStream())
+                }
 
-                    val localFile = File(appContext.cacheDir, "$path/$fileName")
-                    val fileSize =
-                        file.getFileInformation(FileStandardInformation::class.java).endOfFile
+                val openTime = System.currentTimeMillis() - start
+                explorerTracker.logOpenLocalFileEvent(fileSize, openTime)
 
-                    if (localFile.exists() && localFile.length() == fileSize) {
-                        return localFile
-                    }
-
-                    file.inputStream.copyTo(localFile.outputStream())
-
-                    val openTime = System.currentTimeMillis() - start
-
-                    explorerTracker.logOpenFileEvent(fileSize, openTime)
-
-                    return localFile
-                } ?: return null
+                localFile
             }
-        } catch (e: Exception) {
-            throw handleException(e)
-        } finally {
-            client.close()
+        } catch (exception: Exception) {
+            throw handleException(exception)
         }
     }
 
-    private fun getChecksumCRC32(stream: InputStream, bufferSize: Int = DEFAULT_BUFFER_SIZE): Long {
-        val checkedInputStream = CheckedInputStream(stream, CRC32())
-        val buffer = ByteArray(bufferSize)
-        while (checkedInputStream.read(buffer, 0, buffer.size) >= 0) {
-            // Loop
+    private fun isLocalFileValid(localFile: File, remoteFile: SMBFile): Boolean {
+        if (localFile.exists()) {
+            val fileLastChangeTime = smbHelper.getModificationTime(remoteFile)
+            val localFileCreationTime = fileManager.getCreationTimeMillis(localFile)
+
+            if (localFileCreationTime > fileLastChangeTime) {
+                return true
+            }
         }
 
-        return checkedInputStream.checksum.value
+        return false
     }
 
     private fun handleException(exception: Exception): Throwable {

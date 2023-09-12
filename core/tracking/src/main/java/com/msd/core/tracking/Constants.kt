@@ -19,6 +19,7 @@ object Constants {
     // EXPLORER
     const val LIST_FILES_AND_DIRECTORIES_EVENT = "list_files_and_directories"
     const val OPEN_FILE_EVENT = "open_file"
+    const val OPEN_LOCAL_FILE_EVENT = "open_local_file"
 
     // PARAMETER KEYS
     const val FILES_NUMBER = "files_number"

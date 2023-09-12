@@ -26,7 +26,7 @@ class GetFilesAndDirectoriesUseCaseTest : CoroutineTest() {
             repository.retrieveFilesAndDirectories(
                 server = "Server",
                 sharedPath = "SharedPath",
-                directoryRelativePath = "path",
+                absolutePath = "path",
                 user = "User",
                 psw = "Psw"
             )
@@ -35,7 +35,7 @@ class GetFilesAndDirectoriesUseCaseTest : CoroutineTest() {
         val result = useCase(
             server = "Server",
             sharedPath = "SharedPath",
-            directoryRelativePath = "path",
+            absolutePath = "path",
             user = "User",
             psw = "Psw",
         )
@@ -43,7 +43,7 @@ class GetFilesAndDirectoriesUseCaseTest : CoroutineTest() {
         verify(repository).retrieveFilesAndDirectories(
             server = "Server",
             sharedPath = "SharedPath",
-            directoryRelativePath = "path",
+            absolutePath = "path",
             user = "User",
             psw = "Psw"
         )
@@ -58,7 +58,7 @@ class GetFilesAndDirectoriesUseCaseTest : CoroutineTest() {
             repository.retrieveFilesAndDirectories(
                 server = "Server",
                 sharedPath = "SharedPath",
-                directoryRelativePath = "path",
+                absolutePath = "path",
                 user = "User",
                 psw = "Psw"
             )
@@ -68,7 +68,7 @@ class GetFilesAndDirectoriesUseCaseTest : CoroutineTest() {
             useCase(
                 server = "Server",
                 sharedPath = "SharedPath",
-                directoryRelativePath = "path",
+                absolutePath = "path",
                 user = "User",
                 psw = "Psw",
             )
@@ -79,7 +79,7 @@ class GetFilesAndDirectoriesUseCaseTest : CoroutineTest() {
         verify(repository).retrieveFilesAndDirectories(
             server = "Server",
             sharedPath = "SharedPath",
-            directoryRelativePath = "path",
+            absolutePath = "path",
             user = "User",
             psw = "Psw"
         )

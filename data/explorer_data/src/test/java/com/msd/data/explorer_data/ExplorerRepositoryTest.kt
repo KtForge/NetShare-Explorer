@@ -33,7 +33,7 @@ class ExplorerRepositoryTest : CoroutineTest() {
             dataSource.getFilesAndDirectories(
                 server = "Server",
                 sharedPath = "SharedPath",
-                directoryRelativePath = "path",
+                absolutePath = "path",
                 user = "User",
                 psw = "Psw",
             )
@@ -50,7 +50,7 @@ class ExplorerRepositoryTest : CoroutineTest() {
         val result = repository.retrieveFilesAndDirectories(
             server = "Server",
             sharedPath = "SharedPath",
-            directoryRelativePath = "path",
+            absolutePath = "path",
             user = "User",
             psw = "Psw",
         )
@@ -59,7 +59,7 @@ class ExplorerRepositoryTest : CoroutineTest() {
         verify(dataSource).getFilesAndDirectories(
             server = "Server",
             sharedPath = "SharedPath",
-            directoryRelativePath = "path",
+            absolutePath = "path",
             user = "User",
             psw = "Psw",
         )
@@ -73,7 +73,7 @@ class ExplorerRepositoryTest : CoroutineTest() {
                 dataSource.getFilesAndDirectories(
                     server = "Server",
                     sharedPath = "SharedPath",
-                    directoryRelativePath = "path",
+                    absolutePath = "path",
                     user = "User",
                     psw = "Psw",
                 )
@@ -83,7 +83,7 @@ class ExplorerRepositoryTest : CoroutineTest() {
                 repository.retrieveFilesAndDirectories(
                     server = "Server",
                     sharedPath = "SharedPath",
-                    directoryRelativePath = "path",
+                    absolutePath = "path",
                     user = "User",
                     psw = "Psw",
                 )
@@ -94,7 +94,7 @@ class ExplorerRepositoryTest : CoroutineTest() {
             verify(dataSource).getFilesAndDirectories(
                 server = "Server",
                 sharedPath = "SharedPath",
-                directoryRelativePath = "path",
+                absolutePath = "path",
                 user = "User",
                 psw = "Psw",
             )
@@ -107,7 +107,7 @@ class ExplorerRepositoryTest : CoroutineTest() {
             dataSource.openFile(
                 server = "Server",
                 sharedPath = "SharedPath",
-                directoryRelativePath = "path",
+                absolutePath = "path",
                 fileName = "name",
                 user = "User",
                 psw = "Psw",
@@ -117,7 +117,7 @@ class ExplorerRepositoryTest : CoroutineTest() {
         val result = repository.openFile(
             server = "Server",
             sharedPath = "SharedPath",
-            directoryRelativePath = "path",
+            absolutePath = "path",
             fileName = "name",
             user = "User",
             psw = "Psw",
@@ -127,7 +127,7 @@ class ExplorerRepositoryTest : CoroutineTest() {
         verify(dataSource).openFile(
             server = "Server",
             sharedPath = "SharedPath",
-            directoryRelativePath = "path",
+            absolutePath = "path",
             fileName = "name",
             user = "User",
             psw = "Psw",
@@ -140,7 +140,7 @@ class ExplorerRepositoryTest : CoroutineTest() {
             dataSource.openFile(
                 server = "Server",
                 sharedPath = "SharedPath",
-                directoryRelativePath = "path",
+                absolutePath = "path",
                 fileName = "name",
                 user = "User",
                 psw = "Psw",
@@ -150,7 +150,7 @@ class ExplorerRepositoryTest : CoroutineTest() {
         val result = repository.openFile(
             server = "Server",
             sharedPath = "SharedPath",
-            directoryRelativePath = "path",
+            absolutePath = "path",
             fileName = "name",
             user = "User",
             psw = "Psw",
@@ -160,7 +160,7 @@ class ExplorerRepositoryTest : CoroutineTest() {
         verify(dataSource).openFile(
             server = "Server",
             sharedPath = "SharedPath",
-            directoryRelativePath = "path",
+            absolutePath = "path",
             fileName = "name",
             user = "User",
             psw = "Psw",
@@ -174,7 +174,7 @@ class ExplorerRepositoryTest : CoroutineTest() {
             dataSource.openFile(
                 server = "Server",
                 sharedPath = "SharedPath",
-                directoryRelativePath = "path",
+                absolutePath = "path",
                 fileName = "name",
                 user = "User",
                 psw = "Psw",
@@ -185,7 +185,7 @@ class ExplorerRepositoryTest : CoroutineTest() {
             repository.openFile(
                 server = "Server",
                 sharedPath = "SharedPath",
-                directoryRelativePath = "path",
+                absolutePath = "path",
                 fileName = "name",
                 user = "User",
                 psw = "Psw",
@@ -197,7 +197,7 @@ class ExplorerRepositoryTest : CoroutineTest() {
         verify(dataSource).openFile(
             server = "Server",
             sharedPath = "SharedPath",
-            directoryRelativePath = "path",
+            absolutePath = "path",
             fileName = "name",
             user = "User",
             psw = "Psw",

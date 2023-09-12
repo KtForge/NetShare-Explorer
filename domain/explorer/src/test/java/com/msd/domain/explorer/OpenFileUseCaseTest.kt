@@ -23,7 +23,7 @@ class OpenFileUseCaseTest : CoroutineTest() {
             repository.openFile(
                 server = "Server",
                 sharedPath = "SharedPath",
-                directoryRelativePath = "path",
+                absolutePath = "path",
                 fileName = "file",
                 user = "User",
                 psw = "Psw",
@@ -33,7 +33,7 @@ class OpenFileUseCaseTest : CoroutineTest() {
         val result = useCase(
             server = "Server",
             sharedPath = "SharedPath",
-            directoryRelativePath = "path",
+            absolutePath = "path",
             fileName = "file",
             user = "User",
             psw = "Psw",
@@ -43,7 +43,7 @@ class OpenFileUseCaseTest : CoroutineTest() {
         verify(repository).openFile(
             server = "Server",
             sharedPath = "SharedPath",
-            directoryRelativePath = "path",
+            absolutePath = "path",
             fileName = "file",
             user = "User",
             psw = "Psw",
@@ -58,7 +58,7 @@ class OpenFileUseCaseTest : CoroutineTest() {
             repository.openFile(
                 server = "Server",
                 sharedPath = "SharedPath",
-                directoryRelativePath = "path",
+                absolutePath = "path",
                 fileName = "file",
                 user = "User",
                 psw = "Psw",
@@ -69,7 +69,7 @@ class OpenFileUseCaseTest : CoroutineTest() {
             useCase(
                 server = "Server",
                 sharedPath = "SharedPath",
-                directoryRelativePath = "path",
+                absolutePath = "path",
                 fileName = "file",
                 user = "User",
                 psw = "Psw",
@@ -82,7 +82,7 @@ class OpenFileUseCaseTest : CoroutineTest() {
         verify(repository).openFile(
             server = "Server",
             sharedPath = "SharedPath",
-            directoryRelativePath = "path",
+            absolutePath = "path",
             fileName = "file",
             user = "User",
             psw = "Psw",

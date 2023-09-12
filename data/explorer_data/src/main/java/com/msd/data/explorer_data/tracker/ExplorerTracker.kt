@@ -27,6 +27,17 @@ class ExplorerTracker @Inject constructor(private val eventsTracker: EventsTrack
         eventsTracker.logEvent(Constants.OPEN_FILE_EVENT, parameters)
     }
 
+    fun logOpenLocalFileEvent(fileSize: Long, openTime: Long) {
+        val readableFileSize = fileSize.toDouble().div(1000000)
+
+        val parameters = bundleOf(
+            Constants.FILE_SIZE to readableFileSize,
+            Constants.OPEN_TIME to getReadableTime(openTime)
+        )
+
+        eventsTracker.logEvent(Constants.OPEN_LOCAL_FILE_EVENT, parameters)
+    }
+
     private fun getReadableTime(milliseconds: Long): Double {
         return milliseconds.toDouble().div(1000)
     }

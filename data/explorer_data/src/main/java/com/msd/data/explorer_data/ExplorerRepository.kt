@@ -14,20 +14,20 @@ class ExplorerRepository @Inject constructor(
     override suspend fun retrieveFilesAndDirectories(
         server: String,
         sharedPath: String,
-        directoryRelativePath: String,
+        absolutePath: String,
         user: String,
         psw: String
     ): List<IBaseFile> =
-        dataSource.getFilesAndDirectories(server, sharedPath, directoryRelativePath, user, psw)
+        dataSource.getFilesAndDirectories(server, sharedPath, absolutePath, user, psw)
             .sortedBy { fileOrDirectory -> fileOrDirectory.name }
             .sortedBy { fileOrDirectory -> fileOrDirectory is NetworkFile }
 
     override suspend fun openFile(
         server: String,
         sharedPath: String,
-        directoryRelativePath: String,
+        absolutePath: String,
         fileName: String,
         user: String,
         psw: String
-    ): File? = dataSource.openFile(server, sharedPath, directoryRelativePath, fileName, user, psw)
+    ): File? = dataSource.openFile(server, sharedPath, absolutePath, fileName, user, psw)
 }

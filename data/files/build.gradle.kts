@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.msd.data.explorer_data"
+    namespace = "com.msd.data.files"
     compileSdk = Configuration.compileSdk
 
 
@@ -27,11 +27,7 @@ android {
 
 dependencies {
 
-    implementation(project(":core:tracking"))
-
     implementation(project(":domain:explorer"))
-
-    implementation(project(":data:files"))
 
     implementation(platform(Dependencies.kotlinBom))
     implementation(Dependencies.coreKtx)
@@ -39,10 +35,5 @@ dependencies {
     implementation(Dependencies.daggerHiltAndroid)
     kapt(Dependencies.daggerHiltAndroidCompiler)
 
-    implementation(Dependencies.smbj)
-
     testImplementation(project(":core:unittest"))
-
-    testImplementation(Dependencies.slf4j)
-    testImplementation(Dependencies.slf4jProvider)
 }

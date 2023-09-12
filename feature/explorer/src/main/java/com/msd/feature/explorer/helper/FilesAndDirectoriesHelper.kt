@@ -25,7 +25,7 @@ class FilesAndDirectoriesHelper @Inject constructor(
         return getFilesAndDirectoriesUseCase(
             server = smbConfiguration.server,
             sharedPath = smbConfiguration.sharedPath,
-            directoryRelativePath = path,
+            absolutePath = path,
             user = smbConfiguration.user,
             psw = smbConfiguration.psw
         )
@@ -36,7 +36,7 @@ class FilesAndDirectoriesHelper @Inject constructor(
         return openFileUseCase(
             server = smbConfiguration.server,
             sharedPath = smbConfiguration.sharedPath,
-            directoryRelativePath = path,
+            absolutePath = path,
             fileName = file.name,
             user = smbConfiguration.user,
             psw = smbConfiguration.psw
