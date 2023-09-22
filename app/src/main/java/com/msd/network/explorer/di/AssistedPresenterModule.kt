@@ -20,6 +20,6 @@ class AssistedPresenterModule {
 
     @Provides
     fun provideExplorerPresenterCore(): IPresenterCore<ExplorerState> {
-        return PresenterCore(ExplorerState.Uninitialized(""))
+        return PresenterCore(ExplorerState.Uninitialized(name = "", path = ""))
     }
 }

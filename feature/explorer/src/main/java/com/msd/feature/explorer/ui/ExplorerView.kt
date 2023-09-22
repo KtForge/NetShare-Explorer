@@ -31,7 +31,7 @@ import com.msd.feature.explorer.presenter.ExplorerState.Uninitialized
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExplorerView(presenter: ExplorerPresenter) {
-    val currentState = presenter.getState().collectAsState(initial = Uninitialized("")).value
+    val currentState = presenter.getState().collectAsState(initial = Uninitialized(name = "", path = "")).value
 
     Scaffold(
         topBar = {
@@ -45,15 +45,13 @@ fun ExplorerView(presenter: ExplorerPresenter) {
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1,
                         )
-                        if (currentState is Loaded) {
-                            Text(
-                                text = currentState.path,
-                                color = MaterialTheme.colorScheme.onPrimary,
-                                fontSize = 14.sp,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1,
-                            )
-                        }
+                        Text(
+                            text = currentState.path,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontSize = 14.sp,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1,
+                        )
                     }
                 },
                 navigationIcon = {

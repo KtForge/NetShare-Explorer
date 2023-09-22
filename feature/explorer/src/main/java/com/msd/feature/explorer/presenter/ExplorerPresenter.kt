@@ -46,7 +46,7 @@ class ExplorerPresenter @AssistedInject constructor(
     override fun initialize() {
         if (isInitialized()) return
 
-        tryEmit(Loading(smbConfigurationName))
+        tryEmit(Loading(smbConfigurationName, path = ""))
         if (smbConfigurationId == -1) {
             navigate(NavigateBack)
         } else {
@@ -72,10 +72,10 @@ class ExplorerPresenter @AssistedInject constructor(
                                 )
                             )
                         } catch (e: Exception) {
-                            tryEmit(handleError(e, smbConfigurationName))
+                            tryEmit(handleError(e, smbConfigurationName, path = ""))
                         }
                     }
-                } ?: tryEmit(Error.UnknownError(smbConfigurationName))
+                } ?: tryEmit(Error.UnknownError(smbConfigurationName, path = ""))
             }
         }
     }
@@ -90,6 +90,7 @@ class ExplorerPresenter @AssistedInject constructor(
 
     private fun openDirectory(directory: NetworkDirectory) {
         (currentState as? Loaded)?.let { loaded ->
+            tryEmit(Loading(smbConfigurationName, loaded.path))
             emitFilesAndDirectories(loaded, path = directory.path)
         }
     }
@@ -97,7 +98,6 @@ class ExplorerPresenter @AssistedInject constructor(
     private fun openFile(file: NetworkFile) {
         (currentState as? Loaded)?.let { loaded ->
             viewModelScope.launch(ioDispatcher) {
-                tryEmit(Loading(loaded.name))
                 val smbConfiguration = loaded.smbConfiguration
                 downloadJob = CoroutineScope(Dispatchers.IO).launch {
                     try {
@@ -112,7 +112,9 @@ class ExplorerPresenter @AssistedInject constructor(
                         fileToOpen?.let { navigate(OpenFile(fileToOpen)) }
                         emitFilesAndDirectories(loaded, loaded.path)
                     } catch (e: Exception) {
-                        tryEmit(loaded.copy(fileAccessError = handleError(e, loaded.name)))
+                        tryEmit(
+                            loaded.copy(fileAccessError = handleError(e, loaded.name, loaded.path))
+                        )
                     }
                 }
             }
@@ -133,7 +135,6 @@ class ExplorerPresenter @AssistedInject constructor(
     private fun emitFilesAndDirectories(loaded: Loaded, path: String) {
         val smbConfiguration = loaded.smbConfiguration
         viewModelScope.launch(ioDispatcher) {
-            tryEmit(Loading(smbConfigurationName))
             try {
                 val filesAndDirectories = filesAndDirectoriesHelper.getFilesAndDirectories(
                     smbConfiguration,
@@ -142,16 +143,16 @@ class ExplorerPresenter @AssistedInject constructor(
 
                 tryEmit(loaded.copy(path = path, filesOrDirectories = filesAndDirectories))
             } catch (e: Exception) {
-                tryEmit(handleError(e, loaded.name))
+                tryEmit(handleError(e, loaded.name, loaded.path))
             }
         }
     }
 
-    private fun handleError(e: Exception, name: String): Error {
+    private fun handleError(e: Exception, name: String, path: String): Error {
         return when (e) {
-            SMBException.ConnectionError -> Error.ConnectionError(name)
-            SMBException.AccessDenied -> Error.AccessError(name)
-            else -> Error.UnknownError(name)
+            SMBException.ConnectionError -> Error.ConnectionError(name, path)
+            SMBException.AccessDenied -> Error.AccessError(name, path)
+            else -> Error.UnknownError(name, path)
         }
     }
 
