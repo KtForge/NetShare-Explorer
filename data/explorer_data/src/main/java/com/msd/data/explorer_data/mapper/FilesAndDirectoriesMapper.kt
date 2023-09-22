@@ -6,6 +6,7 @@ import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation
 import com.hierynomus.mssmb2.SMB2CreateDisposition
 import com.hierynomus.mssmb2.SMB2ShareAccess
 import com.hierynomus.smbj.share.DiskShare
+import com.msd.data.files.FileManager
 import com.msd.domain.explorer.model.IBaseFile
 import com.msd.domain.explorer.model.NetworkDirectory
 import com.msd.domain.explorer.model.NetworkFile
@@ -20,8 +21,11 @@ object FilesAndDirectoriesMapper {
 
     // Generate all structure of files & directories
     fun FileIdBothDirectoryInformation.toBaseFile(
+        server: String,
+        sharedPath: String,
         diskShare: DiskShare,
-        parentPath: String
+        parentPath: String,
+        fileManager: FileManager,
     ): IBaseFile? {
         if ((fileName == DOT_DIRECTORY && parentPath.isEmpty()) || fileName == DOUBLE_DOT_DIRECTORY) return null
 
@@ -50,7 +54,11 @@ object FilesAndDirectoriesMapper {
                 null
             )
 
-            NetworkFile(fileName, file.uncPath)
+            val localPath = fileManager.getLocalFilePath(server, sharedPath, parentPath, fileName)
+            val localFile = fileManager.getLocalFileRef(server, sharedPath, parentPath, fileName)
+            val isLocal = localFile.exists()
+
+            NetworkFile(fileName, localPath, isLocal)
         }
     }
 }

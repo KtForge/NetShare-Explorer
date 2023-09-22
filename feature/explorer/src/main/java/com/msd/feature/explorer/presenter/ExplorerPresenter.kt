@@ -1,6 +1,5 @@
 package com.msd.feature.explorer.presenter
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -29,6 +28,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -41,7 +41,7 @@ class ExplorerPresenter @AssistedInject constructor(
     @Assisted(SmbConfigurationRouteNameArg) private val smbConfigurationName: String,
 ) : Presenter<ExplorerState>(core), UserInteractions {
 
-    private val downloadJob = Job()
+    private var downloadJob: Job? = null
 
     override fun initialize() {
         if (isInitialized()) return
@@ -68,6 +68,7 @@ class ExplorerPresenter @AssistedInject constructor(
                                     path = root,
                                     filesOrDirectories = filesAndDirectories,
                                     fileAccessError = null,
+                                    isDownloadingFile = false,
                                 )
                             )
                         } catch (e: Exception) {
@@ -98,19 +99,18 @@ class ExplorerPresenter @AssistedInject constructor(
             viewModelScope.launch(ioDispatcher) {
                 tryEmit(Loading(loaded.name))
                 val smbConfiguration = loaded.smbConfiguration
-                CoroutineScope(downloadJob).launch {
+                downloadJob = CoroutineScope(Dispatchers.IO).launch {
                     try {
+                        tryEmit(loaded.copy(isDownloadingFile = !file.isLocal))
+
                         val fileToOpen = filesAndDirectoriesHelper.openFile(
                             smbConfiguration,
                             file,
                             loaded.path
-                        ) { progress ->
-                            val formattedProgress = progress.times(100)
-                            tryEmit(loaded.copy(fileDownloadProgress = formattedProgress))
-                        }
+                        )
 
-                        navigate(OpenFile(fileToOpen))
-                        tryEmit(loaded.copy(fileDownloadProgress = null))
+                        fileToOpen?.let { navigate(OpenFile(fileToOpen)) }
+                        emitFilesAndDirectories(loaded, loaded.path)
                     } catch (e: Exception) {
                         tryEmit(loaded.copy(fileAccessError = handleError(e, loaded.name)))
                     }
@@ -175,8 +175,22 @@ class ExplorerPresenter @AssistedInject constructor(
 
     override fun dismissProgressDialog() {
         (currentState as? Loaded)?.let { loaded ->
-            downloadJob.cancel()
-            tryEmit(loaded.copy(fileDownloadProgress = null))
+            downloadJob?.cancel()
+            tryEmit(loaded.copy(isDownloadingFile = false))
+        }
+    }
+
+    override fun downloadFile(file: NetworkFile) {
+
+    }
+
+    override fun deleteFile(file: NetworkFile) {
+        (currentState as? Loaded)?.let { loaded ->
+            viewModelScope.launch(ioDispatcher) {
+                filesAndDirectoriesHelper.deleteFile(file)
+
+                emitFilesAndDirectories(loaded, loaded.path)
+            }
         }
     }
 
@@ -215,4 +229,6 @@ interface UserInteractions {
     fun confirmDialog()
     fun dismissDialog()
     fun dismissProgressDialog()
+    fun downloadFile(file: NetworkFile)
+    fun deleteFile(file: NetworkFile)
 }

@@ -20,18 +20,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
+import com.msd.core.ui.widget.AppCrossfade
 import com.msd.feature.explorer.R
 import com.msd.feature.explorer.presenter.ExplorerPresenter
 import com.msd.feature.explorer.presenter.ExplorerState.Error
 import com.msd.feature.explorer.presenter.ExplorerState.Loaded
 import com.msd.feature.explorer.presenter.ExplorerState.Loading
 import com.msd.feature.explorer.presenter.ExplorerState.Uninitialized
-import com.msd.core.ui.widget.AppCrossfade
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExplorerView(presenter: ExplorerPresenter) {
-    val currentState by presenter.getState().collectAsState(initial = Uninitialized(""))
+    val currentState = presenter.getState().collectAsState(initial = Uninitialized("")).value
 
     Scaffold(
         topBar = {
@@ -47,7 +47,7 @@ fun ExplorerView(presenter: ExplorerPresenter) {
                         )
                         if (currentState is Loaded) {
                             Text(
-                                text = (currentState as Loaded).path,
+                                text = currentState.path,
                                 color = MaterialTheme.colorScheme.onPrimary,
                                 fontSize = 14.sp,
                                 overflow = TextOverflow.Ellipsis,

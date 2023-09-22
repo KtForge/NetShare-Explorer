@@ -8,6 +8,7 @@ import com.hierynomus.smbj.auth.AuthenticationContext
 import com.hierynomus.smbj.share.DiskShare
 import com.hierynomus.smbj.share.File
 import com.msd.data.explorer_data.mapper.FilesAndDirectoriesMapper.toBaseFile
+import com.msd.data.files.FileManager
 import com.msd.domain.explorer.model.IBaseFile
 import com.msd.domain.explorer.model.SMBException
 import java.util.EnumSet
@@ -17,12 +18,12 @@ private const val ROOT_PATH = ""
 
 class SMBHelper @Inject constructor(private val client: SMBClient) {
 
-    fun <T : Any> onConnection(
+    suspend fun <T : Any> onConnection(
         server: String,
         sharedPath: String,
         user: String,
         psw: String,
-        block: (DiskShare) -> T,
+        block: suspend (DiskShare) -> T,
     ): T {
         return try {
             client.connect(server).use { connection ->
@@ -44,7 +45,13 @@ class SMBHelper @Inject constructor(private val client: SMBClient) {
         return absolutePath.replace(diskShare.smbPath.toUncPath(), ROOT_PATH)
     }
 
-    fun listFiles(diskShare: DiskShare, path: String): List<IBaseFile> {
+    fun listFiles(
+        server: String,
+        sharedPath: String,
+        path: String,
+        diskShare: DiskShare,
+        fileManager: FileManager,
+    ): List<IBaseFile> {
         val directory = diskShare.openDirectory(
             path,
             EnumSet.of(AccessMask.FILE_READ_DATA),
@@ -55,7 +62,7 @@ class SMBHelper @Inject constructor(private val client: SMBClient) {
         )
 
         return directory.list().mapNotNull { file ->
-            file.toBaseFile(diskShare, parentPath = path)
+            file.toBaseFile(server, sharedPath, diskShare, parentPath = path, fileManager)
         }
     }
 

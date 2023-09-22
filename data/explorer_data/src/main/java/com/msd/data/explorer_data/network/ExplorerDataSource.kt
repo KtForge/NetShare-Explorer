@@ -6,6 +6,8 @@ import com.msd.data.explorer_data.tracker.ExplorerTracker
 import com.msd.data.files.FileManager
 import com.msd.domain.explorer.model.IBaseFile
 import com.msd.domain.explorer.model.SMBException
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.yield
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
@@ -20,7 +22,7 @@ class ExplorerDataSource @Inject constructor(
 ) {
 
     @Throws(Exception::class)
-    fun getFilesAndDirectories(
+    suspend fun getFilesAndDirectories(
         server: String,
         sharedPath: String,
         absolutePath: String,
@@ -37,7 +39,8 @@ class ExplorerDataSource @Inject constructor(
                 psw = psw
             ) { diskShare ->
                 val relativePath = smbHelper.getRelativePath(diskShare, absolutePath)
-                val files = smbHelper.listFiles(diskShare, relativePath)
+                val files =
+                    smbHelper.listFiles(server, sharedPath, relativePath, diskShare, fileManager)
                 fileManager.cleanFiles(server, sharedPath, relativePath, files)
 
                 val openTime = System.currentTimeMillis() - start
@@ -51,7 +54,7 @@ class ExplorerDataSource @Inject constructor(
     }
 
     @Throws(Exception::class)
-    fun openFile(
+    suspend fun openFile(
         server: String,
         sharedPath: String,
         absolutePath: String,
@@ -59,8 +62,9 @@ class ExplorerDataSource @Inject constructor(
         user: String,
         psw: String,
         progressListener: (Float) -> Unit,
-    ): File {
+    ): File? {
         val start = System.currentTimeMillis()
+        var relativePath = ""
 
         return try {
             smbHelper.onConnection(
@@ -69,7 +73,7 @@ class ExplorerDataSource @Inject constructor(
                 user = user,
                 psw = psw
             ) { diskShare ->
-                val relativePath = smbHelper.getRelativePath(diskShare, absolutePath)
+                relativePath = smbHelper.getRelativePath(diskShare, absolutePath)
 
                 val remoteFile = smbHelper.openFile(diskShare, relativePath, fileName)
 
@@ -91,8 +95,22 @@ class ExplorerDataSource @Inject constructor(
                 localFile
             }
         } catch (exception: Exception) {
-            throw handleException(exception)
+            // Delete local file
+            val localFile = fileManager.getLocalFileRef(server, sharedPath, relativePath, fileName)
+            if (localFile.exists()) {
+                localFile.delete()
+            }
+
+            if (exception !is CancellationException) {
+                throw handleException(exception)
+            }
+
+            null
         }
+    }
+
+    fun deleteLocalFile(filePath: String) {
+        fileManager.deleteFile(filePath)
     }
 
     private fun isLocalFileValid(localFile: File, remoteFile: SMBFile): Boolean {
@@ -108,7 +126,7 @@ class ExplorerDataSource @Inject constructor(
         return false
     }
 
-    private fun InputStream.copyTo(
+    private suspend fun InputStream.copyTo(
         out: OutputStream,
         fileSize: Long,
         progressListener: (progress: Float) -> Unit
@@ -118,6 +136,7 @@ class ExplorerDataSource @Inject constructor(
         var bytes = read(buffer)
 
         while (bytes >= 0) {
+            yield()
             out.write(buffer, 0, bytes)
             bytesCopied += bytes
             progressListener(bytesCopied.toFloat().div(fileSize))

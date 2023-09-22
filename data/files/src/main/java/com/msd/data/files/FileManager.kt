@@ -55,6 +55,17 @@ class FileManager @Inject constructor(@ApplicationContext private val context: C
         }
     }
 
+    // Creates the path to a new or existing local file
+    // Example: cache/192.168.1.1/Public/User/Data/text.txt
+    fun getLocalFilePath(
+        server: String,
+        sharedPath: String,
+        directory: String,
+        fileName: String
+    ): String {
+        return getCacheDirectoryPath(server, sharedPath, directory) + "/" + fileName
+    }
+
     // Creates a reference to a new or existing local file
     // Example: cache/192.168.1.1/Public/User/Data/text.txt
     fun getLocalFileRef(
@@ -74,5 +85,13 @@ class FileManager @Inject constructor(@ApplicationContext private val context: C
         val fileData = Files.readAttributes(file.toPath(), BasicFileAttributes::class.java)
 
         return fileData.creationTime().toMillis()
+    }
+
+    fun deleteFile(filePath: String) {
+        val file = File(filePath)
+
+        if (file.exists()) {
+            file.delete()
+        }
     }
 }

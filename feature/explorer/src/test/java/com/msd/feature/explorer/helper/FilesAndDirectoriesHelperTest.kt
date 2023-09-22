@@ -6,7 +6,6 @@ import com.msd.domain.explorer.model.NetworkDirectory
 import com.msd.domain.explorer.model.NetworkFile
 import com.msd.domain.explorer.model.SMBException
 import com.msd.domain.smb.model.SMBConfiguration
-import com.msd.feature.explorer.helper.FilesAndDirectoriesHelper
 import com.msd.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest

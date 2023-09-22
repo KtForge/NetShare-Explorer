@@ -1,8 +1,10 @@
 package com.msd.feature.explorer.helper
 
+import com.msd.domain.explorer.DeleteFileUseCase
 import com.msd.domain.explorer.GetFilesAndDirectoriesUseCase
 import com.msd.domain.explorer.OpenFileUseCase
 import com.msd.domain.explorer.model.IBaseFile
+import com.msd.domain.explorer.model.NetworkFile
 import com.msd.domain.smb.model.SMBConfiguration
 import java.io.File
 import javax.inject.Inject
@@ -10,6 +12,7 @@ import javax.inject.Inject
 class FilesAndDirectoriesHelper @Inject constructor(
     private val getFilesAndDirectoriesUseCase: GetFilesAndDirectoriesUseCase,
     private val openFileUseCase: OpenFileUseCase,
+    private val deleteFileUseCase: DeleteFileUseCase,
 ) {
 
     fun getRootPath(smbConfiguration: SMBConfiguration): String {
@@ -35,9 +38,8 @@ class FilesAndDirectoriesHelper @Inject constructor(
     suspend fun openFile(
         smbConfiguration: SMBConfiguration,
         file: IBaseFile,
-        path: String,
-        progressListener: (Float) -> Unit
-    ): File {
+        path: String
+    ): File? {
         return openFileUseCase(
             server = smbConfiguration.server,
             sharedPath = smbConfiguration.sharedPath,
@@ -45,7 +47,11 @@ class FilesAndDirectoriesHelper @Inject constructor(
             fileName = file.name,
             user = smbConfiguration.user,
             psw = smbConfiguration.psw,
-            progressListener = progressListener,
+            progressListener = {},
         )
+    }
+
+    fun deleteFile(file: NetworkFile) {
+        deleteFileUseCase(file)
     }
 }

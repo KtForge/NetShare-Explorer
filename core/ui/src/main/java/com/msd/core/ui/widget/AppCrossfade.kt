@@ -14,6 +14,7 @@ fun <T> AppCrossfade(
     Crossfade(
         targetState = targetState,
         modifier = modifier,
-        animationSpec = tween(500)
+        animationSpec = tween(0),
+        label = "",
     ) { state -> content(state) }
 }

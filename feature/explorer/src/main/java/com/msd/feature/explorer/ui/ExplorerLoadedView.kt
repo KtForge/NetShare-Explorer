@@ -1,8 +1,10 @@
 package com.msd.feature.explorer.ui
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,24 +12,37 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.FilePresent
 import androidx.compose.material.icons.outlined.Folder
+import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.msd.core.ui.theme.Dimensions.sizeL
 import com.msd.core.ui.theme.Dimensions.sizeS
 import com.msd.core.ui.theme.Dimensions.sizeXL
 import com.msd.core.ui.theme.Dimensions.sizeXXL
@@ -61,58 +76,46 @@ fun ExplorerLoadedView(loaded: Loaded, userInteractions: UserInteractions) {
         )
     }
 
-    loaded.fileDownloadProgress?.let { progress ->
-        AlertDialog(
-            title = { Text(text = "Downloading file") },
-            text = {
-                LinearProgressIndicator(
-                    progress = progress.div(100)
-                )
-                Text(text = "$progress %")
-            },
-            onDismissRequest = userInteractions::dismissProgressDialog,
-            confirmButton = {
-                TextButton(onClick = userInteractions::dismissProgressDialog) {
-                    Text(stringResource(id = R.string.access_file_error_dialog_cancel))
-                }
-            },
-        )
+    if (loaded.isDownloadingFile) {
+        ProgressDialog(userInteractions)
     }
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = sizeS)
-    ) {
-        loaded.filesOrDirectories.forEach { file ->
-            item {
-                val containerColor = if (file is NetworkFile) {
-                    Color.Transparent
-                } else {
-                    MaterialTheme.colorScheme.surfaceVariant
-                }
+    Column {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = sizeS)
+        ) {
+            loaded.filesOrDirectories.forEach { file ->
+                item {
+                    val containerColor = if (file is NetworkFile) {
+                        Color.Transparent
+                    } else {
+                        MaterialTheme.colorScheme.surfaceVariant
+                    }
 
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(sizeS)
-                        .clickable { userInteractions.onItemClicked(file) },
-                    colors = CardDefaults.cardColors(containerColor = containerColor),
-                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.surfaceVariant)
-                ) {
-                    Row(
+                    Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = sizeXXL)
+                            .padding(sizeS)
+                            .clickable { userInteractions.onItemClicked(file) },
+                        colors = CardDefaults.cardColors(containerColor = containerColor),
+                        border = BorderStroke(2.dp, MaterialTheme.colorScheme.surfaceVariant)
                     ) {
-                        when (file) {
-                            is NetworkParentDirectory -> ParentDirectoryView(
-                                directory = file,
-                                scope = this
-                            )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = sizeXXL)
+                        ) {
+                            when (file) {
+                                is NetworkParentDirectory -> ParentDirectoryView(
+                                    directory = file,
+                                    scope = this
+                                )
 
-                            is NetworkDirectory -> DirectoryView(directory = file, scope = this)
-                            is NetworkFile -> FileView(file = file, scope = this)
+                                is NetworkDirectory -> DirectoryView(directory = file, scope = this)
+                                is NetworkFile -> FileView(scope = this, file, userInteractions)
+                            }
                         }
                     }
                 }
@@ -158,7 +161,10 @@ fun DirectoryView(directory: NetworkDirectory, scope: RowScope) {
 }
 
 @Composable
-fun FileView(file: NetworkFile, scope: RowScope) {
+fun FileView(scope: RowScope, file: NetworkFile, userInteractions: UserInteractions) {
+    val context = LocalContext.current
+    var showItemMenu by remember { mutableStateOf(false) }
+
     with(scope) {
         Icon(
             imageVector = Icons.Outlined.FilePresent,
@@ -169,8 +175,66 @@ fun FileView(file: NetworkFile, scope: RowScope) {
         )
         Text(
             text = file.name,
-            modifier = Modifier.align(Alignment.CenterVertically),
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .weight(1f),
             fontWeight = FontWeight.Bold,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1,
         )
+        if (file.isLocal) {
+            Icon(
+                imageVector = Icons.Outlined.CheckCircle,
+                contentDescription = "Downloaded",
+                modifier = Modifier
+                    .padding(horizontal = sizeL)
+                    .size(sizeXXXL)
+            )
+        }
+        Column {
+            Icon(
+                imageVector = Icons.Outlined.MoreVert,
+                contentDescription = "More options",
+                modifier = Modifier
+                    .padding(end = sizeXL)
+                    .size(sizeXXXL)
+                    .clip(CircleShape)
+                    .clickable { showItemMenu = !showItemMenu }
+            )
+            DropdownMenu(
+                expanded = showItemMenu,
+                onDismissRequest = { showItemMenu = false }
+            ) {
+                if (file.isLocal) {
+                    DropdownMenuItem(
+                        text = { Text("Delete") },
+                        onClick = { userInteractions.deleteFile(file) }
+                    )
+                } else {
+                    DropdownMenuItem(
+                        text = { Text("Download") },
+                        onClick = { Toast.makeText(context, "Download", Toast.LENGTH_SHORT).show() }
+                    )
+                }
+            }
+        }
     }
+}
+
+@Composable
+private fun ProgressDialog(userInteractions: UserInteractions) {
+    AlertDialog(
+        title = { Text(text = "Downloading file") },
+        text = {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+            }
+        },
+        onDismissRequest = userInteractions::dismissProgressDialog,
+        confirmButton = {
+            TextButton(onClick = userInteractions::dismissProgressDialog) {
+                Text("Cancel")
+            }
+        },
+    )
 }

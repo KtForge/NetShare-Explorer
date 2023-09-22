@@ -24,5 +24,7 @@ interface IExplorerRepository {
         user: String,
         psw: String,
         progressListener: (Float) -> Unit,
-    ): File
+    ): File?
+
+    fun deleteFile(filePath: String)
 }
