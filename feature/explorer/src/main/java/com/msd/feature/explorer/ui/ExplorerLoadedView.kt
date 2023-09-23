@@ -1,6 +1,5 @@
 package com.msd.feature.explorer.ui
 
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -68,7 +67,7 @@ fun ExplorerLoadedView(loaded: Loaded, userInteractions: UserInteractions) {
     }
 
     if (loaded.isDownloadingFile) {
-        ProgressDialog(userInteractions)
+        DownloadProgressDialog(userInteractions)
     }
 
     Column {
@@ -183,7 +182,7 @@ private fun FileView(scope: RowScope, file: NetworkFile, userInteractions: UserI
                 } else {
                     DropdownMenuItem(
                         text = { Text("Download") },
-                        onClick = { Toast.makeText(context, "Download", Toast.LENGTH_SHORT).show() }
+                        onClick = { userInteractions.downloadFile(file) }
                     )
                 }
             }
@@ -211,18 +210,22 @@ private fun FileAccessErrorDialog(error: ExplorerState.Error, userInteractions: 
 }
 
 @Composable
-private fun ProgressDialog(userInteractions: UserInteractions) {
+private fun DownloadProgressDialog(userInteractions: UserInteractions) {
     AlertDialog(
-        title = { Text(text = "Downloading file") },
+        title = { Text(text = stringResource(id = R.string.download_progress_dialog_title)) },
         text = {
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = sizeXXL)
+            ) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
             }
         },
         onDismissRequest = userInteractions::dismissProgressDialog,
         confirmButton = {
             TextButton(onClick = userInteractions::dismissProgressDialog) {
-                Text("Cancel")
+                Text(text = stringResource(id = R.string.download_progress_dialog_cancel))
             }
         },
     )

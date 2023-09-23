@@ -9,4 +9,7 @@
     <string name="access_file_error_dialog_title">Can\'t open file</string>
     <string name="access_file_error_dialog_cancel">Accept</string>
     <string name="access_file_error_dialog_edit">Edit</string>
+
+    <string name="download_progress_dialog_title">Downloading file</string>
+    <string name="download_progress_dialog_cancel">Cancel</string>
 </resources>

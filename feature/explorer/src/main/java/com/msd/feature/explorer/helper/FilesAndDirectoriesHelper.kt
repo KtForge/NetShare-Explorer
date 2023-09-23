@@ -1,6 +1,7 @@
 package com.msd.feature.explorer.helper
 
 import com.msd.domain.explorer.DeleteFileUseCase
+import com.msd.domain.explorer.DownloadFileUseCase
 import com.msd.domain.explorer.GetFilesAndDirectoriesUseCase
 import com.msd.domain.explorer.OpenFileUseCase
 import com.msd.domain.explorer.model.IBaseFile
@@ -11,6 +12,7 @@ import javax.inject.Inject
 
 class FilesAndDirectoriesHelper @Inject constructor(
     private val getFilesAndDirectoriesUseCase: GetFilesAndDirectoriesUseCase,
+    private val downloadFileUseCase: DownloadFileUseCase,
     private val openFileUseCase: OpenFileUseCase,
     private val deleteFileUseCase: DeleteFileUseCase,
 ) {
@@ -33,6 +35,20 @@ class FilesAndDirectoriesHelper @Inject constructor(
             psw = smbConfiguration.psw
         )
     }
+
+    @Throws(Exception::class)
+    suspend fun downloadFile(
+        smbConfiguration: SMBConfiguration,
+        file: IBaseFile,
+        path: String
+    ) = downloadFileUseCase(
+        server = smbConfiguration.server,
+        sharedPath = smbConfiguration.sharedPath,
+        absolutePath = path,
+        fileName = file.name,
+        user = smbConfiguration.user,
+        psw = smbConfiguration.psw,
+    )
 
     @Throws(Exception::class)
     suspend fun openFile(

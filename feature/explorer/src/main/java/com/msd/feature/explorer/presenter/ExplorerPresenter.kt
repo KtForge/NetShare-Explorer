@@ -26,7 +26,6 @@ import com.msd.presentation.Presenter
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -113,7 +112,7 @@ class ExplorerPresenter @AssistedInject constructor(
                         navigate(OpenFile(fileToOpen))
                         emitFilesAndDirectories(loaded, loaded.path)
                     } catch (e: Exception) {
-                        if (e !is CancellationException) {
+                        if (e !is SMBException.CancelException) {
                             tryEmit(
                                 loaded.copy(
                                     fileAccessError = handleError(e, loaded.name, loaded.path)
@@ -187,7 +186,23 @@ class ExplorerPresenter @AssistedInject constructor(
     }
 
     override fun downloadFile(file: NetworkFile) {
+        (currentState as? Loaded)?.let { loaded ->
+            viewModelScope.launch(ioDispatcher) {
+                if (!file.isLocal) {
+                    tryEmit(loaded.copy(isDownloadingFile = true))
 
+                    filesAndDirectoriesHelper.downloadFile(
+                        loaded.smbConfiguration,
+                        file,
+                        loaded.path
+                    )
+
+                    tryEmit(loaded.copy(isDownloadingFile = false))
+                }
+
+                emitFilesAndDirectories(loaded, loaded.path)
+            }
+        }
     }
 
     override fun deleteFile(file: NetworkFile) {

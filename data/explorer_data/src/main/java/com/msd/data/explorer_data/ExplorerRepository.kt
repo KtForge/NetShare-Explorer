@@ -21,6 +21,15 @@ class ExplorerRepository @Inject constructor(
             .sortedBy { fileOrDirectory -> fileOrDirectory.name }
             .sortedBy { fileOrDirectory -> fileOrDirectory is NetworkFile }
 
+    override suspend fun downloadFile(
+        server: String,
+        sharedPath: String,
+        absolutePath: String,
+        fileName: String,
+        user: String,
+        psw: String
+    ) = dataSource.downloadFile(server, sharedPath, absolutePath, fileName, user, psw)
+
     override suspend fun openFile(
         server: String,
         sharedPath: String,

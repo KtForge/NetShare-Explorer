@@ -6,6 +6,7 @@ import com.msd.data.explorer_data.tracker.ExplorerTracker
 import com.msd.data.files.FileManager
 import com.msd.domain.explorer.model.IBaseFile
 import com.msd.domain.explorer.model.SMBException
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.yield
 import java.io.File
 import java.io.InputStream
@@ -48,6 +49,52 @@ class ExplorerDataSource @Inject constructor(
                 files
             }
         } catch (exception: Exception) {
+            throw handleException(exception)
+        }
+    }
+
+    @Throws(Exception::class)
+    suspend fun downloadFile(
+        server: String,
+        sharedPath: String,
+        absolutePath: String,
+        fileName: String,
+        user: String,
+        psw: String,
+    ) {
+        val start = System.currentTimeMillis()
+        var relativePath = ""
+
+        return try {
+            smbHelper.onConnection(
+                server = server,
+                sharedPath = sharedPath,
+                user = user,
+                psw = psw
+            ) { diskShare ->
+                relativePath = smbHelper.getRelativePath(diskShare, absolutePath)
+
+                val remoteFile = smbHelper.openFile(diskShare, relativePath, fileName)
+
+                val localFile =
+                    fileManager.getLocalFileRef(server, sharedPath, relativePath, fileName)
+                val fileSize = smbHelper.getFileSize(remoteFile)
+
+                if (!isLocalFileValid(localFile, remoteFile)) {
+                    remoteFile.inputStream.copyTo(localFile.outputStream())
+                }
+
+                val openTime = System.currentTimeMillis() - start
+                // TODO Tracking
+                // explorerTracker.logOpenLocalFileEvent(fileSize, openTime)
+            }
+        } catch (exception: Exception) {
+            // Delete local file
+            val localFile = fileManager.getLocalFileRef(server, sharedPath, relativePath, fileName)
+            if (localFile.exists()) {
+                localFile.delete()
+            }
+
             throw handleException(exception)
         }
     }
@@ -140,6 +187,7 @@ class ExplorerDataSource @Inject constructor(
                 }
             }
 
+            is CancellationException -> SMBException.CancelException
             else -> SMBException.UnknownError
         }
     }

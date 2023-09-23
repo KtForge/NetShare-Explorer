@@ -16,6 +16,16 @@ interface IExplorerRepository {
     ): List<IBaseFile>
 
     @Throws(Exception::class)
+    suspend fun downloadFile(
+        server: String,
+        sharedPath: String,
+        absolutePath: String,
+        fileName: String,
+        user: String,
+        psw: String,
+    )
+
+    @Throws(Exception::class)
     suspend fun openFile(
         server: String,
         sharedPath: String,
