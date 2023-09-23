@@ -3,27 +3,28 @@ package com.msd.feature.explorer.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.msd.core.ui.theme.NetworkStorageConfigurationTheme
+import com.msd.core.ui.widget.AppTopBar
+import com.msd.domain.explorer.model.IBaseFile
+import com.msd.domain.explorer.model.NetworkFile
 import com.msd.feature.explorer.R
 import com.msd.feature.explorer.presenter.ExplorerState
 import com.msd.feature.explorer.presenter.UserInteractions
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExplorerTopBar(currentState: ExplorerState, userInteractions: UserInteractions) {
-    TopAppBar(
-        title = {
+    AppTopBar(
+        titleContent = {
             Column {
                 Text(
                     text = currentState.name,
@@ -41,7 +42,7 @@ fun ExplorerTopBar(currentState: ExplorerState, userInteractions: UserInteractio
                 )
             }
         },
-        navigationIcon = {
+        navigationContent = {
             IconButton(
                 onClick = userInteractions::onNavigateUp
             ) {
@@ -51,7 +52,27 @@ fun ExplorerTopBar(currentState: ExplorerState, userInteractions: UserInteractio
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary)
+        }
     )
+}
+
+@Composable
+@Preview
+fun ExplorerTopBarPreview() {
+    NetworkStorageConfigurationTheme {
+        ExplorerTopBar(
+            currentState = ExplorerState.Loading("Name", "Path"),
+            userInteractions = object : UserInteractions {
+                override fun onItemClicked(file: IBaseFile) = Unit
+                override fun onBackPressed() = Unit
+                override fun onNavigateUp() = Unit
+                override fun confirmDialog() = Unit
+                override fun dismissDialog() = Unit
+                override fun dismissProgressDialog() = Unit
+                override fun downloadFile(file: NetworkFile) = Unit
+                override fun deleteFile(file: NetworkFile) = Unit
+
+            }
+        )
+    }
 }

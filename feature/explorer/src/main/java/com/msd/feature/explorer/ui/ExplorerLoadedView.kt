@@ -99,12 +99,9 @@ fun ExplorerLoadedView(loaded: Loaded, userInteractions: UserInteractions) {
                                 .padding(vertical = sizeXXL)
                         ) {
                             when (file) {
-                                is NetworkParentDirectory -> ParentDirectoryView(
-                                    directory = file,
-                                    scope = this
-                                )
-
+                                is NetworkParentDirectory,
                                 is NetworkDirectory -> DirectoryView(directory = file, scope = this)
+
                                 is NetworkFile -> FileView(scope = this, file, userInteractions)
                             }
                         }
@@ -116,25 +113,7 @@ fun ExplorerLoadedView(loaded: Loaded, userInteractions: UserInteractions) {
 }
 
 @Composable
-fun ParentDirectoryView(directory: NetworkParentDirectory, scope: RowScope) {
-    with(scope) {
-        Icon(
-            imageVector = Icons.Outlined.Folder,
-            contentDescription = null,
-            modifier = Modifier
-                .padding(horizontal = sizeXL)
-                .size(sizeXXXL)
-        )
-        Text(
-            text = directory.name,
-            modifier = Modifier.align(Alignment.CenterVertically),
-            fontWeight = FontWeight.Bold,
-        )
-    }
-}
-
-@Composable
-fun DirectoryView(directory: NetworkDirectory, scope: RowScope) {
+fun DirectoryView(directory: IBaseFile, scope: RowScope) {
     with(scope) {
         Icon(
             imageVector = Icons.Outlined.Folder,
