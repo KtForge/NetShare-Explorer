@@ -113,7 +113,7 @@ fun ExplorerLoadedView(loaded: Loaded, userInteractions: UserInteractions) {
 }
 
 @Composable
-fun DirectoryView(directory: IBaseFile, scope: RowScope) {
+private fun DirectoryView(directory: IBaseFile, scope: RowScope) {
     with(scope) {
         Icon(
             imageVector = Icons.Outlined.Folder,
@@ -131,7 +131,7 @@ fun DirectoryView(directory: IBaseFile, scope: RowScope) {
 }
 
 @Composable
-fun FileView(scope: RowScope, file: NetworkFile, userInteractions: UserInteractions) {
+private fun FileView(scope: RowScope, file: NetworkFile, userInteractions: UserInteractions) {
     val context = LocalContext.current
     var showItemMenu by remember { mutableStateOf(false) }
 
@@ -252,6 +252,88 @@ fun ExplorerLoadedPreview() {
         ),
         fileAccessError = null,
         isDownloadingFile = false,
+    )
+    val userInteractions = object : UserInteractions {
+        override fun onItemClicked(file: IBaseFile) = Unit
+        override fun onBackPressed() = Unit
+        override fun onNavigateUp() = Unit
+        override fun confirmDialog() = Unit
+        override fun dismissDialog() = Unit
+        override fun dismissProgressDialog() = Unit
+        override fun downloadFile(file: NetworkFile) = Unit
+        override fun deleteFile(file: NetworkFile) = Unit
+
+    }
+    NetworkStorageConfigurationTheme {
+        ExplorerLoadedView(loaded, userInteractions)
+    }
+}
+
+@Composable
+@Preview
+fun ExplorerLoadedErrorDialogPreview() {
+    val loaded = Loaded(
+        smbConfiguration = SMBConfiguration(
+            id = 0,
+            name = "Name",
+            server = "Server",
+            sharedPath = "Shared path",
+            user = "User",
+            psw = "Password"
+        ),
+        root = "",
+        path = "",
+        filesOrDirectories = listOf(
+            NetworkDirectory(".", ""),
+            NetworkDirectory("directory 1", ""),
+            NetworkDirectory("directory 2", ""),
+            NetworkFile("file 1", "", false),
+            NetworkFile("file 2", "", false),
+            NetworkFile("file 3", "", true),
+        ),
+        fileAccessError = ExplorerState.Error.AccessError("Name", "Public"),
+        isDownloadingFile = false,
+    )
+    val userInteractions = object : UserInteractions {
+        override fun onItemClicked(file: IBaseFile) = Unit
+        override fun onBackPressed() = Unit
+        override fun onNavigateUp() = Unit
+        override fun confirmDialog() = Unit
+        override fun dismissDialog() = Unit
+        override fun dismissProgressDialog() = Unit
+        override fun downloadFile(file: NetworkFile) = Unit
+        override fun deleteFile(file: NetworkFile) = Unit
+
+    }
+    NetworkStorageConfigurationTheme {
+        ExplorerLoadedView(loaded, userInteractions)
+    }
+}
+
+@Composable
+@Preview
+fun ExplorerLoadedDownloadDialogPreview() {
+    val loaded = Loaded(
+        smbConfiguration = SMBConfiguration(
+            id = 0,
+            name = "Name",
+            server = "Server",
+            sharedPath = "Shared path",
+            user = "User",
+            psw = "Password"
+        ),
+        root = "",
+        path = "",
+        filesOrDirectories = listOf(
+            NetworkDirectory(".", ""),
+            NetworkDirectory("directory 1", ""),
+            NetworkDirectory("directory 2", ""),
+            NetworkFile("file 1", "", false),
+            NetworkFile("file 2", "", false),
+            NetworkFile("file 3", "", true),
+        ),
+        fileAccessError = null,
+        isDownloadingFile = true,
     )
     val userInteractions = object : UserInteractions {
         override fun onItemClicked(file: IBaseFile) = Unit

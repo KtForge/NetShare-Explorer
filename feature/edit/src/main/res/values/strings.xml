@@ -3,6 +3,8 @@
     <string name="edit_screen_title">Network Storage Configuration</string>
     <string name="navigate_up_content_description">Back</string>
 
+    <string name="loading_edit_a11y">Loading edit screen, please wait</string>
+
     <string name="name_label">Name (optional)</string>
     <string name="name_field_a11y">Enter an optional name</string>
 

@@ -46,6 +46,7 @@ class EditPresenter @AssistedInject constructor(
             tryEmit(
                 Loaded(
                     smbConfiguration,
+                    isPasswordVisible = false,
                     actionButtonLabel = R.string.save_configuration_button,
                     serverError = false,
                     sharedPathError = false,
@@ -57,6 +58,7 @@ class EditPresenter @AssistedInject constructor(
                     tryEmit(
                         Loaded(
                             smbConfiguration,
+                            isPasswordVisible = false,
                             actionButtonLabel = R.string.edit_configuration_button,
                             serverError = false,
                             sharedPathError = false,
@@ -69,6 +71,12 @@ class EditPresenter @AssistedInject constructor(
 
     override fun onNavigateUp() {
         navigate(NavigateUp)
+    }
+
+    override fun onPasswordVisibilityIconClicked() {
+        (currentState as? Loaded)?.let { loaded ->
+            tryEmit(loaded.copy(isPasswordVisible = !loaded.isPasswordVisible))
+        }
     }
 
     override fun onConfirmButtonClicked(
@@ -147,6 +155,7 @@ class EditPresenter @AssistedInject constructor(
 interface UserInteractions {
 
     fun onNavigateUp()
+    fun onPasswordVisibilityIconClicked()
     fun onConfirmButtonClicked(
         name: String,
         server: String,

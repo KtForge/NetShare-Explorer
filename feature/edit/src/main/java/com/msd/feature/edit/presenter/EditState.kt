@@ -10,6 +10,7 @@ sealed interface EditState : State {
     object Loading : EditState
     data class Loaded(
         val smbConfiguration: SMBConfiguration,
+        val isPasswordVisible: Boolean,
         @StringRes val actionButtonLabel: Int,
         val serverError: Boolean,
         val sharedPathError: Boolean,
