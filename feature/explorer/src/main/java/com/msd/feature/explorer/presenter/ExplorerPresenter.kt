@@ -27,8 +27,6 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -97,28 +95,25 @@ class ExplorerPresenter @AssistedInject constructor(
 
     private fun openFile(file: NetworkFile) {
         (currentState as? Loaded)?.let { loaded ->
-            viewModelScope.launch(ioDispatcher) {
-                val smbConfiguration = loaded.smbConfiguration
-                downloadJob = CoroutineScope(Dispatchers.IO).launch {
-                    try {
-                        tryEmit(loaded.copy(isDownloadingFile = !file.isLocal))
+            downloadJob = viewModelScope.launch(ioDispatcher) {
+                try {
+                    tryEmit(loaded.copy(isDownloadingFile = !file.isLocal))
 
-                        val fileToOpen = filesAndDirectoriesHelper.openFile(
-                            smbConfiguration,
-                            file,
-                            loaded.path
-                        )
+                    val fileToOpen = filesAndDirectoriesHelper.openFile(
+                        loaded.smbConfiguration,
+                        file,
+                        loaded.path
+                    )
 
-                        navigate(OpenFile(fileToOpen))
-                        emitFilesAndDirectories(loaded, loaded.path)
-                    } catch (e: Exception) {
-                        if (e !is SMBException.CancelException) {
-                            tryEmit(
-                                loaded.copy(
-                                    fileAccessError = handleError(e, loaded.name, loaded.path)
-                                )
+                    navigate(OpenFile(fileToOpen))
+                    emitFilesAndDirectories(loaded, loaded.path)
+                } catch (e: Exception) {
+                    if (e !is SMBException.CancelException) {
+                        tryEmit(
+                            loaded.copy(
+                                fileAccessError = handleError(e, loaded.name, loaded.path)
                             )
-                        }
+                        )
                     }
                 }
             }
@@ -152,14 +147,6 @@ class ExplorerPresenter @AssistedInject constructor(
         }
     }
 
-    private fun handleError(e: Exception, name: String, path: String): Error {
-        return when (e) {
-            SMBException.ConnectionError -> Error.ConnectionError(name, path)
-            SMBException.AccessDenied -> Error.AccessError(name, path)
-            else -> Error.UnknownError(name, path)
-        }
-    }
-
     override fun confirmDialog() {
         dismissDialog()
 
@@ -187,17 +174,21 @@ class ExplorerPresenter @AssistedInject constructor(
 
     override fun downloadFile(file: NetworkFile) {
         (currentState as? Loaded)?.let { loaded ->
-            viewModelScope.launch(ioDispatcher) {
+            downloadJob = viewModelScope.launch(ioDispatcher) {
                 if (!file.isLocal) {
                     tryEmit(loaded.copy(isDownloadingFile = true))
 
-                    filesAndDirectoriesHelper.downloadFile(
-                        loaded.smbConfiguration,
-                        file,
-                        loaded.path
-                    )
+                    try {
+                        filesAndDirectoriesHelper.downloadFile(
+                            loaded.smbConfiguration,
+                            file,
+                            loaded.path
+                        )
 
-                    tryEmit(loaded.copy(isDownloadingFile = false))
+                        tryEmit(loaded.copy(isDownloadingFile = false))
+                    } catch (e: Exception) {
+                        handleError(e, loaded.name, loaded.path)
+                    }
                 }
 
                 emitFilesAndDirectories(loaded, loaded.path)
@@ -217,6 +208,14 @@ class ExplorerPresenter @AssistedInject constructor(
 
     override fun onNavigateUp() {
         navigate(NavigateUp)
+    }
+
+    private fun handleError(e: Exception, name: String, path: String): Error {
+        return when (e) {
+            SMBException.ConnectionError -> Error.ConnectionError(name, path)
+            SMBException.AccessDenied -> Error.AccessError(name, path)
+            else -> Error.UnknownError(name, path)
+        }
     }
 
     @AssistedFactory

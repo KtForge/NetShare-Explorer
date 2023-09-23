@@ -80,9 +80,7 @@ class ExplorerDataSource @Inject constructor(
                     fileManager.getLocalFileRef(server, sharedPath, relativePath, fileName)
                 val fileSize = smbHelper.getFileSize(remoteFile)
 
-                if (!isLocalFileValid(localFile, remoteFile)) {
-                    remoteFile.inputStream.copyTo(localFile.outputStream())
-                }
+                remoteFile.inputStream.copyTo(localFile.outputStream())
 
                 val openTime = System.currentTimeMillis() - start
                 // TODO Tracking

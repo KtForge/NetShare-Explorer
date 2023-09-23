@@ -15,14 +15,17 @@ import com.msd.navigation.NavigateUp
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteIdArg
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNoIdArg
 import com.msd.presentation.IPresenterCore
+import com.msd.presentation.IoDispatcher
 import com.msd.presentation.Presenter
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 
 class EditPresenter @AssistedInject constructor(
     core: IPresenterCore<EditState>,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val getSMBConfigurationUseCase: GetSMBConfigurationUseCase,
     private val storeSMBConfigurationUseCase: StoreSMBConfigurationUseCase,
     private val editTracker: EditTracker,
@@ -53,7 +56,7 @@ class EditPresenter @AssistedInject constructor(
                 )
             )
         } else {
-            viewModelScope.launch {
+            viewModelScope.launch(ioDispatcher) {
                 getSMBConfigurationUseCase(smbConfigurationId)?.let { smbConfiguration ->
                     tryEmit(
                         Loaded(
@@ -106,7 +109,7 @@ class EditPresenter @AssistedInject constructor(
                     )
                 )
             } else {
-                viewModelScope.launch {
+                viewModelScope.launch(ioDispatcher) {
                     storeSMBConfigurationUseCase(
                         id = loaded.smbConfiguration.id,
                         name = name,
