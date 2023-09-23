@@ -36,6 +36,7 @@ dependencies {
 
     implementation(project(":data:smb_data"))
     implementation(project(":data:explorer_data"))
+    implementation(project(":data:files"))
 
     implementation(project(":domain:smb"))
     implementation(project(":domain:explorer"))

@@ -16,7 +16,6 @@ import com.msd.navigation.OpenFile
 import com.msd.presentation.IPresenterCore
 import com.msd.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -46,7 +45,7 @@ class ExplorerPresenterTest : CoroutineTest() {
             core,
             getSMBConfigurationUseCase,
             filesAndDirectoriesHelper,
-            StandardTestDispatcher(),
+            mainCoroutineRule.dispatcher,
             smbConfigurationId,
             smbConfigurationName
         )
@@ -62,7 +61,7 @@ class ExplorerPresenterTest : CoroutineTest() {
     )
     private val parentDirectory = NetworkParentDirectory("Parent", "")
     private val directory = NetworkDirectory("Parent", "path")
-    private val file = NetworkFile("Parent", "path")
+    private val file = NetworkFile("Parent", "path", isLocal = false)
 
     private val expectedPathAndRoot =
         "\\\\${smbConfiguration.server}\\${smbConfiguration.sharedPath}"
@@ -72,6 +71,7 @@ class ExplorerPresenterTest : CoroutineTest() {
         path = expectedPathAndRoot,
         filesOrDirectories = emptyList(),
         fileAccessError = null,
+        isDownloadingFile = false,
     )
 
     @Test
@@ -89,7 +89,7 @@ class ExplorerPresenterTest : CoroutineTest() {
         verify(filesAndDirectoriesHelper).getFilesAndDirectories(smbConfiguration, path = "")
         verify(filesAndDirectoriesHelper).getRootPath(smbConfiguration)
         inOrder(core) {
-            verify(core).tryEmit(Loading(smbConfigurationName))
+            verify(core).tryEmit(Loading(smbConfigurationName, path = ""))
             verify(core).tryEmit(loaded)
         }
     }
@@ -103,7 +103,7 @@ class ExplorerPresenterTest : CoroutineTest() {
         verifyNoInteractions(getSMBConfigurationUseCase)
         verifyNoInteractions(filesAndDirectoriesHelper)
         inOrder(core) {
-            verify(core).tryEmit(Loading(smbConfigurationName))
+            verify(core).tryEmit(Loading(smbConfigurationName, path = ""))
             verify(core).navigate(NavigateBack)
         }
     }
@@ -121,8 +121,8 @@ class ExplorerPresenterTest : CoroutineTest() {
             verify(getSMBConfigurationUseCase).invoke(smbConfigurationId)
             verify(filesAndDirectoriesHelper).getFilesAndDirectories(smbConfiguration, path = "")
             inOrder(core) {
-                verify(core).tryEmit(Loading(smbConfigurationName))
-                verify(core).tryEmit(Error.ConnectionError(smbConfigurationName))
+                verify(core).tryEmit(Loading(smbConfigurationName, path = ""))
+                verify(core).tryEmit(Error.ConnectionError(smbConfigurationName, path = ""))
             }
         }
 
@@ -139,8 +139,8 @@ class ExplorerPresenterTest : CoroutineTest() {
             verify(getSMBConfigurationUseCase).invoke(smbConfigurationId)
             verify(filesAndDirectoriesHelper).getFilesAndDirectories(smbConfiguration, path = "")
             inOrder(core) {
-                verify(core).tryEmit(Loading(smbConfigurationName))
-                verify(core).tryEmit(Error.AccessError(smbConfigurationName))
+                verify(core).tryEmit(Loading(smbConfigurationName, path = ""))
+                verify(core).tryEmit(Error.AccessError(smbConfigurationName, path = ""))
             }
         }
 
@@ -157,8 +157,8 @@ class ExplorerPresenterTest : CoroutineTest() {
             verify(getSMBConfigurationUseCase).invoke(smbConfigurationId)
             verify(filesAndDirectoriesHelper).getFilesAndDirectories(smbConfiguration, path = "")
             inOrder(core) {
-                verify(core).tryEmit(Loading(smbConfigurationName))
-                verify(core).tryEmit(Error.UnknownError(smbConfigurationName))
+                verify(core).tryEmit(Loading(smbConfigurationName, path = ""))
+                verify(core).tryEmit(Error.UnknownError(smbConfigurationName, path = ""))
             }
         }
 
@@ -173,8 +173,8 @@ class ExplorerPresenterTest : CoroutineTest() {
             verify(getSMBConfigurationUseCase).invoke(smbConfigurationId)
             verifyNoInteractions(filesAndDirectoriesHelper)
             inOrder(core) {
-                verify(core).tryEmit(Loading(smbConfigurationName))
-                verify(core).tryEmit(Error.UnknownError(smbConfigurationName))
+                verify(core).tryEmit(Loading(smbConfigurationName, path = ""))
+                verify(core).tryEmit(Error.UnknownError(smbConfigurationName, path = ""))
             }
         }
 
@@ -213,6 +213,8 @@ class ExplorerPresenterTest : CoroutineTest() {
     fun `when clicking on a parent directory in loaded state and not in root path and connection error should emit error state`() =
         runTest {
             val loaded = loaded.copy(path = "$expectedPathAndRoot\\Directory")
+            val expectedState =
+                Error.ConnectionError(smbConfigurationName, path = expectedPathAndRoot)
             whenever(core.currentState()).thenReturn(loaded)
             whenever(
                 filesAndDirectoriesHelper.getFilesAndDirectories(
@@ -224,7 +226,7 @@ class ExplorerPresenterTest : CoroutineTest() {
             presenter.onItemClicked(parentDirectory)
             advanceUntilIdle()
 
-            verify(core).tryEmit(Error.ConnectionError(smbConfigurationName))
+            verify(core).tryEmit(expectedState)
             verify(core, times(0)).navigate(any())
         }
 
@@ -232,6 +234,7 @@ class ExplorerPresenterTest : CoroutineTest() {
     fun `when clicking on a parent directory in loaded state and not in root path and access error should emit error state`() =
         runTest {
             val loaded = loaded.copy(path = "$expectedPathAndRoot\\Directory")
+            val expectedState = Error.AccessError(smbConfigurationName, path = expectedPathAndRoot)
             whenever(core.currentState()).thenReturn(loaded)
             whenever(
                 filesAndDirectoriesHelper.getFilesAndDirectories(
@@ -243,7 +246,7 @@ class ExplorerPresenterTest : CoroutineTest() {
             presenter.onItemClicked(parentDirectory)
             advanceUntilIdle()
 
-            verify(core).tryEmit(Error.AccessError(smbConfigurationName))
+            verify(core).tryEmit(expectedState)
             verify(core, times(0)).navigate(any())
         }
 
@@ -251,6 +254,7 @@ class ExplorerPresenterTest : CoroutineTest() {
     fun `when clicking on a parent directory in loaded state and not in root path and unknown error should emit error state`() =
         runTest {
             val loaded = loaded.copy(path = "$expectedPathAndRoot\\Directory")
+            val expectedState = Error.UnknownError(smbConfigurationName, path = expectedPathAndRoot)
             whenever(core.currentState()).thenReturn(loaded)
             whenever(
                 filesAndDirectoriesHelper.getFilesAndDirectories(
@@ -262,7 +266,7 @@ class ExplorerPresenterTest : CoroutineTest() {
             presenter.onItemClicked(parentDirectory)
             advanceUntilIdle()
 
-            verify(core).tryEmit(Error.UnknownError(smbConfigurationName))
+            verify(core).tryEmit(expectedState)
             verify(core, times(0)).navigate(any())
         }
 
@@ -316,7 +320,7 @@ class ExplorerPresenterTest : CoroutineTest() {
             presenter.onItemClicked(directory)
             advanceUntilIdle()
 
-            verify(core).tryEmit(Error.ConnectionError(smbConfigurationName))
+            verify(core).tryEmit(Error.ConnectionError(smbConfigurationName, directory.path))
             verify(core, times(0)).navigate(any())
         }
 
@@ -334,7 +338,7 @@ class ExplorerPresenterTest : CoroutineTest() {
             presenter.onItemClicked(directory)
             advanceUntilIdle()
 
-            verify(core).tryEmit(Error.AccessError(smbConfigurationName))
+            verify(core).tryEmit(Error.AccessError(smbConfigurationName, directory.path))
             verify(core, times(0)).navigate(any())
         }
 
@@ -352,7 +356,7 @@ class ExplorerPresenterTest : CoroutineTest() {
             presenter.onItemClicked(directory)
             advanceUntilIdle()
 
-            verify(core).tryEmit(Error.UnknownError(smbConfigurationName))
+            verify(core).tryEmit(Error.UnknownError(smbConfigurationName, directory.path))
             verify(core, times(0)).navigate(any())
         }
 
@@ -367,8 +371,16 @@ class ExplorerPresenterTest : CoroutineTest() {
     @Test
     fun `when clicking on a file in loaded state should update the state and open the file`() =
         runTest {
+            val firstExpectedState = loaded.copy(isDownloadingFile = true)
+            val secondExpectedState = loaded
             whenever(core.currentState()).thenReturn(loaded)
             val openedFile: File = mock()
+            whenever(
+                filesAndDirectoriesHelper.getFilesAndDirectories(
+                    smbConfiguration,
+                    path = loaded.path
+                )
+            ).thenReturn(emptyList())
             whenever(
                 filesAndDirectoriesHelper.openFile(
                     smbConfiguration,
@@ -380,16 +392,19 @@ class ExplorerPresenterTest : CoroutineTest() {
             presenter.onItemClicked(file)
             advanceUntilIdle()
 
-            verify(core).tryEmit(Loading(smbConfigurationName))
-            verify(core).tryEmit(loaded)
-            verify(core).navigate(OpenFile(openedFile))
+            inOrder(core) {
+                verify(core).tryEmit(firstExpectedState)
+                verify(core).navigate(OpenFile(openedFile))
+                verify(core).tryEmit(secondExpectedState)
+            }
         }
 
     @Test
     fun `when clicking on a file in loaded state and null file should restore the state`() =
         runTest {
-            val expectedState = loaded.copy(
-                fileAccessError = Error.UnknownError(smbConfigurationName)
+            val firstExpectedState = loaded.copy(isDownloadingFile = true)
+            val secondExpectedState = loaded.copy(
+                fileAccessError = Error.UnknownError(smbConfigurationName, loaded.path)
             )
             whenever(core.currentState()).thenReturn(loaded)
             whenever(
@@ -403,16 +418,19 @@ class ExplorerPresenterTest : CoroutineTest() {
             presenter.onItemClicked(file)
             advanceUntilIdle()
 
-            verify(core).tryEmit(Loading(smbConfigurationName))
-            verify(core).tryEmit(expectedState)
+            inOrder(core) {
+                verify(core).tryEmit(firstExpectedState)
+                verify(core).tryEmit(secondExpectedState)
+            }
             verify(core, times(0)).navigate(any())
         }
 
     @Test
     fun `when clicking on a file in loaded state and connection error should emit error state`() =
         runTest {
-            val expectedState = loaded.copy(
-                fileAccessError = Error.ConnectionError(smbConfigurationName)
+            val firstExpectedState = loaded.copy(isDownloadingFile = true)
+            val secondExpectedState = loaded.copy(
+                fileAccessError = Error.ConnectionError(smbConfigurationName, path = loaded.path)
             )
             whenever(core.currentState()).thenReturn(loaded)
             whenever(
@@ -426,16 +444,19 @@ class ExplorerPresenterTest : CoroutineTest() {
             presenter.onItemClicked(file)
             advanceUntilIdle()
 
-            verify(core).tryEmit(Loading(smbConfigurationName))
-            verify(core).tryEmit(expectedState)
+            inOrder(core) {
+                verify(core).tryEmit(firstExpectedState)
+                verify(core).tryEmit(secondExpectedState)
+            }
             verify(core, times(0)).navigate(any())
         }
 
     @Test
     fun `when clicking on a file in loaded state and access error should emit error state`() =
         runTest {
-            val expectedState = loaded.copy(
-                fileAccessError = Error.AccessError(smbConfigurationName)
+            val firstExpectedState = loaded.copy(isDownloadingFile = true)
+            val secondExpectedState = loaded.copy(
+                fileAccessError = Error.AccessError(smbConfigurationName, path = loaded.path)
             )
             whenever(core.currentState()).thenReturn(loaded)
             whenever(
@@ -449,16 +470,19 @@ class ExplorerPresenterTest : CoroutineTest() {
             presenter.onItemClicked(file)
             advanceUntilIdle()
 
-            verify(core).tryEmit(Loading(smbConfigurationName))
-            verify(core).tryEmit(expectedState)
+            inOrder(core) {
+                verify(core).tryEmit(firstExpectedState)
+                verify(core).tryEmit(secondExpectedState)
+            }
             verify(core, times(0)).navigate(any())
         }
 
     @Test
     fun `when clicking on a file in loaded state and unknown error should emit error state`() =
         runTest {
-            val expectedState = loaded.copy(
-                fileAccessError = Error.UnknownError(smbConfigurationName)
+            val firstExpectedState = loaded.copy(isDownloadingFile = true)
+            val secondExpectedState = loaded.copy(
+                fileAccessError = Error.UnknownError(smbConfigurationName, path = loaded.path)
             )
             whenever(core.currentState()).thenReturn(loaded)
             whenever(
@@ -472,8 +496,10 @@ class ExplorerPresenterTest : CoroutineTest() {
             presenter.onItemClicked(file)
             advanceUntilIdle()
 
-            verify(core).tryEmit(Loading(smbConfigurationName))
-            verify(core).tryEmit(expectedState)
+            inOrder(core) {
+                verify(core).tryEmit(firstExpectedState)
+                verify(core).tryEmit(secondExpectedState)
+            }
             verify(core, times(0)).navigate(any())
         }
 

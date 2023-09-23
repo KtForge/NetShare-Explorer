@@ -36,6 +36,7 @@ dependencies {
     implementation(platform(Dependencies.composeBom))
     api(Dependencies.composeUi)
     api(Dependencies.composeUiGraphics)
+    debugApi(Dependencies.composeUiTooling)
     api(Dependencies.composeUiToolingPreview)
     api(Dependencies.composeMaterial3)
     api(Dependencies.composeMaterialIcons)

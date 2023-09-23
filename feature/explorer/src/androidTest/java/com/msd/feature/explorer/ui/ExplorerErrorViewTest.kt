@@ -16,7 +16,7 @@ class ExplorerErrorViewTest {
 
     @Test
     fun testConnectionErrorViewIsDisplayedCorrectly() {
-        composeTestRule.setContent { ExplorerErrorView(error = ConnectionError("Name")) }
+        composeTestRule.setContent { ExplorerErrorView(error = ConnectionError("Name", "")) }
 
         val errorMessage = "Shared folder can't be accessed. Something happened when connecting to the server."
         composeTestRule.onNodeWithText(errorMessage).assertIsDisplayed()
@@ -24,7 +24,7 @@ class ExplorerErrorViewTest {
 
     @Test
     fun testAccessErrorViewIsDisplayedCorrectly() {
-        composeTestRule.setContent { ExplorerErrorView(error = AccessError("Name")) }
+        composeTestRule.setContent { ExplorerErrorView(error = AccessError("Name", "")) }
 
         val errorMessage = "Access denied. Please check your credentials."
         composeTestRule.onNodeWithText(errorMessage).assertIsDisplayed()
@@ -32,7 +32,7 @@ class ExplorerErrorViewTest {
 
     @Test
     fun testUnknownErrorViewIsDisplayedCorrectly() {
-        composeTestRule.setContent { ExplorerErrorView(error = UnknownError("Name")) }
+        composeTestRule.setContent { ExplorerErrorView(error = UnknownError("Name", "")) }
 
         val errorMessage = "Shared folder can't be accessed. Something happened when connecting to the server."
         composeTestRule.onNodeWithText(errorMessage).assertIsDisplayed()

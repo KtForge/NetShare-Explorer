@@ -10,9 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.msd.feature.explorer.presenter.ExplorerState.Error
+import androidx.compose.ui.tooling.preview.Preview
 import com.msd.core.ui.theme.Dimensions.sizeM
 import com.msd.core.ui.theme.Dimensions.sizeXL
+import com.msd.core.ui.theme.NetworkStorageConfigurationTheme
+import com.msd.feature.explorer.presenter.ExplorerState
+import com.msd.feature.explorer.presenter.ExplorerState.Error
 
 @Composable
 fun ExplorerErrorView(error: Error) {
@@ -33,4 +36,12 @@ fun ErrorMessage(@StringRes message: Int) {
         color = MaterialTheme.colorScheme.onErrorContainer,
         modifier = Modifier.padding(sizeXL)
     )
+}
+
+@Composable
+@Preview
+fun ExplorerErrorPreview() {
+    NetworkStorageConfigurationTheme {
+        ExplorerErrorView(error = Error.ConnectionError("", ""))
+    }
 }

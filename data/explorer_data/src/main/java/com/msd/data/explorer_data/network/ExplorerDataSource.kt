@@ -6,7 +6,6 @@ import com.msd.data.explorer_data.tracker.ExplorerTracker
 import com.msd.data.files.FileManager
 import com.msd.domain.explorer.model.IBaseFile
 import com.msd.domain.explorer.model.SMBException
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.yield
 import java.io.File
 import java.io.InputStream
@@ -61,8 +60,7 @@ class ExplorerDataSource @Inject constructor(
         fileName: String,
         user: String,
         psw: String,
-        progressListener: (Float) -> Unit,
-    ): File? {
+    ): File {
         val start = System.currentTimeMillis()
         var relativePath = ""
 
@@ -82,11 +80,7 @@ class ExplorerDataSource @Inject constructor(
                 val fileSize = smbHelper.getFileSize(remoteFile)
 
                 if (!isLocalFileValid(localFile, remoteFile)) {
-                    remoteFile.inputStream.copyTo(
-                        localFile.outputStream(),
-                        fileSize,
-                        progressListener
-                    )
+                    remoteFile.inputStream.copyTo(localFile.outputStream())
                 }
 
                 val openTime = System.currentTimeMillis() - start
@@ -101,11 +95,7 @@ class ExplorerDataSource @Inject constructor(
                 localFile.delete()
             }
 
-            if (exception !is CancellationException) {
-                throw handleException(exception)
-            }
-
-            null
+            throw handleException(exception)
         }
     }
 
@@ -126,11 +116,7 @@ class ExplorerDataSource @Inject constructor(
         return false
     }
 
-    private suspend fun InputStream.copyTo(
-        out: OutputStream,
-        fileSize: Long,
-        progressListener: (progress: Float) -> Unit
-    ) {
+    private suspend fun InputStream.copyTo(out: OutputStream) {
         var bytesCopied: Long = 0
         val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
         var bytes = read(buffer)
@@ -139,7 +125,7 @@ class ExplorerDataSource @Inject constructor(
             yield()
             out.write(buffer, 0, bytes)
             bytesCopied += bytes
-            progressListener(bytesCopied.toFloat().div(fileSize))
+            // progressListener(bytesCopied.toFloat().div(fileSize))
             bytes = read(buffer)
         }
     }

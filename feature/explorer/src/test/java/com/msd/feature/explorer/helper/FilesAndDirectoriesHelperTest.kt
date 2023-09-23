@@ -1,5 +1,6 @@
 package com.msd.feature.explorer.helper
 
+import com.msd.domain.explorer.DeleteFileUseCase
 import com.msd.domain.explorer.GetFilesAndDirectoriesUseCase
 import com.msd.domain.explorer.OpenFileUseCase
 import com.msd.domain.explorer.model.NetworkDirectory
@@ -20,7 +21,12 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
 
     private val getFilesAndDirectoriesUseCase: GetFilesAndDirectoriesUseCase = mock()
     private val openFileUseCase: OpenFileUseCase = mock()
-    private val helper = FilesAndDirectoriesHelper(getFilesAndDirectoriesUseCase, openFileUseCase)
+    private val deleteFileUseCase: DeleteFileUseCase = mock()
+    private val helper = FilesAndDirectoriesHelper(
+        getFilesAndDirectoriesUseCase,
+        openFileUseCase,
+        deleteFileUseCase
+    )
 
     private val smbConfiguration = SMBConfiguration(
         id = 0,
@@ -30,7 +36,7 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
         user = "User",
         psw = "Psw",
     )
-    private val file = NetworkFile("File", "path")
+    private val file = NetworkFile("File", "path", isLocal = false)
 
     @Test
     fun `when getting root path should return the expected String`() {
@@ -44,7 +50,7 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
     @Test
     fun `when getting files and directories should return the expected list`() = runTest {
         val expectedResult = listOf(
-            NetworkFile("File", "path"),
+            NetworkFile("File", "path", isLocal = false),
             NetworkDirectory("Directory", "path")
         )
         whenever(
@@ -168,7 +174,7 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
                 "path",
                 "File",
                 "User",
-                "Psw"
+                "Psw",
             )
         ).thenReturn(expectedResult)
 
@@ -181,7 +187,7 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
             "path",
             "File",
             "User",
-            "Psw"
+            "Psw",
         )
     }
 
@@ -194,7 +200,7 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
                 "path",
                 "File",
                 "User",
-                "Psw"
+                "Psw",
             )
         ).thenReturn(null)
 
@@ -207,7 +213,7 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
             "path",
             "File",
             "User",
-            "Psw"
+            "Psw",
         )
     }
 
@@ -221,7 +227,7 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
                 "path",
                 "File",
                 "User",
-                "Psw"
+                "Psw",
             )
         ).thenThrow(expectedException)
 
@@ -243,7 +249,7 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
                 "path",
                 "File",
                 "User",
-                "Psw"
+                "Psw",
             )
         ).thenThrow(expectedException)
 
@@ -265,7 +271,7 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
                 "path",
                 "File",
                 "User",
-                "Psw"
+                "Psw",
             )
         ).thenThrow(expectedException)
 

@@ -35,6 +35,7 @@ class MainPresenterTest : CoroutineTest() {
     private val mainTracker: MainTracker = mock()
     private val presenter = MainPresenter(
         core,
+        mainCoroutineRule.dispatcher,
         getSMBConfigurationsUseCase,
         deleteSMBConfigurationUseCase,
         mainTracker

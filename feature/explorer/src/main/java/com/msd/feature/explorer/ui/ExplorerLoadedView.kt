@@ -41,16 +41,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.msd.core.ui.theme.Dimensions.sizeL
 import com.msd.core.ui.theme.Dimensions.sizeS
 import com.msd.core.ui.theme.Dimensions.sizeXL
 import com.msd.core.ui.theme.Dimensions.sizeXXL
 import com.msd.core.ui.theme.Dimensions.sizeXXXL
+import com.msd.core.ui.theme.NetworkStorageConfigurationTheme
+import com.msd.domain.explorer.model.IBaseFile
 import com.msd.domain.explorer.model.NetworkDirectory
 import com.msd.domain.explorer.model.NetworkFile
 import com.msd.domain.explorer.model.NetworkParentDirectory
+import com.msd.domain.smb.model.SMBConfiguration
 import com.msd.feature.explorer.R
+import com.msd.feature.explorer.presenter.ExplorerState
 import com.msd.feature.explorer.presenter.ExplorerState.Loaded
 import com.msd.feature.explorer.presenter.UserInteractions
 
@@ -58,22 +63,8 @@ import com.msd.feature.explorer.presenter.UserInteractions
 fun ExplorerLoadedView(loaded: Loaded, userInteractions: UserInteractions) {
     BackHandler { userInteractions.onBackPressed() }
 
-    loaded.fileAccessError?.let { error ->
-        AlertDialog(
-            title = { Text(text = stringResource(id = R.string.access_file_error_dialog_title)) },
-            text = { Text(text = stringResource(id = error.message)) },
-            onDismissRequest = userInteractions::dismissDialog,
-            confirmButton = {
-                TextButton(onClick = userInteractions::confirmDialog) {
-                    Text(stringResource(id = R.string.access_file_error_dialog_edit))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = userInteractions::dismissDialog) {
-                    Text(stringResource(id = R.string.access_file_error_dialog_cancel))
-                }
-            }
-        )
+    if (loaded.fileAccessError != null) {
+        FileAccessErrorDialog(loaded.fileAccessError, userInteractions)
     }
 
     if (loaded.isDownloadingFile) {
@@ -222,6 +213,25 @@ fun FileView(scope: RowScope, file: NetworkFile, userInteractions: UserInteracti
 }
 
 @Composable
+private fun FileAccessErrorDialog(error: ExplorerState.Error, userInteractions: UserInteractions) {
+    AlertDialog(
+        title = { Text(text = stringResource(id = R.string.access_file_error_dialog_title)) },
+        text = { Text(text = stringResource(id = error.message)) },
+        onDismissRequest = userInteractions::dismissDialog,
+        confirmButton = {
+            TextButton(onClick = userInteractions::confirmDialog) {
+                Text(stringResource(id = R.string.access_file_error_dialog_edit))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = userInteractions::dismissDialog) {
+                Text(stringResource(id = R.string.access_file_error_dialog_cancel))
+            }
+        }
+    )
+}
+
+@Composable
 private fun ProgressDialog(userInteractions: UserInteractions) {
     AlertDialog(
         title = { Text(text = "Downloading file") },
@@ -237,4 +247,45 @@ private fun ProgressDialog(userInteractions: UserInteractions) {
             }
         },
     )
+}
+
+@Composable
+@Preview
+fun ExplorerLoadedPreview() {
+    val loaded = Loaded(
+        smbConfiguration = SMBConfiguration(
+            id = 0,
+            name = "Name",
+            server = "Server",
+            sharedPath = "Shared path",
+            user = "User",
+            psw = "Password"
+        ),
+        root = "",
+        path = "",
+        filesOrDirectories = listOf(
+            NetworkDirectory(".", ""),
+            NetworkDirectory("directory 1", ""),
+            NetworkDirectory("directory 2", ""),
+            NetworkFile("file 1", "", false),
+            NetworkFile("file 2", "", false),
+            NetworkFile("file 3", "", true),
+        ),
+        fileAccessError = null,
+        isDownloadingFile = false,
+    )
+    val userInteractions = object : UserInteractions {
+        override fun onItemClicked(file: IBaseFile) = Unit
+        override fun onBackPressed() = Unit
+        override fun onNavigateUp() = Unit
+        override fun confirmDialog() = Unit
+        override fun dismissDialog() = Unit
+        override fun dismissProgressDialog() = Unit
+        override fun downloadFile(file: NetworkFile) = Unit
+        override fun deleteFile(file: NetworkFile) = Unit
+
+    }
+    NetworkStorageConfigurationTheme {
+        ExplorerLoadedView(loaded, userInteractions)
+    }
 }

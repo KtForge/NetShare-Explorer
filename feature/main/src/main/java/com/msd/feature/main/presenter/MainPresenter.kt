@@ -15,14 +15,18 @@ import com.msd.navigation.NavigationConstants.SmbConfigurationRouteIdArgToReplac
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNameArgToReplace
 import com.msd.navigation.NavigationConstants.SmbConfigurationRouteNoIdArg
 import com.msd.presentation.IPresenterCore
+import com.msd.presentation.IoDispatcher
 import com.msd.presentation.Presenter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainPresenter @Inject constructor(
     core: IPresenterCore<MainState>,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val getSMBConfigurationsUseCase: GetSMBConfigurationsUseCase,
     private val deleteSMBConfigurationUseCase: DeleteSMBConfigurationUseCase,
     private val mainTracker: MainTracker,
@@ -32,7 +36,7 @@ class MainPresenter @Inject constructor(
         if (isInitialized()) return
 
         tryEmit(Loading)
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             getSMBConfigurationsUseCase().collect {
                 handleSMBConfigurations(it)
             }
@@ -83,7 +87,7 @@ class MainPresenter @Inject constructor(
     override fun confirmDeleteDialog() {
         (currentState as? Loaded)?.let { loaded ->
             loaded.smbConfigurationItemIdToDelete?.let { id ->
-                viewModelScope.launch {
+                viewModelScope.launch(ioDispatcher) {
                     deleteSMBConfigurationUseCase(id)
                     mainTracker.logConfigurationDeletedEvent()
                 }

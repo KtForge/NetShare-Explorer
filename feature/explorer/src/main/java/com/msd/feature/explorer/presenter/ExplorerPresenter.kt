@@ -26,6 +26,7 @@ import com.msd.presentation.Presenter
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -50,30 +51,28 @@ class ExplorerPresenter @AssistedInject constructor(
         if (smbConfigurationId == -1) {
             navigate(NavigateBack)
         } else {
-            viewModelScope.launch {
+            viewModelScope.launch(ioDispatcher) {
                 getSMBConfigurationUseCase(smbConfigurationId)?.let { smbConfiguration ->
-                    viewModelScope.launch(ioDispatcher) {
-                        try {
-                            val filesAndDirectories =
-                                filesAndDirectoriesHelper.getFilesAndDirectories(
-                                    smbConfiguration,
-                                    path = ""
-                                )
-                            val root = filesAndDirectoriesHelper.getRootPath(smbConfiguration)
-
-                            tryEmit(
-                                Loaded(
-                                    smbConfiguration,
-                                    root = root,
-                                    path = root,
-                                    filesOrDirectories = filesAndDirectories,
-                                    fileAccessError = null,
-                                    isDownloadingFile = false,
-                                )
+                    try {
+                        val filesAndDirectories =
+                            filesAndDirectoriesHelper.getFilesAndDirectories(
+                                smbConfiguration,
+                                path = ""
                             )
-                        } catch (e: Exception) {
-                            tryEmit(handleError(e, smbConfigurationName, path = ""))
-                        }
+                        val root = filesAndDirectoriesHelper.getRootPath(smbConfiguration)
+
+                        tryEmit(
+                            Loaded(
+                                smbConfiguration,
+                                root = root,
+                                path = root,
+                                filesOrDirectories = filesAndDirectories,
+                                fileAccessError = null,
+                                isDownloadingFile = false,
+                            )
+                        )
+                    } catch (e: Exception) {
+                        tryEmit(handleError(e, smbConfigurationName, path = ""))
                     }
                 } ?: tryEmit(Error.UnknownError(smbConfigurationName, path = ""))
             }
@@ -91,7 +90,9 @@ class ExplorerPresenter @AssistedInject constructor(
     private fun openDirectory(directory: NetworkDirectory) {
         (currentState as? Loaded)?.let { loaded ->
             tryEmit(Loading(smbConfigurationName, loaded.path))
-            emitFilesAndDirectories(loaded, path = directory.path)
+            viewModelScope.launch(ioDispatcher) {
+                emitFilesAndDirectories(loaded, path = directory.path)
+            }
         }
     }
 
@@ -109,12 +110,16 @@ class ExplorerPresenter @AssistedInject constructor(
                             loaded.path
                         )
 
-                        fileToOpen?.let { navigate(OpenFile(fileToOpen)) }
+                        navigate(OpenFile(fileToOpen))
                         emitFilesAndDirectories(loaded, loaded.path)
                     } catch (e: Exception) {
-                        tryEmit(
-                            loaded.copy(fileAccessError = handleError(e, loaded.name, loaded.path))
-                        )
+                        if (e !is CancellationException) {
+                            tryEmit(
+                                loaded.copy(
+                                    fileAccessError = handleError(e, loaded.name, loaded.path)
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -127,24 +132,24 @@ class ExplorerPresenter @AssistedInject constructor(
                 navigate(NavigateBack)
             } else {
                 val path = loaded.path.substring(0, loaded.path.lastIndexOf("\\"))
-                emitFilesAndDirectories(loaded, path)
+                viewModelScope.launch(ioDispatcher) {
+                    emitFilesAndDirectories(loaded, path)
+                }
             }
         }
     }
 
-    private fun emitFilesAndDirectories(loaded: Loaded, path: String) {
+    private suspend fun emitFilesAndDirectories(loaded: Loaded, path: String) {
         val smbConfiguration = loaded.smbConfiguration
-        viewModelScope.launch(ioDispatcher) {
-            try {
-                val filesAndDirectories = filesAndDirectoriesHelper.getFilesAndDirectories(
-                    smbConfiguration,
-                    path = path
-                )
+        try {
+            val filesAndDirectories = filesAndDirectoriesHelper.getFilesAndDirectories(
+                smbConfiguration,
+                path = path
+            )
 
-                tryEmit(loaded.copy(path = path, filesOrDirectories = filesAndDirectories))
-            } catch (e: Exception) {
-                tryEmit(handleError(e, loaded.name, loaded.path))
-            }
+            tryEmit(loaded.copy(path = path, filesOrDirectories = filesAndDirectories))
+        } catch (e: Exception) {
+            tryEmit(handleError(e, loaded.name, path))
         }
     }
 

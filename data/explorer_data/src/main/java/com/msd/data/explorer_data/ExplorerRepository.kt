@@ -28,8 +28,7 @@ class ExplorerRepository @Inject constructor(
         fileName: String,
         user: String,
         psw: String,
-        progressListener: (Float) -> Unit
-    ) = dataSource.openFile(server, sharedPath, absolutePath, fileName, user, psw, progressListener)
+    ) = dataSource.openFile(server, sharedPath, absolutePath, fileName, user, psw)
 
     override fun deleteFile(filePath: String) = dataSource.deleteLocalFile(filePath)
 }

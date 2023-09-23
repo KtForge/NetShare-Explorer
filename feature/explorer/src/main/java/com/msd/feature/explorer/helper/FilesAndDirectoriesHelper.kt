@@ -39,7 +39,7 @@ class FilesAndDirectoriesHelper @Inject constructor(
         smbConfiguration: SMBConfiguration,
         file: IBaseFile,
         path: String
-    ): File? {
+    ): File {
         return openFileUseCase(
             server = smbConfiguration.server,
             sharedPath = smbConfiguration.sharedPath,
@@ -47,7 +47,6 @@ class FilesAndDirectoriesHelper @Inject constructor(
             fileName = file.name,
             user = smbConfiguration.user,
             psw = smbConfiguration.psw,
-            progressListener = {},
         )
     }
 

@@ -15,6 +15,7 @@ object Dependencies {
     val composeRuntime by lazy { "androidx.compose.runtime:runtime" }
     val composeUi by lazy { "androidx.compose.ui:ui" }
     val composeUiGraphics by lazy { "androidx.compose.ui:ui-graphics" }
+    val composeUiTooling by lazy { "androidx.compose.ui:ui-tooling:${Versions.composeUi}" }
     val composeUiToolingPreview by lazy { "androidx.compose.ui:ui-tooling-preview:${Versions.composeUi}" }
     val composeMaterial3 by lazy { "androidx.compose.material3:material3:${Versions.material3}" }
     val composeMaterialIcons by lazy { "androidx.compose.material:material-icons-extended:${Versions.materialIconsExtended}" }
