@@ -5,7 +5,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -78,66 +77,14 @@ fun ExplorerLoadedView(loaded: Loaded, userInteractions: UserInteractions) {
         ) {
             if (loaded.parentDirectory != null) {
                 item {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(sizeS)
-                            .clickable { userInteractions.onParentDirectoryClicked(loaded.parentDirectory) },
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-                        border = BorderStroke(2.dp, MaterialTheme.colorScheme.surfaceVariant)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = sizeXXL)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Folder,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .padding(horizontal = sizeXL)
-                                    .size(sizeXXXL)
-                            )
-                            Text(
-                                text = "..",
-                                modifier = Modifier.align(Alignment.CenterVertically),
-                                fontWeight = FontWeight.Bold,
-                            )
-                        }
-                    }
+                    ParentDirectoryView(parentDirectory = loaded.parentDirectory, userInteractions)
                 }
             }
             loaded.filesOrDirectories.forEach { file ->
                 item {
-                    val containerColor = if (file is NetworkFile) {
-                        Color.Transparent
-                    } else {
-                        MaterialTheme.colorScheme.surfaceVariant
-                    }
-
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(sizeS)
-                            .clickable { userInteractions.onItemClicked(file) },
-                        colors = CardDefaults.cardColors(containerColor = containerColor),
-                        border = BorderStroke(2.dp, MaterialTheme.colorScheme.surfaceVariant)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = sizeXXL)
-                        ) {
-                            when (file) {
-                                is NetworkDirectory -> DirectoryView(
-                                    directory = file,
-                                    scope = this
-                                )
-
-                                is NetworkFile -> FileView(scope = this, file, userInteractions)
-                                else -> Unit
-                            }
-                        }
+                    when (file) {
+                        is NetworkDirectory -> DirectoryView(directory = file, userInteractions)
+                        is NetworkFile -> FileView(file, userInteractions)
                     }
                 }
             }
@@ -146,77 +93,137 @@ fun ExplorerLoadedView(loaded: Loaded, userInteractions: UserInteractions) {
 }
 
 @Composable
-private fun DirectoryView(directory: NetworkDirectory, scope: RowScope) {
-    with(scope) {
-        Icon(
-            imageVector = Icons.Outlined.Folder,
-            contentDescription = null,
+private fun ParentDirectoryView(
+    parentDirectory: ParentDirectory,
+    userInteractions: UserInteractions
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(sizeS)
+            .clickable { userInteractions.onParentDirectoryClicked(parentDirectory) },
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        border = BorderStroke(2.dp, MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Row(
             modifier = Modifier
-                .padding(horizontal = sizeXL)
-                .size(sizeXXXL)
-        )
-        Text(
-            text = directory.name,
-            modifier = Modifier.align(Alignment.CenterVertically),
-            fontWeight = FontWeight.Bold,
-        )
+                .fillMaxWidth()
+                .padding(vertical = sizeXXL)
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Folder,
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(horizontal = sizeXL)
+                    .size(sizeXXXL)
+            )
+            Text(
+                text = parentDirectory.name,
+                modifier = Modifier.align(Alignment.CenterVertically),
+                fontWeight = FontWeight.Bold,
+            )
+        }
     }
 }
 
 @Composable
-private fun FileView(scope: RowScope, file: NetworkFile, userInteractions: UserInteractions) {
+private fun DirectoryView(directory: NetworkDirectory, userInteractions: UserInteractions) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(sizeS)
+            .clickable { userInteractions.onItemClicked(directory) },
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        border = BorderStroke(2.dp, MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = sizeXXL)
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Folder,
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(horizontal = sizeXL)
+                    .size(sizeXXXL)
+            )
+            Text(
+                text = directory.name,
+                modifier = Modifier.align(Alignment.CenterVertically),
+                fontWeight = FontWeight.Bold,
+            )
+        }
+    }
+}
+
+@Composable
+private fun FileView(file: NetworkFile, userInteractions: UserInteractions) {
     var showItemMenu by remember { mutableStateOf(false) }
 
-    with(scope) {
-        Icon(
-            imageVector = Icons.Outlined.FilePresent,
-            contentDescription = null,
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(sizeS)
+            .clickable { userInteractions.onItemClicked(file) },
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        border = BorderStroke(2.dp, MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Row(
             modifier = Modifier
-                .padding(horizontal = sizeXL)
-                .size(sizeXXXL)
-        )
-        Text(
-            text = file.name,
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .weight(1f),
-            fontWeight = FontWeight.Bold,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1,
-        )
-        if (file.isLocal) {
+                .fillMaxWidth()
+                .padding(vertical = sizeXXL)
+        ) {
             Icon(
-                imageVector = Icons.Outlined.CheckCircle,
-                contentDescription = "Downloaded",
+                imageVector = Icons.Outlined.FilePresent,
+                contentDescription = null,
                 modifier = Modifier
-                    .padding(horizontal = sizeL)
+                    .padding(horizontal = sizeXL)
                     .size(sizeXXXL)
             )
-        }
-        Column {
-            Icon(
-                imageVector = Icons.Outlined.MoreVert,
-                contentDescription = "More options",
+            Text(
+                text = file.name,
                 modifier = Modifier
-                    .padding(end = sizeXL)
-                    .size(sizeXXXL)
-                    .clip(CircleShape)
-                    .clickable { showItemMenu = !showItemMenu }
+                    .align(Alignment.CenterVertically)
+                    .weight(1f),
+                fontWeight = FontWeight.Bold,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
             )
-            DropdownMenu(
-                expanded = showItemMenu,
-                onDismissRequest = { showItemMenu = false }
-            ) {
-                if (file.isLocal) {
-                    DropdownMenuItem(
-                        text = { Text("Delete") },
-                        onClick = { userInteractions.deleteFile(file) }
-                    )
-                } else {
-                    DropdownMenuItem(
-                        text = { Text("Download") },
-                        onClick = { userInteractions.downloadFile(file) }
-                    )
+            if (file.isLocal) {
+                Icon(
+                    imageVector = Icons.Outlined.CheckCircle,
+                    contentDescription = "Downloaded",
+                    modifier = Modifier
+                        .padding(horizontal = sizeL)
+                        .size(sizeXXXL)
+                )
+            }
+            Column {
+                Icon(
+                    imageVector = Icons.Outlined.MoreVert,
+                    contentDescription = "More options",
+                    modifier = Modifier
+                        .padding(end = sizeXL)
+                        .size(sizeXXXL)
+                        .clip(CircleShape)
+                        .clickable { showItemMenu = !showItemMenu }
+                )
+                DropdownMenu(
+                    expanded = showItemMenu,
+                    onDismissRequest = { showItemMenu = false }
+                ) {
+                    if (file.isLocal) {
+                        DropdownMenuItem(
+                            text = { Text("Delete") },
+                            onClick = { userInteractions.deleteFile(file) }
+                        )
+                    } else {
+                        DropdownMenuItem(
+                            text = { Text("Download") },
+                            onClick = { userInteractions.downloadFile(file) }
+                        )
+                    }
                 }
             }
         }
@@ -224,7 +231,10 @@ private fun FileView(scope: RowScope, file: NetworkFile, userInteractions: UserI
 }
 
 @Composable
-private fun FileAccessErrorDialog(error: ExplorerState.Error, userInteractions: UserInteractions) {
+private fun FileAccessErrorDialog(
+    error: ExplorerState.Error,
+    userInteractions: UserInteractions
+) {
     AlertDialog(
         title = { Text(text = stringResource(id = R.string.access_file_error_dialog_title)) },
         text = { Text(text = stringResource(id = error.message)) },
@@ -277,10 +287,51 @@ fun ExplorerLoadedPreview() {
             psw = "Password"
         ),
         parentDirectory = null,
-        workingDirectory = WorkingDirectory(".", ""),
+        workingDirectory = WorkingDirectory("", ""),
         path = "",
         filesOrDirectories = listOf(
-            NetworkDirectory(".", "", ""),
+            NetworkDirectory("directory 1", "", ""),
+            NetworkDirectory("directory 2", "", ""),
+            NetworkFile("file 1", "", "", false),
+            NetworkFile("file 2", "", "", false),
+            NetworkFile("file 3", "", "", true),
+        ),
+        fileAccessError = null,
+        isDownloadingFile = false,
+    )
+    val userInteractions = object : UserInteractions {
+        override fun onItemClicked(file: IBaseFile) = Unit
+        override fun onParentDirectoryClicked(parentDirectory: ParentDirectory) = Unit
+        override fun onBackPressed() = Unit
+        override fun onNavigateUp() = Unit
+        override fun confirmDialog() = Unit
+        override fun dismissDialog() = Unit
+        override fun dismissProgressDialog() = Unit
+        override fun downloadFile(file: NetworkFile) = Unit
+        override fun deleteFile(file: NetworkFile) = Unit
+
+    }
+    NetworkStorageConfigurationTheme {
+        ExplorerLoadedView(loaded, userInteractions)
+    }
+}
+
+@Composable
+@Preview
+fun ExplorerLoadedParentDirectoryPreview() {
+    val loaded = Loaded(
+        smbConfiguration = SMBConfiguration(
+            id = 0,
+            name = "Name",
+            server = "Server",
+            sharedPath = "Shared path",
+            user = "User",
+            psw = "Password"
+        ),
+        parentDirectory = ParentDirectory("..", "", ""),
+        workingDirectory = WorkingDirectory("", ""),
+        path = "",
+        filesOrDirectories = listOf(
             NetworkDirectory("directory 1", "", ""),
             NetworkDirectory("directory 2", "", ""),
             NetworkFile("file 1", "", "", false),
@@ -320,10 +371,9 @@ fun ExplorerLoadedErrorDialogPreview() {
             psw = "Password"
         ),
         parentDirectory = null,
-        workingDirectory = WorkingDirectory(".", ""),
+        workingDirectory = WorkingDirectory("", ""),
         path = "",
         filesOrDirectories = listOf(
-            NetworkDirectory(".", "", ""),
             NetworkDirectory("directory 1", "", ""),
             NetworkDirectory("directory 2", "", ""),
             NetworkFile("file 1", "", "", false),
@@ -363,10 +413,9 @@ fun ExplorerLoadedDownloadDialogPreview() {
             psw = "Password"
         ),
         parentDirectory = null,
-        workingDirectory = WorkingDirectory(".", ""),
+        workingDirectory = WorkingDirectory("", ""),
         path = "",
         filesOrDirectories = listOf(
-            NetworkDirectory(".", "", ""),
             NetworkDirectory("directory 1", "", ""),
             NetworkDirectory("directory 2", "", ""),
             NetworkFile("file 1", "", "", false),

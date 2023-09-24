@@ -36,7 +36,7 @@ object FilesAndDirectoriesMapper {
         val parentDirectory = if (isParentDirectoryRoot) {
             null
         } else {
-            ParentDirectory(parentDirectoryPath, parentDirectoryAbsolutePath)
+            ParentDirectory(DOUBLE_DOT_DIRECTORY, parentDirectoryPath, parentDirectoryAbsolutePath)
         }
 
         val workingDirectory = WorkingDirectory(parentPath, workingDirectoryAbsolutePath)
