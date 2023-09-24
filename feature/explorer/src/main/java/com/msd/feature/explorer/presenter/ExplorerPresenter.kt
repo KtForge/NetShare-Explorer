@@ -131,8 +131,8 @@ class ExplorerPresenter @AssistedInject constructor(
         }
     }
 
-    override fun confirmDialog() {
-        dismissDialog()
+    override fun confirmFileAccessErrorDialog() {
+        dismissFileAccessErrorDialog()
 
         val route = NavigationConstants.EditNetworkConfiguration
             .replace(
@@ -143,7 +143,7 @@ class ExplorerPresenter @AssistedInject constructor(
         navigate(Navigate(route))
     }
 
-    override fun dismissDialog() {
+    override fun dismissFileAccessErrorDialog() {
         (currentState as? Loaded)?.let { loaded ->
             tryEmit(loaded.copy(fileAccessError = null))
         }
@@ -209,9 +209,9 @@ class ExplorerPresenter @AssistedInject constructor(
 
             tryEmit(
                 loaded.copy(
-                    path = filesResult.workingDirectory.absolutePath,
                     parentDirectory = filesResult.parentDirectory,
                     workingDirectory = filesResult.workingDirectory,
+                    path = filesResult.workingDirectory.absolutePath,
                     filesOrDirectories = filesResult.filesAndDirectories,
                     isDownloadingFile = false,
                 )
@@ -263,8 +263,8 @@ interface UserInteractions {
     fun onParentDirectoryClicked(parentDirectory: ParentDirectory)
     fun onBackPressed()
     fun onNavigateUp()
-    fun confirmDialog()
-    fun dismissDialog()
+    fun confirmFileAccessErrorDialog()
+    fun dismissFileAccessErrorDialog()
     fun dismissProgressDialog()
     fun downloadFile(file: NetworkFile)
     fun deleteFile(file: NetworkFile)

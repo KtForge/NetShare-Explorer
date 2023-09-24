@@ -12,8 +12,10 @@ import com.msd.feature.explorer.helper.FilesAndDirectoriesHelper
 import com.msd.feature.explorer.presenter.ExplorerState.Error
 import com.msd.feature.explorer.presenter.ExplorerState.Loaded
 import com.msd.feature.explorer.presenter.ExplorerState.Loading
+import com.msd.navigation.Navigate
 import com.msd.navigation.NavigateBack
 import com.msd.navigation.NavigateUp
+import com.msd.navigation.NavigationConstants
 import com.msd.navigation.OpenFile
 import com.msd.presentation.IPresenterCore
 import com.msd.unittest.CoroutineTest
@@ -28,6 +30,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
+import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 import java.io.File
 
@@ -390,6 +393,34 @@ class ExplorerPresenterTest : CoroutineTest() {
         }
 
     @Test
+    fun `when clicking on a downloaded file in loaded state should update the state and open the file`() =
+        runTest {
+            val file = file.copy(isLocal = true)
+            val filesAndDirectories = listOf(file)
+            val loaded = loaded.copy(filesOrDirectories = filesAndDirectories)
+            whenever(core.currentState()).thenReturn(loaded)
+            val filesResult = filesResult.copy(filesAndDirectories = filesAndDirectories)
+            whenever(
+                filesAndDirectoriesHelper.getFilesAndDirectories(
+                    smbConfiguration,
+                    path = workingDirectory.path
+                )
+            ).thenReturn(filesResult)
+            val openedFile: File = mock()
+            whenever(filesAndDirectoriesHelper.openFile(smbConfiguration, file = file))
+                .thenReturn(openedFile)
+
+            presenter.onItemClicked(file)
+            advanceUntilIdle()
+
+            inOrder(core) {
+                verify(core).tryEmit(loaded)
+                verify(core).navigate(OpenFile(openedFile))
+                verify(core).tryEmit(loaded)
+            }
+        }
+
+    @Test
     fun `when clicking on a file in loaded state and null file should restore the state`() =
         runTest {
             val firstExpectedState = loaded.copy(isDownloadingFile = true)
@@ -492,9 +523,340 @@ class ExplorerPresenterTest : CoroutineTest() {
     }
 
     @Test
+    fun `when back pressed in loaded state and parent directory should retrieve files`() = runTest {
+        whenever(core.currentState()).thenReturn(loaded)
+        whenever(
+            filesAndDirectoriesHelper.getFilesAndDirectories(
+                smbConfiguration,
+                path = workingDirectory.path
+            )
+        ).thenReturn(filesResult)
+
+        presenter.onBackPressed()
+        advanceUntilIdle()
+
+        verify(core).tryEmit(loaded)
+        verify(core, times(0)).navigate(any())
+        verify(filesAndDirectoriesHelper).getFilesAndDirectories(
+            smbConfiguration,
+            path = workingDirectory.path
+        )
+        verifyNoMoreInteractions(filesAndDirectoriesHelper)
+    }
+
+    @Test
     fun `when clicking on back arrow should navigate up`() {
         presenter.onNavigateUp()
 
         verify(core).navigate(NavigateUp)
+    }
+
+    @Test
+    fun `when downloading a file successfully should update the state`() = runTest {
+        whenever(core.currentState()).thenReturn(loaded)
+        whenever(
+            filesAndDirectoriesHelper.getFilesAndDirectories(
+                smbConfiguration,
+                path = workingDirectory.path
+            )
+        ).thenReturn(filesResult)
+
+        presenter.downloadFile(file)
+        advanceUntilIdle()
+
+        verify(core).tryEmit(loaded.copy(isDownloadingFile = true))
+        verify(core).tryEmit(loaded)
+        verify(core, times(0)).navigate(any())
+        verify(filesAndDirectoriesHelper).downloadFile(smbConfiguration, file)
+        verify(filesAndDirectoriesHelper).getFilesAndDirectories(
+            smbConfiguration,
+            path = workingDirectory.path
+        )
+        verifyNoMoreInteractions(filesAndDirectoriesHelper)
+    }
+
+    @Test
+    fun `when downloading a file and cancellation exception should update the state`() = runTest {
+        whenever(core.currentState()).thenReturn(loaded)
+        whenever(filesAndDirectoriesHelper.downloadFile(smbConfiguration, file))
+            .thenThrow(SMBException.CancelException)
+
+        presenter.downloadFile(file)
+        advanceUntilIdle()
+
+        verify(core).tryEmit(loaded.copy(isDownloadingFile = true))
+        verify(core).tryEmit(loaded)
+        verify(core, times(0)).navigate(any())
+        verify(filesAndDirectoriesHelper).downloadFile(smbConfiguration, file)
+        verify(filesAndDirectoriesHelper, times(0)).getFilesAndDirectories(
+            smbConfiguration,
+            path = workingDirectory.path
+        )
+        verifyNoMoreInteractions(filesAndDirectoriesHelper)
+    }
+
+    @Test
+    fun `when downloading a file and access exception should show the error`() = runTest {
+        val expectedState = loaded.copy(
+            fileAccessError = Error.AccessError(smbConfigurationName, workingDirectory.absolutePath)
+        )
+        whenever(core.currentState()).thenReturn(loaded)
+        whenever(filesAndDirectoriesHelper.downloadFile(smbConfiguration, file))
+            .thenThrow(SMBException.AccessDenied)
+
+        presenter.downloadFile(file)
+        advanceUntilIdle()
+
+        verify(core).tryEmit(loaded.copy(isDownloadingFile = true))
+        verify(core).tryEmit(expectedState)
+        verify(core, times(0)).navigate(any())
+        verify(filesAndDirectoriesHelper).downloadFile(smbConfiguration, file)
+        verify(filesAndDirectoriesHelper, times(0)).getFilesAndDirectories(
+            smbConfiguration,
+            path = workingDirectory.path
+        )
+        verifyNoMoreInteractions(filesAndDirectoriesHelper)
+    }
+
+    @Test
+    fun `when downloading a file and connection exception should show the error`() = runTest {
+        val expectedState = loaded.copy(
+            fileAccessError = Error.ConnectionError(
+                smbConfigurationName,
+                workingDirectory.absolutePath
+            )
+        )
+        whenever(core.currentState()).thenReturn(loaded)
+        whenever(filesAndDirectoriesHelper.downloadFile(smbConfiguration, file))
+            .thenThrow(SMBException.ConnectionError)
+
+        presenter.downloadFile(file)
+        advanceUntilIdle()
+
+        verify(core).tryEmit(loaded.copy(isDownloadingFile = true))
+        verify(core).tryEmit(expectedState)
+        verify(core, times(0)).navigate(any())
+        verify(filesAndDirectoriesHelper).downloadFile(smbConfiguration, file)
+        verify(filesAndDirectoriesHelper, times(0)).getFilesAndDirectories(
+            smbConfiguration,
+            path = workingDirectory.path
+        )
+        verifyNoMoreInteractions(filesAndDirectoriesHelper)
+    }
+
+    @Test
+    fun `when downloading a file and unknown exception should show the error`() = runTest {
+        val expectedState = loaded.copy(
+            fileAccessError = Error.UnknownError(
+                smbConfigurationName,
+                workingDirectory.absolutePath
+            )
+        )
+        whenever(core.currentState()).thenReturn(loaded)
+        whenever(filesAndDirectoriesHelper.downloadFile(smbConfiguration, file))
+            .thenThrow(SMBException.UnknownError)
+
+        presenter.downloadFile(file)
+        advanceUntilIdle()
+
+        verify(core).tryEmit(loaded.copy(isDownloadingFile = true))
+        verify(core).tryEmit(expectedState)
+        verify(core, times(0)).navigate(any())
+        verify(filesAndDirectoriesHelper).downloadFile(smbConfiguration, file)
+        verify(filesAndDirectoriesHelper, times(0)).getFilesAndDirectories(
+            smbConfiguration,
+            path = workingDirectory.path
+        )
+        verifyNoMoreInteractions(filesAndDirectoriesHelper)
+    }
+
+    @Test
+    fun `when deleting file should update the state with files and directories`() = runTest {
+        whenever(core.currentState()).thenReturn(loaded)
+        whenever(
+            filesAndDirectoriesHelper.getFilesAndDirectories(
+                smbConfiguration,
+                path = workingDirectory.path
+            )
+        ).thenReturn(filesResult)
+
+        presenter.deleteFile(file)
+        advanceUntilIdle()
+
+        verify(core).tryEmit(loaded)
+        verify(core, times(0)).navigate(any())
+        verify(filesAndDirectoriesHelper).deleteFile(file)
+        verify(filesAndDirectoriesHelper).getFilesAndDirectories(
+            smbConfiguration,
+            path = workingDirectory.path
+        )
+        verifyNoMoreInteractions(filesAndDirectoriesHelper)
+    }
+
+    @Test
+    fun `when deleting file and not in loaded state should do nothing`() = runTest {
+        presenter.deleteFile(file)
+        advanceUntilIdle()
+
+        verify(core, times(0)).tryEmit(any())
+        verify(core, times(0)).navigate(any())
+        verifyNoMoreInteractions(filesAndDirectoriesHelper)
+    }
+
+    @Test
+    fun `when deleting file with access error should update the state with error`() = runTest {
+        val expectedState = Error.AccessError(smbConfigurationName, loaded.path)
+        whenever(core.currentState()).thenReturn(loaded)
+        whenever(
+            filesAndDirectoriesHelper.getFilesAndDirectories(
+                smbConfiguration,
+                path = workingDirectory.path
+            )
+        ).thenThrow(SMBException.AccessDenied)
+
+        presenter.deleteFile(file)
+        advanceUntilIdle()
+
+        verify(core).tryEmit(expectedState)
+        verify(core, times(0)).navigate(any())
+        verify(filesAndDirectoriesHelper).deleteFile(file)
+        verify(filesAndDirectoriesHelper).getFilesAndDirectories(
+            smbConfiguration,
+            path = workingDirectory.path
+        )
+        verifyNoMoreInteractions(filesAndDirectoriesHelper)
+    }
+
+    @Test
+    fun `when deleting file with connection error should update the state with error`() = runTest {
+        val expectedState = Error.ConnectionError(smbConfigurationName, loaded.path)
+        whenever(core.currentState()).thenReturn(loaded)
+        whenever(
+            filesAndDirectoriesHelper.getFilesAndDirectories(
+                smbConfiguration,
+                path = workingDirectory.path
+            )
+        ).thenThrow(SMBException.ConnectionError)
+
+        presenter.deleteFile(file)
+        advanceUntilIdle()
+
+        verify(core).tryEmit(expectedState)
+        verify(core, times(0)).navigate(any())
+        verify(filesAndDirectoriesHelper).deleteFile(file)
+        verify(filesAndDirectoriesHelper).getFilesAndDirectories(
+            smbConfiguration,
+            path = workingDirectory.path
+        )
+        verifyNoMoreInteractions(filesAndDirectoriesHelper)
+    }
+
+    @Test
+    fun `when deleting file with unknown error should update the state with error`() = runTest {
+        val expectedState = Error.UnknownError(smbConfigurationName, loaded.path)
+        whenever(core.currentState()).thenReturn(loaded)
+        whenever(
+            filesAndDirectoriesHelper.getFilesAndDirectories(
+                smbConfiguration,
+                path = workingDirectory.path
+            )
+        ).thenThrow(SMBException.UnknownError)
+
+        presenter.deleteFile(file)
+        advanceUntilIdle()
+
+        verify(core).tryEmit(expectedState)
+        verify(core, times(0)).navigate(any())
+        verify(filesAndDirectoriesHelper).deleteFile(file)
+        verify(filesAndDirectoriesHelper).getFilesAndDirectories(
+            smbConfiguration,
+            path = workingDirectory.path
+        )
+        verifyNoMoreInteractions(filesAndDirectoriesHelper)
+    }
+
+    @Test
+    fun `when deleting file with cancellation error should do nothing`() = runTest {
+        whenever(core.currentState()).thenReturn(loaded)
+        whenever(
+            filesAndDirectoriesHelper.getFilesAndDirectories(
+                smbConfiguration,
+                path = workingDirectory.path
+            )
+        ).thenThrow(SMBException.CancelException)
+
+        presenter.deleteFile(file)
+        advanceUntilIdle()
+
+        verify(core, times(0)).tryEmit(any())
+        verify(core, times(0)).navigate(any())
+        verify(filesAndDirectoriesHelper).deleteFile(file)
+        verify(filesAndDirectoriesHelper).getFilesAndDirectories(
+            smbConfiguration,
+            path = workingDirectory.path
+        )
+        verifyNoMoreInteractions(filesAndDirectoriesHelper)
+    }
+
+    @Test
+    fun `when dismissing progress dialog should update the state`() {
+        whenever(core.currentState()).thenReturn(loaded.copy(isDownloadingFile = true))
+
+        presenter.dismissProgressDialog()
+
+        verify(core).tryEmit(loaded.copy(isDownloadingFile = false))
+        verify(core, times(0)).navigate(any())
+        verifyNoMoreInteractions(filesAndDirectoriesHelper)
+    }
+
+    @Test
+    fun `when dismissing progress dialog not in loaded state should do nothing`() {
+        presenter.dismissProgressDialog()
+
+        verify(core, times(0)).tryEmit(any())
+        verify(core, times(0)).navigate(any())
+        verifyNoMoreInteractions(filesAndDirectoriesHelper)
+    }
+
+    @Test
+    fun `when confirming file access error dialog should update the state`() {
+        val expectedNavigation = Navigate(
+            NavigationConstants.EditNetworkConfiguration
+                .replace(
+                    NavigationConstants.SmbConfigurationRouteIdArgToReplace,
+                    smbConfigurationId.toString()
+                )
+        )
+        whenever(core.currentState()).thenReturn(
+            loaded.copy(fileAccessError = Error.AccessError(smbConfigurationName, loaded.path))
+        )
+
+        presenter.confirmFileAccessErrorDialog()
+
+        verify(core).navigate(expectedNavigation)
+        verify(core).tryEmit(loaded.copy(fileAccessError = null))
+        verifyNoMoreInteractions(filesAndDirectoriesHelper)
+    }
+
+    @Test
+    fun `when dismissing file access error dialog should update the state`() {
+        whenever(core.currentState()).thenReturn(
+            loaded.copy(fileAccessError = Error.AccessError(smbConfigurationName, loaded.path))
+        )
+
+        presenter.dismissFileAccessErrorDialog()
+
+        verify(core).tryEmit(loaded.copy(fileAccessError = null))
+        verify(core, times(0)).navigate(any())
+        verifyNoMoreInteractions(filesAndDirectoriesHelper)
+    }
+
+    @Test
+    fun `when dismissing file access error dialog not in loaded state should do nothing`() {
+        presenter.dismissFileAccessErrorDialog()
+
+        verify(core, times(0)).tryEmit(any())
+        verify(core, times(0)).navigate(any())
+        verifyNoMoreInteractions(filesAndDirectoriesHelper)
     }
 }

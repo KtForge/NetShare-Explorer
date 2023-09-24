@@ -238,14 +238,14 @@ private fun FileAccessErrorDialog(
     AlertDialog(
         title = { Text(text = stringResource(id = R.string.access_file_error_dialog_title)) },
         text = { Text(text = stringResource(id = error.message)) },
-        onDismissRequest = userInteractions::dismissDialog,
+        onDismissRequest = userInteractions::dismissFileAccessErrorDialog,
         confirmButton = {
-            TextButton(onClick = userInteractions::confirmDialog) {
+            TextButton(onClick = userInteractions::confirmFileAccessErrorDialog) {
                 Text(stringResource(id = R.string.access_file_error_dialog_edit))
             }
         },
         dismissButton = {
-            TextButton(onClick = userInteractions::dismissDialog) {
+            TextButton(onClick = userInteractions::dismissFileAccessErrorDialog) {
                 Text(stringResource(id = R.string.access_file_error_dialog_cancel))
             }
         }
@@ -304,8 +304,8 @@ fun ExplorerLoadedPreview() {
         override fun onParentDirectoryClicked(parentDirectory: ParentDirectory) = Unit
         override fun onBackPressed() = Unit
         override fun onNavigateUp() = Unit
-        override fun confirmDialog() = Unit
-        override fun dismissDialog() = Unit
+        override fun confirmFileAccessErrorDialog() = Unit
+        override fun dismissFileAccessErrorDialog() = Unit
         override fun dismissProgressDialog() = Unit
         override fun downloadFile(file: NetworkFile) = Unit
         override fun deleteFile(file: NetworkFile) = Unit
@@ -346,8 +346,8 @@ fun ExplorerLoadedParentDirectoryPreview() {
         override fun onParentDirectoryClicked(parentDirectory: ParentDirectory) = Unit
         override fun onBackPressed() = Unit
         override fun onNavigateUp() = Unit
-        override fun confirmDialog() = Unit
-        override fun dismissDialog() = Unit
+        override fun confirmFileAccessErrorDialog() = Unit
+        override fun dismissFileAccessErrorDialog() = Unit
         override fun dismissProgressDialog() = Unit
         override fun downloadFile(file: NetworkFile) = Unit
         override fun deleteFile(file: NetworkFile) = Unit
@@ -388,8 +388,8 @@ fun ExplorerLoadedErrorDialogPreview() {
         override fun onParentDirectoryClicked(parentDirectory: ParentDirectory) = Unit
         override fun onBackPressed() = Unit
         override fun onNavigateUp() = Unit
-        override fun confirmDialog() = Unit
-        override fun dismissDialog() = Unit
+        override fun confirmFileAccessErrorDialog() = Unit
+        override fun dismissFileAccessErrorDialog() = Unit
         override fun dismissProgressDialog() = Unit
         override fun downloadFile(file: NetworkFile) = Unit
         override fun deleteFile(file: NetworkFile) = Unit
@@ -430,8 +430,8 @@ fun ExplorerLoadedDownloadDialogPreview() {
         override fun onParentDirectoryClicked(parentDirectory: ParentDirectory) = Unit
         override fun onBackPressed() = Unit
         override fun onNavigateUp() = Unit
-        override fun confirmDialog() = Unit
-        override fun dismissDialog() = Unit
+        override fun confirmFileAccessErrorDialog() = Unit
+        override fun dismissFileAccessErrorDialog() = Unit
         override fun dismissProgressDialog() = Unit
         override fun downloadFile(file: NetworkFile) = Unit
         override fun deleteFile(file: NetworkFile) = Unit

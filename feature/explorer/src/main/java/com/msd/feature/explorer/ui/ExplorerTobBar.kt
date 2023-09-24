@@ -68,8 +68,8 @@ fun ExplorerTopBarPreview() {
                 override fun onParentDirectoryClicked(parentDirectory: ParentDirectory) = Unit
                 override fun onBackPressed() = Unit
                 override fun onNavigateUp() = Unit
-                override fun confirmDialog() = Unit
-                override fun dismissDialog() = Unit
+                override fun confirmFileAccessErrorDialog() = Unit
+                override fun dismissFileAccessErrorDialog() = Unit
                 override fun dismissProgressDialog() = Unit
                 override fun downloadFile(file: NetworkFile) = Unit
                 override fun deleteFile(file: NetworkFile) = Unit
