@@ -5,7 +5,6 @@ import com.msd.domain.explorer.DownloadFileUseCase
 import com.msd.domain.explorer.GetFilesAndDirectoriesUseCase
 import com.msd.domain.explorer.OpenFileUseCase
 import com.msd.domain.explorer.model.FilesResult
-import com.msd.domain.explorer.model.IBaseFile
 import com.msd.domain.explorer.model.NetworkFile
 import com.msd.domain.smb.model.SMBConfiguration
 import java.io.File
@@ -17,10 +16,6 @@ class FilesAndDirectoriesHelper @Inject constructor(
     private val openFileUseCase: OpenFileUseCase,
     private val deleteFileUseCase: DeleteFileUseCase,
 ) {
-
-    fun getRootPath(smbConfiguration: SMBConfiguration): String {
-        return "\\\\${smbConfiguration.server}\\${smbConfiguration.sharedPath}"
-    }
 
     @Throws(Exception::class)
     suspend fun getFilesAndDirectories(
