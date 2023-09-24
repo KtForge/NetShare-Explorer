@@ -9,7 +9,8 @@ class DownloadFileUseCase @Inject constructor(private val repository: IExplorerR
         sharedPath: String,
         fileName: String,
         filePath: String,
+        localFilePath: String,
         user: String,
         psw: String,
-    ) = repository.downloadFile(server, sharedPath, fileName, filePath, user, psw)
+    ) = repository.downloadFile(server, sharedPath, fileName, filePath, localFilePath, user, psw)
 }

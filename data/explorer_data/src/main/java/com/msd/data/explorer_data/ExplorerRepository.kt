@@ -3,6 +3,7 @@ package com.msd.data.explorer_data
 import com.msd.data.explorer_data.network.ExplorerDataSource
 import com.msd.domain.explorer.IExplorerRepository
 import com.msd.domain.explorer.model.FilesResult
+import java.io.File
 import javax.inject.Inject
 
 class ExplorerRepository @Inject constructor(
@@ -22,18 +23,37 @@ class ExplorerRepository @Inject constructor(
         sharedPath: String,
         fileName: String,
         filePath: String,
+        localFilePath: String,
         user: String,
         psw: String
-    ) = dataSource.downloadFile(server, sharedPath, filePath, fileName, user, psw)
+    ) = dataSource.downloadFile(server, sharedPath, fileName, filePath, localFilePath, user, psw)
 
     override suspend fun openFile(
         server: String,
         sharedPath: String,
         fileName: String,
         filePath: String,
+        localFilePath: String,
         user: String,
         psw: String,
-    ) = dataSource.openFile(server, sharedPath, filePath, fileName, user, psw)
+    ): File {
+        val isLocalFileValid = dataSource.isLocalFileValid(
+            server,
+            sharedPath,
+            fileName,
+            filePath,
+            localFilePath,
+            user,
+            psw
+        )
 
-    override fun deleteFile(filePath: String) = dataSource.deleteLocalFile(filePath)
+        if (!isLocalFileValid) {
+            downloadFile(server, sharedPath, fileName, filePath, localFilePath, user, psw)
+        }
+
+        return dataSource.openFile(localFilePath, fileName)
+    }
+
+    override fun deleteFile(localFilePath: String, fileName: String) =
+        dataSource.deleteLocalFile(localFilePath, fileName)
 }

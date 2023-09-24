@@ -70,7 +70,7 @@ object FilesAndDirectoriesMapper {
                 fileManager.getLocalFileRef(server, sharedPath, parentPath, fileName)
             val isLocal = localFile.exists()
 
-            NetworkFile(fileName, localPath, isLocal)
+            NetworkFile(fileName, parentPath, localPath, isLocal)
         }
     }
 }

@@ -65,8 +65,9 @@ class ExplorerDataSource @Inject constructor(
     suspend fun downloadFile(
         server: String,
         sharedPath: String,
-        filePath: String,
         fileName: String,
+        filePath: String,
+        localFilePath: String,
         user: String,
         psw: String,
     ) {
@@ -80,9 +81,8 @@ class ExplorerDataSource @Inject constructor(
                 psw = psw
             ) { diskShare ->
                 val remoteFile = smbHelper.openFile(diskShare, filePath, fileName)
+                val localFile = fileManager.getLocalFile(localFilePath, fileName)
 
-                val localFile =
-                    fileManager.getLocalFileRef(server, sharedPath, filePath, fileName)
                 val fileSize = smbHelper.getFileSize(remoteFile)
 
                 remoteFile.inputStream.copyTo(localFile.outputStream())
@@ -103,16 +103,15 @@ class ExplorerDataSource @Inject constructor(
     }
 
     @Throws(Exception::class)
-    suspend fun openFile(
+    suspend fun isLocalFileValid(
         server: String,
         sharedPath: String,
-        filePath: String,
         fileName: String,
+        filePath: String,
+        localFilePath: String,
         user: String,
         psw: String,
-    ): File {
-        val start = System.currentTimeMillis()
-
+    ): Boolean {
         return try {
             smbHelper.onConnection(
                 server = server,
@@ -121,33 +120,20 @@ class ExplorerDataSource @Inject constructor(
                 psw = psw
             ) { diskShare ->
                 val remoteFile = smbHelper.openFile(diskShare, filePath, fileName)
+                val localFile = fileManager.getLocalFile(localFilePath, fileName)
 
-                val localFile =
-                    fileManager.getLocalFileRef(server, sharedPath, filePath, fileName)
-                val fileSize = smbHelper.getFileSize(remoteFile)
-
-                if (!isLocalFileValid(localFile, remoteFile)) {
-                    remoteFile.inputStream.copyTo(localFile.outputStream())
-                }
-
-                val openTime = System.currentTimeMillis() - start
-                explorerTracker.logOpenLocalFileEvent(fileSize, openTime)
-
-                localFile
+                isLocalFileValid(localFile, remoteFile)
             }
         } catch (exception: Exception) {
-            // Delete local file
-            val localFile = fileManager.getLocalFileRef(server, sharedPath, filePath, fileName)
-            if (localFile.exists()) {
-                localFile.delete()
-            }
-
             throw handleException(exception)
         }
     }
 
-    fun deleteLocalFile(filePath: String) {
-        fileManager.deleteFile(filePath)
+    fun openFile(localFilePath: String, fileName: String): File =
+        fileManager.getLocalFile(localFilePath, fileName)
+
+    fun deleteLocalFile(localFilePath: String, fileName: String) {
+        fileManager.deleteFile(localFilePath, fileName)
     }
 
     private fun isLocalFileValid(localFile: File, remoteFile: SMBFile): Boolean {

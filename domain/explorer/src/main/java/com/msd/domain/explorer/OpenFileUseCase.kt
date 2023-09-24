@@ -10,7 +10,8 @@ class OpenFileUseCase @Inject constructor(private val repository: IExplorerRepos
         sharedPath: String,
         fileName: String,
         filePath: String,
+        localFilePath: String,
         user: String,
         psw: String,
-    ) = repository.openFile(server, sharedPath, fileName, filePath, user, psw)
+    ) = repository.openFile(server, sharedPath, fileName, filePath, localFilePath, user, psw)
 }

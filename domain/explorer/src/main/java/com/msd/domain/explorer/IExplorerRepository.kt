@@ -20,6 +20,7 @@ interface IExplorerRepository {
         sharedPath: String,
         fileName: String,
         filePath: String,
+        localFilePath: String,
         user: String,
         psw: String,
     )
@@ -30,9 +31,10 @@ interface IExplorerRepository {
         sharedPath: String,
         fileName: String,
         filePath: String,
+        localFilePath: String,
         user: String,
         psw: String,
     ): File
 
-    fun deleteFile(filePath: String)
+    fun deleteFile(localFilePath: String, fileName: String)
 }

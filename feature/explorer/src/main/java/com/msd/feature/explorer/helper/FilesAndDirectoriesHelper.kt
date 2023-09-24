@@ -46,6 +46,7 @@ class FilesAndDirectoriesHelper @Inject constructor(
         sharedPath = smbConfiguration.sharedPath,
         fileName = file.name,
         filePath = file.path,
+        localFilePath = file.localPath,
         user = smbConfiguration.user,
         psw = smbConfiguration.psw,
     )
@@ -60,6 +61,7 @@ class FilesAndDirectoriesHelper @Inject constructor(
             sharedPath = smbConfiguration.sharedPath,
             fileName = file.name,
             filePath = file.path,
+            localFilePath = file.localPath,
             user = smbConfiguration.user,
             psw = smbConfiguration.psw,
         )

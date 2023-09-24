@@ -17,6 +17,7 @@ import com.msd.core.ui.theme.NetworkStorageConfigurationTheme
 import com.msd.core.ui.widget.AppTopBar
 import com.msd.domain.explorer.model.IBaseFile
 import com.msd.domain.explorer.model.NetworkFile
+import com.msd.domain.explorer.model.ParentDirectory
 import com.msd.feature.explorer.R
 import com.msd.feature.explorer.presenter.ExplorerState
 import com.msd.feature.explorer.presenter.UserInteractions
@@ -64,6 +65,7 @@ fun ExplorerTopBarPreview() {
             currentState = ExplorerState.Loading("Name", "Path"),
             userInteractions = object : UserInteractions {
                 override fun onItemClicked(file: IBaseFile) = Unit
+                override fun onParentDirectoryClicked(parentDirectory: ParentDirectory) = Unit
                 override fun onBackPressed() = Unit
                 override fun onNavigateUp() = Unit
                 override fun confirmDialog() = Unit

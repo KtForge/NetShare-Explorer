@@ -5,5 +5,5 @@ import javax.inject.Inject
 
 class DeleteFileUseCase @Inject constructor(private val repository: IExplorerRepository) {
 
-    operator fun invoke(file: NetworkFile) = repository.deleteFile(file.path)
+    operator fun invoke(file: NetworkFile) = repository.deleteFile(file.localPath, file.name)
 }

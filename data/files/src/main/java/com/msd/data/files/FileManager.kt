@@ -79,6 +79,8 @@ class FileManager @Inject constructor(@ApplicationContext private val context: C
         return File(path, fileName)
     }
 
+    fun getLocalFile(localFilePath: String, fileName: String) = File(localFilePath, fileName)
+
     // Returns the creation date of a file in milliseconds
     fun getCreationTimeMillis(file: File): Long {
         val fileData = Files.readAttributes(file.toPath(), BasicFileAttributes::class.java)
@@ -86,8 +88,8 @@ class FileManager @Inject constructor(@ApplicationContext private val context: C
         return fileData.creationTime().toMillis()
     }
 
-    fun deleteFile(filePath: String) {
-        val file = File(filePath)
+    fun deleteFile(filePath: String, fileName: String) {
+        val file = File(filePath, fileName)
 
         if (file.exists()) {
             file.delete()
