@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.msd.domain.explorer.model.IBaseFile
 import com.msd.domain.explorer.model.NetworkDirectory
 import com.msd.domain.explorer.model.NetworkFile
-import com.msd.domain.explorer.model.NetworkParentDirectory
 import com.msd.domain.explorer.model.SMBException
 import com.msd.domain.smb.GetSMBConfigurationUseCase
 import com.msd.feature.explorer.helper.FilesAndDirectoriesHelper
@@ -78,7 +77,6 @@ class ExplorerPresenter @AssistedInject constructor(
 
     override fun onItemClicked(file: IBaseFile) {
         when (file) {
-            is NetworkParentDirectory -> onBackPressed()
             is NetworkDirectory -> openDirectory(file)
             is NetworkFile -> openFile(file)
         }
@@ -88,7 +86,7 @@ class ExplorerPresenter @AssistedInject constructor(
         (currentState as? Loaded)?.let { loaded ->
             tryEmit(Loading(smbConfigurationName, loaded.path))
             viewModelScope.launch(ioDispatcher) {
-                emitFilesAndDirectories(loaded, path = directory.path)
+                emitFilesAndDirectories(loaded, directory.path)
             }
         }
     }
@@ -102,7 +100,6 @@ class ExplorerPresenter @AssistedInject constructor(
                     val fileToOpen = filesAndDirectoriesHelper.openFile(
                         loaded.smbConfiguration,
                         file,
-                        loaded.path
                     )
 
                     navigate(OpenFile(fileToOpen))
@@ -133,12 +130,13 @@ class ExplorerPresenter @AssistedInject constructor(
         }
     }
 
-    private suspend fun emitFilesAndDirectories(loaded: Loaded, path: String) {
+    private suspend fun emitFilesAndDirectories(loaded: Loaded, directoryPath: String) {
         val smbConfiguration = loaded.smbConfiguration
+        val path = loaded.root + directoryPath
         try {
             val filesAndDirectories = filesAndDirectoriesHelper.getFilesAndDirectories(
                 smbConfiguration,
-                path = path
+                path = directoryPath
             )
 
             tryEmit(loaded.copy(path = path, filesOrDirectories = filesAndDirectories))
@@ -179,11 +177,7 @@ class ExplorerPresenter @AssistedInject constructor(
                     tryEmit(loaded.copy(isDownloadingFile = true))
 
                     try {
-                        filesAndDirectoriesHelper.downloadFile(
-                            loaded.smbConfiguration,
-                            file,
-                            loaded.path
-                        )
+                        filesAndDirectoriesHelper.downloadFile(loaded.smbConfiguration, file)
 
                         tryEmit(loaded.copy(isDownloadingFile = false))
                     } catch (e: Exception) {

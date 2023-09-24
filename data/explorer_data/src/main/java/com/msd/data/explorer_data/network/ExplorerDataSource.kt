@@ -25,7 +25,7 @@ class ExplorerDataSource @Inject constructor(
     suspend fun getFilesAndDirectories(
         server: String,
         sharedPath: String,
-        absolutePath: String,
+        directoryPath: String,
         user: String,
         psw: String
     ): List<IBaseFile> {
@@ -38,10 +38,9 @@ class ExplorerDataSource @Inject constructor(
                 user = user,
                 psw = psw
             ) { diskShare ->
-                val relativePath = smbHelper.getRelativePath(diskShare, absolutePath)
                 val files =
-                    smbHelper.listFiles(server, sharedPath, relativePath, diskShare, fileManager)
-                fileManager.cleanFiles(server, sharedPath, relativePath, files)
+                    smbHelper.listFiles(server, sharedPath, directoryPath, diskShare, fileManager)
+                fileManager.cleanFiles(server, sharedPath, directoryPath, files)
 
                 val openTime = System.currentTimeMillis() - start
                 explorerTracker.logListFilesAndDirectoriesEvent(files.size, openTime)
@@ -57,13 +56,12 @@ class ExplorerDataSource @Inject constructor(
     suspend fun downloadFile(
         server: String,
         sharedPath: String,
-        absolutePath: String,
+        filePath: String,
         fileName: String,
         user: String,
         psw: String,
     ) {
         val start = System.currentTimeMillis()
-        var relativePath = ""
 
         return try {
             smbHelper.onConnection(
@@ -72,12 +70,10 @@ class ExplorerDataSource @Inject constructor(
                 user = user,
                 psw = psw
             ) { diskShare ->
-                relativePath = smbHelper.getRelativePath(diskShare, absolutePath)
-
-                val remoteFile = smbHelper.openFile(diskShare, relativePath, fileName)
+                val remoteFile = smbHelper.openFile(diskShare, filePath, fileName)
 
                 val localFile =
-                    fileManager.getLocalFileRef(server, sharedPath, relativePath, fileName)
+                    fileManager.getLocalFileRef(server, sharedPath, filePath, fileName)
                 val fileSize = smbHelper.getFileSize(remoteFile)
 
                 remoteFile.inputStream.copyTo(localFile.outputStream())
@@ -88,7 +84,7 @@ class ExplorerDataSource @Inject constructor(
             }
         } catch (exception: Exception) {
             // Delete local file
-            val localFile = fileManager.getLocalFileRef(server, sharedPath, relativePath, fileName)
+            val localFile = fileManager.getLocalFileRef(server, sharedPath, filePath, fileName)
             if (localFile.exists()) {
                 localFile.delete()
             }
@@ -101,13 +97,12 @@ class ExplorerDataSource @Inject constructor(
     suspend fun openFile(
         server: String,
         sharedPath: String,
-        absolutePath: String,
+        filePath: String,
         fileName: String,
         user: String,
         psw: String,
     ): File {
         val start = System.currentTimeMillis()
-        var relativePath = ""
 
         return try {
             smbHelper.onConnection(
@@ -116,12 +111,10 @@ class ExplorerDataSource @Inject constructor(
                 user = user,
                 psw = psw
             ) { diskShare ->
-                relativePath = smbHelper.getRelativePath(diskShare, absolutePath)
-
-                val remoteFile = smbHelper.openFile(diskShare, relativePath, fileName)
+                val remoteFile = smbHelper.openFile(diskShare, filePath, fileName)
 
                 val localFile =
-                    fileManager.getLocalFileRef(server, sharedPath, relativePath, fileName)
+                    fileManager.getLocalFileRef(server, sharedPath, filePath, fileName)
                 val fileSize = smbHelper.getFileSize(remoteFile)
 
                 if (!isLocalFileValid(localFile, remoteFile)) {
@@ -135,7 +128,7 @@ class ExplorerDataSource @Inject constructor(
             }
         } catch (exception: Exception) {
             // Delete local file
-            val localFile = fileManager.getLocalFileRef(server, sharedPath, relativePath, fileName)
+            val localFile = fileManager.getLocalFileRef(server, sharedPath, filePath, fileName)
             if (localFile.exists()) {
                 localFile.delete()
             }

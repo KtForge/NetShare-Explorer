@@ -2,7 +2,6 @@ package com.msd.feature.explorer.presenter
 
 import com.msd.domain.explorer.model.NetworkDirectory
 import com.msd.domain.explorer.model.NetworkFile
-import com.msd.domain.explorer.model.NetworkParentDirectory
 import com.msd.domain.explorer.model.SMBException
 import com.msd.domain.smb.GetSMBConfigurationUseCase
 import com.msd.domain.smb.model.SMBConfiguration

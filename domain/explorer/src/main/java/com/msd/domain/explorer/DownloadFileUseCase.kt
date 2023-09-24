@@ -7,9 +7,9 @@ class DownloadFileUseCase @Inject constructor(private val repository: IExplorerR
     suspend operator fun invoke(
         server: String,
         sharedPath: String,
-        absolutePath: String,
         fileName: String,
+        filePath: String,
         user: String,
         psw: String,
-    ) = repository.downloadFile(server, sharedPath, absolutePath, fileName, user, psw)
+    ) = repository.downloadFile(server, sharedPath, fileName, filePath, user, psw)
 }

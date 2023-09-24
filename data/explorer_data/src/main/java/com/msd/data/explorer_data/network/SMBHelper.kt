@@ -41,10 +41,6 @@ class SMBHelper @Inject constructor(private val client: SMBClient) {
         }
     }
 
-    fun getRelativePath(diskShare: DiskShare, absolutePath: String): String {
-        return absolutePath.replace(diskShare.smbPath.toUncPath(), ROOT_PATH)
-    }
-
     fun listFiles(
         server: String,
         sharedPath: String,
@@ -62,13 +58,13 @@ class SMBHelper @Inject constructor(private val client: SMBClient) {
         )
 
         return directory.list().mapNotNull { file ->
-            file.toBaseFile(server, sharedPath, diskShare, parentPath = path, fileManager)
+            file.toBaseFile(server, sharedPath, parentPath = path, fileManager)
         }
     }
 
-    fun openFile(diskShare: DiskShare, path: String, fileName: String): File {
+    fun openFile(diskShare: DiskShare, filePath: String, fileName: String): File {
         return diskShare.openFile(
-            "$path/$fileName",
+            "$filePath/$fileName",
             EnumSet.of(AccessMask.MAXIMUM_ALLOWED),
             null,
             SMB2ShareAccess.ALL,

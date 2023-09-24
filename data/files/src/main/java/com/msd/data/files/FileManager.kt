@@ -61,9 +61,8 @@ class FileManager @Inject constructor(@ApplicationContext private val context: C
         server: String,
         sharedPath: String,
         directory: String,
-        fileName: String
     ): String {
-        return getCacheDirectoryPath(server, sharedPath, directory) + "/" + fileName
+        return getCacheDirectoryPath(server, sharedPath, directory)
     }
 
     // Creates a reference to a new or existing local file

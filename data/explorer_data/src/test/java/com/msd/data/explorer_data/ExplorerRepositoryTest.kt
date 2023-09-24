@@ -3,7 +3,6 @@ package com.msd.data.explorer_data
 import com.msd.data.explorer_data.network.ExplorerDataSource
 import com.msd.domain.explorer.model.NetworkDirectory
 import com.msd.domain.explorer.model.NetworkFile
-import com.msd.domain.explorer.model.NetworkParentDirectory
 import com.msd.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest

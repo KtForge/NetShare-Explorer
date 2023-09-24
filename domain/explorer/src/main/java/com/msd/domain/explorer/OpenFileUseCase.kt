@@ -8,9 +8,9 @@ class OpenFileUseCase @Inject constructor(private val repository: IExplorerRepos
     suspend operator fun invoke(
         server: String,
         sharedPath: String,
-        absolutePath: String,
         fileName: String,
+        filePath: String,
         user: String,
         psw: String,
-    ) = repository.openFile(server, sharedPath, absolutePath, fileName, user, psw)
+    ) = repository.openFile(server, sharedPath, fileName, filePath, user, psw)
 }

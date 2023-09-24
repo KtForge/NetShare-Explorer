@@ -30,7 +30,7 @@ class FilesAndDirectoriesHelper @Inject constructor(
         return getFilesAndDirectoriesUseCase(
             server = smbConfiguration.server,
             sharedPath = smbConfiguration.sharedPath,
-            absolutePath = path,
+            directoryPath = path,
             user = smbConfiguration.user,
             psw = smbConfiguration.psw
         )
@@ -39,13 +39,12 @@ class FilesAndDirectoriesHelper @Inject constructor(
     @Throws(Exception::class)
     suspend fun downloadFile(
         smbConfiguration: SMBConfiguration,
-        file: IBaseFile,
-        path: String
+        file: NetworkFile
     ) = downloadFileUseCase(
         server = smbConfiguration.server,
         sharedPath = smbConfiguration.sharedPath,
-        absolutePath = path,
         fileName = file.name,
+        filePath = file.path,
         user = smbConfiguration.user,
         psw = smbConfiguration.psw,
     )
@@ -53,14 +52,13 @@ class FilesAndDirectoriesHelper @Inject constructor(
     @Throws(Exception::class)
     suspend fun openFile(
         smbConfiguration: SMBConfiguration,
-        file: IBaseFile,
-        path: String
+        file: NetworkFile,
     ): File {
         return openFileUseCase(
             server = smbConfiguration.server,
             sharedPath = smbConfiguration.sharedPath,
-            absolutePath = path,
             fileName = file.name,
+            filePath = file.path,
             user = smbConfiguration.user,
             psw = smbConfiguration.psw,
         )

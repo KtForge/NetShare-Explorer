@@ -51,7 +51,6 @@ import com.msd.core.ui.theme.NetworkStorageConfigurationTheme
 import com.msd.domain.explorer.model.IBaseFile
 import com.msd.domain.explorer.model.NetworkDirectory
 import com.msd.domain.explorer.model.NetworkFile
-import com.msd.domain.explorer.model.NetworkParentDirectory
 import com.msd.domain.smb.model.SMBConfiguration
 import com.msd.feature.explorer.R
 import com.msd.feature.explorer.presenter.ExplorerState
@@ -98,9 +97,7 @@ fun ExplorerLoadedView(loaded: Loaded, userInteractions: UserInteractions) {
                                 .padding(vertical = sizeXXL)
                         ) {
                             when (file) {
-                                is NetworkParentDirectory,
                                 is NetworkDirectory -> DirectoryView(directory = file, scope = this)
-
                                 is NetworkFile -> FileView(scope = this, file, userInteractions)
                             }
                         }

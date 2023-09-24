@@ -13,31 +13,31 @@ class ExplorerRepository @Inject constructor(
     override suspend fun retrieveFilesAndDirectories(
         server: String,
         sharedPath: String,
-        absolutePath: String,
+        directoryPath: String,
         user: String,
         psw: String
     ): List<IBaseFile> =
-        dataSource.getFilesAndDirectories(server, sharedPath, absolutePath, user, psw)
+        dataSource.getFilesAndDirectories(server, sharedPath, directoryPath, user, psw)
             .sortedBy { fileOrDirectory -> fileOrDirectory.name }
             .sortedBy { fileOrDirectory -> fileOrDirectory is NetworkFile }
 
     override suspend fun downloadFile(
         server: String,
         sharedPath: String,
-        absolutePath: String,
         fileName: String,
+        filePath: String,
         user: String,
         psw: String
-    ) = dataSource.downloadFile(server, sharedPath, absolutePath, fileName, user, psw)
+    ) = dataSource.downloadFile(server, sharedPath, filePath, fileName, user, psw)
 
     override suspend fun openFile(
         server: String,
         sharedPath: String,
-        absolutePath: String,
         fileName: String,
+        filePath: String,
         user: String,
         psw: String,
-    ) = dataSource.openFile(server, sharedPath, absolutePath, fileName, user, psw)
+    ) = dataSource.openFile(server, sharedPath, filePath, fileName, user, psw)
 
     override fun deleteFile(filePath: String) = dataSource.deleteLocalFile(filePath)
 }

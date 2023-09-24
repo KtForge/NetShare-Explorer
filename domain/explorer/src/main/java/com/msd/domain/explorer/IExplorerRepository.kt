@@ -10,7 +10,7 @@ interface IExplorerRepository {
     suspend fun retrieveFilesAndDirectories(
         server: String,
         sharedPath: String,
-        absolutePath: String,
+        directoryPath: String,
         user: String,
         psw: String
     ): List<IBaseFile>
@@ -19,8 +19,8 @@ interface IExplorerRepository {
     suspend fun downloadFile(
         server: String,
         sharedPath: String,
-        absolutePath: String,
         fileName: String,
+        filePath: String,
         user: String,
         psw: String,
     )
@@ -29,8 +29,8 @@ interface IExplorerRepository {
     suspend fun openFile(
         server: String,
         sharedPath: String,
-        absolutePath: String,
         fileName: String,
+        filePath: String,
         user: String,
         psw: String,
     ): File

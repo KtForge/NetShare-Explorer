@@ -9,9 +9,9 @@ class GetFilesAndDirectoriesUseCase @Inject constructor(private val repository: 
     suspend operator fun invoke(
         server: String,
         sharedPath: String,
-        absolutePath: String,
+        directoryPath: String,
         user: String,
         psw: String
     ): List<IBaseFile> =
-        repository.retrieveFilesAndDirectories(server, sharedPath, absolutePath, user, psw)
+        repository.retrieveFilesAndDirectories(server, sharedPath, directoryPath, user, psw)
 }
