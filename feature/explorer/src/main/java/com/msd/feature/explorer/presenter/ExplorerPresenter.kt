@@ -68,7 +68,7 @@ class ExplorerPresenter @AssistedInject constructor(
                             )
                         )
                     } catch (e: Exception) {
-                        tryEmit(handleError(e, smbConfigurationName, path = ""))
+                        handleError(e, smbConfigurationName, path = "")?.let { tryEmit(it) }
                     }
                 } ?: tryEmit(Error.UnknownError(smbConfigurationName, path = ""))
             }
@@ -113,13 +113,7 @@ class ExplorerPresenter @AssistedInject constructor(
                         loaded.workingDirectory.absolutePath
                     )
                 } catch (e: Exception) {
-                    if (e !is SMBException.CancelException) {
-                        tryEmit(
-                            loaded.copy(
-                                fileAccessError = handleError(e, loaded.name, loaded.path)
-                            )
-                        )
-                    }
+                    tryEmit(loaded.copy(fileAccessError = handleError(e, loaded.name, loaded.path)))
                 }
             }
         }
@@ -134,32 +128,6 @@ class ExplorerPresenter @AssistedInject constructor(
             } else {
                 navigate(NavigateBack)
             }
-        }
-    }
-
-    private suspend fun emitFilesAndDirectories(
-        loaded: Loaded,
-        relativePath: String,
-        absolutePath: String
-    ) {
-        val smbConfiguration = loaded.smbConfiguration
-
-        try {
-            val filesResult = filesAndDirectoriesHelper.getFilesAndDirectories(
-                smbConfiguration,
-                path = relativePath
-            )
-
-            tryEmit(
-                loaded.copy(
-                    path = filesResult.workingDirectory.absolutePath,
-                    parentDirectory = filesResult.parentDirectory,
-                    workingDirectory = filesResult.workingDirectory,
-                    filesOrDirectories = filesResult.filesAndDirectories,
-                )
-            )
-        } catch (e: Exception) {
-            tryEmit(handleError(e, loaded.name, absolutePath))
         }
     }
 
@@ -197,17 +165,17 @@ class ExplorerPresenter @AssistedInject constructor(
                     try {
                         filesAndDirectoriesHelper.downloadFile(loaded.smbConfiguration, file)
 
-                        tryEmit(loaded.copy(isDownloadingFile = false))
+                        emitFilesAndDirectories(
+                            loaded,
+                            loaded.workingDirectory.path,
+                            loaded.workingDirectory.absolutePath
+                        )
                     } catch (e: Exception) {
-                        handleError(e, loaded.name, loaded.path)
+                        tryEmit(
+                            loaded.copy(fileAccessError = handleError(e, loaded.name, loaded.path))
+                        )
                     }
                 }
-
-                emitFilesAndDirectories(
-                    loaded,
-                    loaded.workingDirectory.path,
-                    loaded.workingDirectory.absolutePath
-                )
             }
         }
     }
@@ -226,14 +194,42 @@ class ExplorerPresenter @AssistedInject constructor(
         }
     }
 
+    private suspend fun emitFilesAndDirectories(
+        loaded: Loaded,
+        relativePath: String,
+        absolutePath: String
+    ) {
+        val smbConfiguration = loaded.smbConfiguration
+
+        try {
+            val filesResult = filesAndDirectoriesHelper.getFilesAndDirectories(
+                smbConfiguration,
+                path = relativePath
+            )
+
+            tryEmit(
+                loaded.copy(
+                    path = filesResult.workingDirectory.absolutePath,
+                    parentDirectory = filesResult.parentDirectory,
+                    workingDirectory = filesResult.workingDirectory,
+                    filesOrDirectories = filesResult.filesAndDirectories,
+                    isDownloadingFile = false,
+                )
+            )
+        } catch (e: Exception) {
+            handleError(e, loaded.name, absolutePath)?.let { tryEmit(it) }
+        }
+    }
+
     override fun onNavigateUp() {
         navigate(NavigateUp)
     }
 
-    private fun handleError(e: Exception, name: String, path: String): Error {
+    private fun handleError(e: Exception, name: String, path: String): Error? {
         return when (e) {
             SMBException.ConnectionError -> Error.ConnectionError(name, path)
             SMBException.AccessDenied -> Error.AccessError(name, path)
+            SMBException.CancelException -> null
             else -> Error.UnknownError(name, path)
         }
     }
