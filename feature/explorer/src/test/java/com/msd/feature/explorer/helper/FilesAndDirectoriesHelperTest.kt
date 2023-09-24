@@ -14,7 +14,9 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
+import org.mockito.stubbing.OngoingStubbing
 import java.io.File
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -45,15 +47,7 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
     @Test
     fun `when getting files and directories should return the expected list`() = runTest {
         val expectedResult: FilesResult = mock()
-        whenever(
-            getFilesAndDirectoriesUseCase.invoke(
-                "Server",
-                "SharedPath",
-                "path",
-                "User",
-                "Psw"
-            )
-        ).thenReturn(expectedResult)
+        whenGetFilesAndDirectories { thenReturn(expectedResult) }
 
         val result = helper.getFilesAndDirectories(smbConfiguration, path = "path")
 
@@ -65,21 +59,16 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
             "User",
             "Psw"
         )
+        verifyNoInteractions(downloadFileUseCase)
+        verifyNoInteractions(openFileUseCase)
+        verifyNoInteractions(deleteFileUseCase)
     }
 
     @Test
     fun `when getting files and directories with connection error should return the exception`() =
         runTest {
             val expectedException = SMBException.ConnectionError
-            whenever(
-                getFilesAndDirectoriesUseCase.invoke(
-                    "Server",
-                    "SharedPath",
-                    "path",
-                    "User",
-                    "Psw"
-                )
-            ).thenThrow(expectedException)
+            whenGetFilesAndDirectories { thenThrow(expectedException) }
 
             try {
                 helper.getFilesAndDirectories(smbConfiguration, path = "path")
@@ -87,6 +76,7 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
             } catch (exception: Exception) {
                 assert(exception == expectedException)
             }
+
             verify(getFilesAndDirectoriesUseCase).invoke(
                 "Server",
                 "SharedPath",
@@ -94,21 +84,16 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
                 "User",
                 "Psw"
             )
+            verifyNoInteractions(downloadFileUseCase)
+            verifyNoInteractions(openFileUseCase)
+            verifyNoInteractions(deleteFileUseCase)
         }
 
     @Test
     fun `when getting files and directories with access error should return the exception`() =
         runTest {
             val expectedException = SMBException.AccessDenied
-            whenever(
-                getFilesAndDirectoriesUseCase.invoke(
-                    "Server",
-                    "SharedPath",
-                    "path",
-                    "User",
-                    "Psw"
-                )
-            ).thenThrow(expectedException)
+            whenGetFilesAndDirectories { thenThrow(expectedException) }
 
             try {
                 helper.getFilesAndDirectories(smbConfiguration, path = "path")
@@ -116,6 +101,7 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
             } catch (exception: Exception) {
                 assert(exception == expectedException)
             }
+
             verify(getFilesAndDirectoriesUseCase).invoke(
                 "Server",
                 "SharedPath",
@@ -123,21 +109,41 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
                 "User",
                 "Psw"
             )
+            verifyNoInteractions(downloadFileUseCase)
+            verifyNoInteractions(openFileUseCase)
+            verifyNoInteractions(deleteFileUseCase)
+        }
+
+    @Test
+    fun `when getting files and directories with cancellation error should return the exception`() =
+        runTest {
+            val expectedException = SMBException.CancelException
+            whenGetFilesAndDirectories { thenThrow(expectedException) }
+
+            try {
+                helper.getFilesAndDirectories(smbConfiguration, path = "path")
+                assert(false)
+            } catch (exception: Exception) {
+                assert(exception == expectedException)
+            }
+
+            verify(getFilesAndDirectoriesUseCase).invoke(
+                "Server",
+                "SharedPath",
+                "path",
+                "User",
+                "Psw"
+            )
+            verifyNoInteractions(downloadFileUseCase)
+            verifyNoInteractions(openFileUseCase)
+            verifyNoInteractions(deleteFileUseCase)
         }
 
     @Test
     fun `when getting files and directories with unknown error should return the exception`() =
         runTest {
             val expectedException = SMBException.UnknownError
-            whenever(
-                getFilesAndDirectoriesUseCase.invoke(
-                    "Server",
-                    "SharedPath",
-                    "path",
-                    "User",
-                    "Psw"
-                )
-            ).thenThrow(expectedException)
+            whenGetFilesAndDirectories { thenThrow(expectedException) }
 
             try {
                 helper.getFilesAndDirectories(smbConfiguration, path = "path")
@@ -145,6 +151,7 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
             } catch (exception: Exception) {
                 assert(exception == expectedException)
             }
+
             verify(getFilesAndDirectoriesUseCase).invoke(
                 "Server",
                 "SharedPath",
@@ -152,13 +159,43 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
                 "User",
                 "Psw"
             )
+            verifyNoInteractions(downloadFileUseCase)
+            verifyNoInteractions(openFileUseCase)
+            verifyNoInteractions(deleteFileUseCase)
         }
 
     @Test
-    fun `when opening file should return the expected file`() = runTest {
-        val expectedResult: File = mock()
-        whenever(
-            openFileUseCase.invoke(
+    fun `when downloading file should invoke the expected use case`() = runTest {
+        helper.downloadFile(smbConfiguration, file)
+
+        verify(downloadFileUseCase).invoke(
+            "Server",
+            "SharedPath",
+            "File",
+            "path",
+            "localPath",
+            "User",
+            "Psw",
+        )
+        verifyNoInteractions(getFilesAndDirectoriesUseCase)
+        verifyNoInteractions(openFileUseCase)
+        verifyNoInteractions(deleteFileUseCase)
+    }
+
+    @Test
+    fun `when downloading file and connection error should throw the expected exception`() =
+        runTest {
+            val expectedException = SMBException.ConnectionError
+            whenDownloadFile { thenThrow(expectedException) }
+
+            try {
+                helper.downloadFile(smbConfiguration, file)
+                assert(false)
+            } catch (exception: Exception) {
+                assert(exception == expectedException)
+            }
+
+            verify(downloadFileUseCase).invoke(
                 "Server",
                 "SharedPath",
                 "File",
@@ -167,7 +204,94 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
                 "User",
                 "Psw",
             )
-        ).thenReturn(expectedResult)
+            verifyNoInteractions(getFilesAndDirectoriesUseCase)
+            verifyNoInteractions(openFileUseCase)
+            verifyNoInteractions(deleteFileUseCase)
+        }
+
+    @Test
+    fun `when downloading file and access error should throw the expected exception`() = runTest {
+        val expectedException = SMBException.AccessDenied
+        whenDownloadFile { thenThrow(expectedException) }
+
+        try {
+            helper.downloadFile(smbConfiguration, file)
+            assert(false)
+        } catch (exception: Exception) {
+            assert(exception == expectedException)
+        }
+
+        verify(downloadFileUseCase).invoke(
+            "Server",
+            "SharedPath",
+            "File",
+            "path",
+            "localPath",
+            "User",
+            "Psw",
+        )
+        verifyNoInteractions(getFilesAndDirectoriesUseCase)
+        verifyNoInteractions(openFileUseCase)
+        verifyNoInteractions(deleteFileUseCase)
+    }
+
+    @Test
+    fun `when downloading file and cancellation error should throw the expected exception`() =
+        runTest {
+            val expectedException = SMBException.CancelException
+            whenDownloadFile { thenThrow(expectedException) }
+
+            try {
+                helper.downloadFile(smbConfiguration, file)
+                assert(false)
+            } catch (exception: Exception) {
+                assert(exception == expectedException)
+            }
+
+            verify(downloadFileUseCase).invoke(
+                "Server",
+                "SharedPath",
+                "File",
+                "path",
+                "localPath",
+                "User",
+                "Psw",
+            )
+            verifyNoInteractions(getFilesAndDirectoriesUseCase)
+            verifyNoInteractions(openFileUseCase)
+            verifyNoInteractions(deleteFileUseCase)
+        }
+
+    @Test
+    fun `when downloading file and unknown error should throw the expected exception`() = runTest {
+        val expectedException = SMBException.UnknownError
+        whenDownloadFile { thenThrow(expectedException) }
+
+        try {
+            helper.downloadFile(smbConfiguration, file)
+            assert(false)
+        } catch (exception: Exception) {
+            assert(exception == expectedException)
+        }
+
+        verify(downloadFileUseCase).invoke(
+            "Server",
+            "SharedPath",
+            "File",
+            "path",
+            "localPath",
+            "User",
+            "Psw",
+        )
+        verifyNoInteractions(getFilesAndDirectoriesUseCase)
+        verifyNoInteractions(openFileUseCase)
+        verifyNoInteractions(deleteFileUseCase)
+    }
+
+    @Test
+    fun `when opening file should return the expected file`() = runTest {
+        val expectedResult: File = mock()
+        whenOpenFile { thenReturn(expectedResult) }
 
         val result = helper.openFile(smbConfiguration, file)
 
@@ -181,21 +305,14 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
             "User",
             "Psw",
         )
+        verifyNoInteractions(getFilesAndDirectoriesUseCase)
+        verifyNoInteractions(downloadFileUseCase)
+        verifyNoInteractions(deleteFileUseCase)
     }
 
     @Test
     fun `when opening file and return null should return the expected file`() = runTest {
-        whenever(
-            openFileUseCase.invoke(
-                "Server",
-                "SharedPath",
-                "File",
-                "path",
-                "localPath",
-                "User",
-                "Psw",
-            )
-        ).thenReturn(null)
+        whenOpenFile { thenReturn(null) }
 
         val result = helper.openFile(smbConfiguration, file)
 
@@ -209,22 +326,15 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
             "User",
             "Psw",
         )
+        verifyNoInteractions(getFilesAndDirectoriesUseCase)
+        verifyNoInteractions(downloadFileUseCase)
+        verifyNoInteractions(deleteFileUseCase)
     }
 
     @Test
     fun `when opening file and connection error should throw the error`() = runTest {
         val expectedException = SMBException.ConnectionError
-        whenever(
-            openFileUseCase.invoke(
-                "Server",
-                "SharedPath",
-                "File",
-                "path",
-                "localPath",
-                "User",
-                "Psw",
-            )
-        ).thenThrow(expectedException)
+        whenOpenFile { thenThrow(expectedException) }
 
         try {
             helper.openFile(smbConfiguration, file)
@@ -232,22 +342,25 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
         } catch (exception: Exception) {
             assert(exception == expectedException)
         }
+
+        verify(openFileUseCase).invoke(
+            "Server",
+            "SharedPath",
+            "File",
+            "path",
+            "localPath",
+            "User",
+            "Psw",
+        )
+        verifyNoInteractions(getFilesAndDirectoriesUseCase)
+        verifyNoInteractions(downloadFileUseCase)
+        verifyNoInteractions(deleteFileUseCase)
     }
 
     @Test
     fun `when opening file and access error should throw the error`() = runTest {
         val expectedException = SMBException.AccessDenied
-        whenever(
-            openFileUseCase.invoke(
-                "Server",
-                "SharedPath",
-                "File",
-                "path",
-                "localPath",
-                "User",
-                "Psw",
-            )
-        ).thenThrow(expectedException)
+        whenOpenFile { thenThrow(expectedException) }
 
         try {
             helper.openFile(smbConfiguration, file)
@@ -255,11 +368,110 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
         } catch (exception: Exception) {
             assert(exception == expectedException)
         }
+
+        verify(openFileUseCase).invoke(
+            "Server",
+            "SharedPath",
+            "File",
+            "path",
+            "localPath",
+            "User",
+            "Psw",
+        )
+        verifyNoInteractions(getFilesAndDirectoriesUseCase)
+        verifyNoInteractions(downloadFileUseCase)
+        verifyNoInteractions(deleteFileUseCase)
+    }
+
+    @Test
+    fun `when opening file and cancellation error should throw the error`() = runTest {
+        val expectedException = SMBException.CancelException
+        whenOpenFile { thenThrow(expectedException) }
+
+        try {
+            helper.openFile(smbConfiguration, file)
+            assert(false)
+        } catch (exception: Exception) {
+            assert(exception == expectedException)
+        }
+
+        verify(openFileUseCase).invoke(
+            "Server",
+            "SharedPath",
+            "File",
+            "path",
+            "localPath",
+            "User",
+            "Psw",
+        )
+        verifyNoInteractions(getFilesAndDirectoriesUseCase)
+        verifyNoInteractions(downloadFileUseCase)
+        verifyNoInteractions(deleteFileUseCase)
     }
 
     @Test
     fun `when opening file and unknown error should throw the error`() = runTest {
         val expectedException = SMBException.UnknownError
+        whenOpenFile { thenThrow(expectedException) }
+
+        try {
+            helper.openFile(smbConfiguration, file)
+            assert(false)
+        } catch (exception: Exception) {
+            assert(exception == expectedException)
+        }
+
+        verify(openFileUseCase).invoke(
+            "Server",
+            "SharedPath",
+            "File",
+            "path",
+            "localPath",
+            "User",
+            "Psw",
+        )
+        verifyNoInteractions(getFilesAndDirectoriesUseCase)
+        verifyNoInteractions(downloadFileUseCase)
+        verifyNoInteractions(deleteFileUseCase)
+    }
+
+    @Test
+    fun `when deleting file should invoke the use case`() {
+        helper.deleteFile(file)
+
+        verify(deleteFileUseCase).invoke(file)
+        verifyNoInteractions(getFilesAndDirectoriesUseCase)
+        verifyNoInteractions(downloadFileUseCase)
+        verifyNoInteractions(openFileUseCase)
+    }
+
+    private suspend fun whenGetFilesAndDirectories(result: OngoingStubbing<FilesResult>.() -> Unit) {
+        whenever(
+            getFilesAndDirectoriesUseCase.invoke(
+                "Server",
+                "SharedPath",
+                "path",
+                "User",
+                "Psw"
+            )
+        ).result()
+    }
+
+    private suspend fun whenDownloadFile(result: OngoingStubbing<Unit>.() -> Unit) {
+        whenever(
+            downloadFileUseCase.invoke(
+                "Server",
+                "SharedPath",
+                "File",
+                "path",
+                "localPath",
+                "User",
+                "Psw",
+            )
+        ).result()
+    }
+
+    private suspend fun whenOpenFile(result: OngoingStubbing<File>.() -> Unit) {
         whenever(
             openFileUseCase.invoke(
                 "Server",
@@ -270,13 +482,6 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
                 "User",
                 "Psw",
             )
-        ).thenThrow(expectedException)
-
-        try {
-            helper.openFile(smbConfiguration, file)
-            assert(false)
-        } catch (exception: Exception) {
-            assert(exception == expectedException)
-        }
+        ).result()
     }
 }
