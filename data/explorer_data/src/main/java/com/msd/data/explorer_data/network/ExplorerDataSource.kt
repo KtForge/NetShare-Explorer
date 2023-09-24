@@ -81,6 +81,8 @@ class ExplorerDataSource @Inject constructor(
                 psw = psw
             ) { diskShare ->
                 val remoteFile = smbHelper.openFile(diskShare, filePath, fileName)
+
+                fileManager.makeDirectoriesForNewFile(server, sharedPath, filePath)
                 val localFile = fileManager.getLocalFile(localFilePath, fileName)
 
                 val fileSize = smbHelper.getFileSize(remoteFile)
@@ -88,12 +90,11 @@ class ExplorerDataSource @Inject constructor(
                 remoteFile.inputStream.copyTo(localFile.outputStream())
 
                 val openTime = System.currentTimeMillis() - start
-                // TODO Tracking
-                // explorerTracker.logOpenLocalFileEvent(fileSize, openTime)
+                explorerTracker.logDownloadFile(fileSize, openTime)
             }
         } catch (exception: Exception) {
             // Delete local file
-            val localFile = fileManager.getLocalFileRef(server, sharedPath, filePath, fileName)
+            val localFile = fileManager.getLocalFile(localFilePath, fileName)
             if (localFile.exists()) {
                 localFile.delete()
             }
@@ -129,8 +130,11 @@ class ExplorerDataSource @Inject constructor(
         }
     }
 
-    fun openFile(localFilePath: String, fileName: String): File =
-        fileManager.getLocalFile(localFilePath, fileName)
+    fun openFile(localFilePath: String, fileName: String): File {
+        return fileManager.getLocalFile(localFilePath, fileName).also {
+            explorerTracker.logOpenFileEvent(it.length())
+        }
+    }
 
     fun deleteLocalFile(localFilePath: String, fileName: String) {
         fileManager.deleteFile(localFilePath, fileName)

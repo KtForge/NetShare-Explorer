@@ -12,19 +12,13 @@ class FileManager @Inject constructor(@ApplicationContext private val context: C
 
     private val cacheDir = context.cacheDir
 
-    // Builds the path to a specific shared path in the cache directory
-    // Example: cache/192.168.1.1/Public/
-    private fun getCacheServerPath(server: String, sharedPath: String): String {
-        return "${cacheDir.absolutePath}/$server/$sharedPath/"
-    }
-
     // Builds the path to a specific directory in the cache directory
     // Example: cache/192.168.1.1/Public/User/Data
     private fun getCacheDirectoryPath(
         server: String,
         sharedPath: String,
         directory: String
-    ): String = getCacheServerPath(server, sharedPath) + directory
+    ): String = "${cacheDir.absolutePath}/$server/$sharedPath/" + directory
 
     // Deletes files that don't exist on the remote ($filesAndDirectories, only files)
     fun cleanFiles(
@@ -37,21 +31,23 @@ class FileManager @Inject constructor(@ApplicationContext private val context: C
         val cacheServerDirectory = File(serverDirectoryPath)
 
         if (cacheServerDirectory.exists()) {
-            cacheServerDirectory.listFiles()?.filter { it.isFile }?.forEach { file ->
-                if (filesAndDirectories.all { file.name != it.name }) {
-                    file.delete()
+            val files = cacheServerDirectory.listFiles()
+
+            if (files.isNullOrEmpty()) {
+                cacheServerDirectory.deleteRecursively()
+            } else {
+                files.filter { it.isFile }.forEach { file ->
+                    if (filesAndDirectories.all { file.name != it.name }) {
+                        deleteFile(serverDirectoryPath, file.name)
+                    }
+                }
+
+                files.filter { it.isDirectory }.forEach { directory ->
+                    if (directory.listFiles().isNullOrEmpty()) {
+                        directory.delete()
+                    }
                 }
             }
-        }
-    }
-
-    // Make the directories for a new file.
-    // Example: cache/192.168.1.1/Public/User/Data
-    private fun makeDirectoriesForNewFile(path: String) {
-        val directory = File(path)
-
-        if (!directory.exists()) {
-            directory.mkdirs()
         }
     }
 
@@ -65,18 +61,19 @@ class FileManager @Inject constructor(@ApplicationContext private val context: C
         return getCacheDirectoryPath(server, sharedPath, directory)
     }
 
-    // Creates a reference to a new or existing local file
-    // Example: cache/192.168.1.1/Public/User/Data/text.txt
-    fun getLocalFileRef(
+    // Make the directories for a new file.
+    // Example: cache/192.168.1.1/Public/User/Data
+    fun makeDirectoriesForNewFile(
         server: String,
         sharedPath: String,
-        directory: String,
-        fileName: String
-    ): File {
+        directory: String
+    ) {
         val path = getCacheDirectoryPath(server, sharedPath, directory)
-        makeDirectoriesForNewFile(path)
+        val directoryFile = File(path)
 
-        return File(path, fileName)
+        if (!directoryFile.exists()) {
+            directoryFile.mkdirs()
+        }
     }
 
     fun getLocalFile(localFilePath: String, fileName: String) = File(localFilePath, fileName)

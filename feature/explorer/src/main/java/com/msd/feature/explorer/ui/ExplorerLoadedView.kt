@@ -255,7 +255,7 @@ private fun DownloadProgressDialog(userInteractions: UserInteractions) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
             }
         },
-        onDismissRequest = userInteractions::dismissProgressDialog,
+        onDismissRequest = {},
         confirmButton = {
             TextButton(onClick = userInteractions::dismissProgressDialog) {
                 Text(text = stringResource(id = R.string.download_progress_dialog_cancel))

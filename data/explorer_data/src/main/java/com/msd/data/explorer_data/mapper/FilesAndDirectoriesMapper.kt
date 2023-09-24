@@ -66,8 +66,7 @@ object FilesAndDirectoriesMapper {
             NetworkDirectory(fileName, path, absolutePath = absolutePath)
         } else {
             val localPath = fileManager.getLocalFilePath(server, sharedPath, parentPath)
-            val localFile =
-                fileManager.getLocalFileRef(server, sharedPath, parentPath, fileName)
+            val localFile = fileManager.getLocalFile(localPath, fileName)
             val isLocal = localFile.exists()
 
             NetworkFile(fileName, parentPath, localPath, isLocal)
