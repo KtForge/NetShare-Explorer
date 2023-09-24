@@ -1,6 +1,6 @@
 package com.msd.domain.explorer
 
-import com.msd.domain.explorer.model.IBaseFile
+import com.msd.domain.explorer.model.FilesResult
 import javax.inject.Inject
 
 class GetFilesAndDirectoriesUseCase @Inject constructor(private val repository: IExplorerRepository) {
@@ -12,6 +12,6 @@ class GetFilesAndDirectoriesUseCase @Inject constructor(private val repository: 
         directoryPath: String,
         user: String,
         psw: String
-    ): List<IBaseFile> =
+    ): FilesResult =
         repository.retrieveFilesAndDirectories(server, sharedPath, directoryPath, user, psw)
 }

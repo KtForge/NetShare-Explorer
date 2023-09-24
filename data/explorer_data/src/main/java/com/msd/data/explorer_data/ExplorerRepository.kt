@@ -2,8 +2,7 @@ package com.msd.data.explorer_data
 
 import com.msd.data.explorer_data.network.ExplorerDataSource
 import com.msd.domain.explorer.IExplorerRepository
-import com.msd.domain.explorer.model.IBaseFile
-import com.msd.domain.explorer.model.NetworkFile
+import com.msd.domain.explorer.model.FilesResult
 import javax.inject.Inject
 
 class ExplorerRepository @Inject constructor(
@@ -16,10 +15,7 @@ class ExplorerRepository @Inject constructor(
         directoryPath: String,
         user: String,
         psw: String
-    ): List<IBaseFile> =
-        dataSource.getFilesAndDirectories(server, sharedPath, directoryPath, user, psw)
-            .sortedBy { fileOrDirectory -> fileOrDirectory.name }
-            .sortedBy { fileOrDirectory -> fileOrDirectory is NetworkFile }
+    ): FilesResult = dataSource.getFilesResult(server, sharedPath, directoryPath, user, psw)
 
     override suspend fun downloadFile(
         server: String,

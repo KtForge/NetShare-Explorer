@@ -7,14 +7,12 @@ import com.hierynomus.smbj.SMBClient
 import com.hierynomus.smbj.auth.AuthenticationContext
 import com.hierynomus.smbj.share.DiskShare
 import com.hierynomus.smbj.share.File
-import com.msd.data.explorer_data.mapper.FilesAndDirectoriesMapper.toBaseFile
+import com.msd.data.explorer_data.mapper.FilesAndDirectoriesMapper.buildFilesResult
 import com.msd.data.files.FileManager
-import com.msd.domain.explorer.model.IBaseFile
+import com.msd.domain.explorer.model.FilesResult
 import com.msd.domain.explorer.model.SMBException
 import java.util.EnumSet
 import javax.inject.Inject
-
-private const val ROOT_PATH = ""
 
 class SMBHelper @Inject constructor(private val client: SMBClient) {
 
@@ -47,7 +45,7 @@ class SMBHelper @Inject constructor(private val client: SMBClient) {
         path: String,
         diskShare: DiskShare,
         fileManager: FileManager,
-    ): List<IBaseFile> {
+    ): FilesResult {
         val directory = diskShare.openDirectory(
             path,
             EnumSet.of(AccessMask.FILE_READ_DATA),
@@ -57,9 +55,7 @@ class SMBHelper @Inject constructor(private val client: SMBClient) {
             null
         )
 
-        return directory.list().mapNotNull { file ->
-            file.toBaseFile(server, sharedPath, parentPath = path, fileManager)
-        }
+        return buildFilesResult(diskShare, server, sharedPath, path, directory.list(), fileManager)
     }
 
     fun openFile(diskShare: DiskShare, filePath: String, fileName: String): File {

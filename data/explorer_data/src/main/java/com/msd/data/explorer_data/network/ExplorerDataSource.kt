@@ -4,7 +4,7 @@ import com.hierynomus.mserref.NtStatus
 import com.hierynomus.mssmb2.SMBApiException
 import com.msd.data.explorer_data.tracker.ExplorerTracker
 import com.msd.data.files.FileManager
-import com.msd.domain.explorer.model.IBaseFile
+import com.msd.domain.explorer.model.FilesResult
 import com.msd.domain.explorer.model.SMBException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.yield
@@ -22,13 +22,13 @@ class ExplorerDataSource @Inject constructor(
 ) {
 
     @Throws(Exception::class)
-    suspend fun getFilesAndDirectories(
+    suspend fun getFilesResult(
         server: String,
         sharedPath: String,
         directoryPath: String,
         user: String,
         psw: String
-    ): List<IBaseFile> {
+    ): FilesResult {
         val start = System.currentTimeMillis()
 
         return try {
@@ -38,14 +38,23 @@ class ExplorerDataSource @Inject constructor(
                 user = user,
                 psw = psw
             ) { diskShare ->
-                val files =
+                val filesResult =
                     smbHelper.listFiles(server, sharedPath, directoryPath, diskShare, fileManager)
-                fileManager.cleanFiles(server, sharedPath, directoryPath, files)
+
+                fileManager.cleanFiles(
+                    server,
+                    sharedPath,
+                    directoryPath,
+                    filesResult.filesAndDirectories
+                )
 
                 val openTime = System.currentTimeMillis() - start
-                explorerTracker.logListFilesAndDirectoriesEvent(files.size, openTime)
+                explorerTracker.logListFilesAndDirectoriesEvent(
+                    filesResult.filesAndDirectories.size,
+                    openTime
+                )
 
-                files
+                filesResult
             }
         } catch (exception: Exception) {
             throw handleException(exception)

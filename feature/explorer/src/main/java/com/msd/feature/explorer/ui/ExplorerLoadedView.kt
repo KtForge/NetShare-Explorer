@@ -36,7 +36,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -51,6 +50,7 @@ import com.msd.core.ui.theme.NetworkStorageConfigurationTheme
 import com.msd.domain.explorer.model.IBaseFile
 import com.msd.domain.explorer.model.NetworkDirectory
 import com.msd.domain.explorer.model.NetworkFile
+import com.msd.domain.explorer.model.WorkingDirectory
 import com.msd.domain.smb.model.SMBConfiguration
 import com.msd.feature.explorer.R
 import com.msd.feature.explorer.presenter.ExplorerState
@@ -97,8 +97,13 @@ fun ExplorerLoadedView(loaded: Loaded, userInteractions: UserInteractions) {
                                 .padding(vertical = sizeXXL)
                         ) {
                             when (file) {
-                                is NetworkDirectory -> DirectoryView(directory = file, scope = this)
+                                is NetworkDirectory -> DirectoryView(
+                                    directory = file,
+                                    scope = this
+                                )
+
                                 is NetworkFile -> FileView(scope = this, file, userInteractions)
+                                else -> Unit
                             }
                         }
                     }
@@ -109,7 +114,7 @@ fun ExplorerLoadedView(loaded: Loaded, userInteractions: UserInteractions) {
 }
 
 @Composable
-private fun DirectoryView(directory: IBaseFile, scope: RowScope) {
+private fun DirectoryView(directory: NetworkDirectory, scope: RowScope) {
     with(scope) {
         Icon(
             imageVector = Icons.Outlined.Folder,
@@ -128,7 +133,6 @@ private fun DirectoryView(directory: IBaseFile, scope: RowScope) {
 
 @Composable
 private fun FileView(scope: RowScope, file: NetworkFile, userInteractions: UserInteractions) {
-    val context = LocalContext.current
     var showItemMenu by remember { mutableStateOf(false) }
 
     with(scope) {
@@ -240,12 +244,13 @@ fun ExplorerLoadedPreview() {
             user = "User",
             psw = "Password"
         ),
-        root = "",
+        parentDirectory = null,
+        workingDirectory = WorkingDirectory(".", ""),
         path = "",
         filesOrDirectories = listOf(
-            NetworkDirectory(".", ""),
-            NetworkDirectory("directory 1", ""),
-            NetworkDirectory("directory 2", ""),
+            NetworkDirectory(".", "", ""),
+            NetworkDirectory("directory 1", "", ""),
+            NetworkDirectory("directory 2", "", ""),
             NetworkFile("file 1", "", false),
             NetworkFile("file 2", "", false),
             NetworkFile("file 3", "", true),
@@ -281,12 +286,13 @@ fun ExplorerLoadedErrorDialogPreview() {
             user = "User",
             psw = "Password"
         ),
-        root = "",
+        parentDirectory = null,
+        workingDirectory = WorkingDirectory(".", ""),
         path = "",
         filesOrDirectories = listOf(
-            NetworkDirectory(".", ""),
-            NetworkDirectory("directory 1", ""),
-            NetworkDirectory("directory 2", ""),
+            NetworkDirectory(".", "", ""),
+            NetworkDirectory("directory 1", "", ""),
+            NetworkDirectory("directory 2", "", ""),
             NetworkFile("file 1", "", false),
             NetworkFile("file 2", "", false),
             NetworkFile("file 3", "", true),
@@ -322,12 +328,13 @@ fun ExplorerLoadedDownloadDialogPreview() {
             user = "User",
             psw = "Password"
         ),
-        root = "",
+        parentDirectory = null,
+        workingDirectory = WorkingDirectory(".", ""),
         path = "",
         filesOrDirectories = listOf(
-            NetworkDirectory(".", ""),
-            NetworkDirectory("directory 1", ""),
-            NetworkDirectory("directory 2", ""),
+            NetworkDirectory(".", "", ""),
+            NetworkDirectory("directory 1", "", ""),
+            NetworkDirectory("directory 2", "", ""),
             NetworkFile("file 1", "", false),
             NetworkFile("file 2", "", false),
             NetworkFile("file 3", "", true),

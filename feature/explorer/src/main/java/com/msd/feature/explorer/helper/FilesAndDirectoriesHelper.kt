@@ -4,6 +4,7 @@ import com.msd.domain.explorer.DeleteFileUseCase
 import com.msd.domain.explorer.DownloadFileUseCase
 import com.msd.domain.explorer.GetFilesAndDirectoriesUseCase
 import com.msd.domain.explorer.OpenFileUseCase
+import com.msd.domain.explorer.model.FilesResult
 import com.msd.domain.explorer.model.IBaseFile
 import com.msd.domain.explorer.model.NetworkFile
 import com.msd.domain.smb.model.SMBConfiguration
@@ -25,7 +26,7 @@ class FilesAndDirectoriesHelper @Inject constructor(
     suspend fun getFilesAndDirectories(
         smbConfiguration: SMBConfiguration,
         path: String
-    ): List<IBaseFile> {
+    ): FilesResult {
 
         return getFilesAndDirectoriesUseCase(
             server = smbConfiguration.server,
