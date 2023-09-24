@@ -2,7 +2,6 @@ package com.msd.data.explorer_data.mapper
 
 import com.hierynomus.msfscc.FileAttributes
 import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation
-import com.hierynomus.smbj.share.DiskShare
 import com.msd.data.files.FileManager
 import com.msd.domain.explorer.model.FilesResult
 import com.msd.domain.explorer.model.IBaseFile
@@ -18,7 +17,6 @@ private const val SEPARATOR = "\\"
 object FilesAndDirectoriesMapper {
 
     fun buildFilesResult(
-        diskShare: DiskShare,
         server: String,
         sharedPath: String,
         parentPath: String,
@@ -26,16 +24,21 @@ object FilesAndDirectoriesMapper {
         fileManager: FileManager,
     ): FilesResult {
         val rootPath = "\\\\$server$SEPARATOR$sharedPath"
+
+        val workingDirectoryAbsolutePath = rootPath + parentPath
+
         val parentDirectoryPath = parentPath.substringBeforeLast(SEPARATOR)
         val parentDirectoryAbsolutePath = rootPath + parentDirectoryPath
 
-        val parentDirectory = if (rootPath != parentDirectoryAbsolutePath) {
-            ParentDirectory(parentDirectoryPath, parentDirectoryAbsolutePath)
-        } else {
+        val isParentDirectoryRoot =
+            workingDirectoryAbsolutePath.substringAfterLast(rootPath).isEmpty()
+
+        val parentDirectory = if (isParentDirectoryRoot) {
             null
+        } else {
+            ParentDirectory(parentDirectoryPath, parentDirectoryAbsolutePath)
         }
 
-        val workingDirectoryAbsolutePath = rootPath + parentPath
         val workingDirectory = WorkingDirectory(parentPath, workingDirectoryAbsolutePath)
 
         val filesAndDirectories = files.mapNotNull { file ->
@@ -48,7 +51,7 @@ object FilesAndDirectoriesMapper {
     }
 
     // Generate all structure of files & directories
-    fun FileIdBothDirectoryInformation.toBaseFile(
+    private fun FileIdBothDirectoryInformation.toBaseFile(
         server: String,
         sharedPath: String,
         parentPath: String,

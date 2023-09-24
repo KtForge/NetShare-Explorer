@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.msd.domain.explorer.model.IBaseFile
 import com.msd.domain.explorer.model.NetworkDirectory
 import com.msd.domain.explorer.model.NetworkFile
+import com.msd.domain.explorer.model.ParentDirectory
 import com.msd.domain.explorer.model.SMBException
 import com.msd.domain.smb.GetSMBConfigurationUseCase
 import com.msd.feature.explorer.helper.FilesAndDirectoriesHelper
@@ -79,6 +80,10 @@ class ExplorerPresenter @AssistedInject constructor(
             is NetworkDirectory -> openDirectory(file.path, file.absolutePath)
             is NetworkFile -> openFile(file)
         }
+    }
+
+    override fun onParentDirectoryClicked(parentDirectory: ParentDirectory) {
+        openDirectory(parentDirectory.path, parentDirectory.absolutePath)
     }
 
     private fun openDirectory(relativePath: String, absolutePath: String) {
@@ -259,6 +264,7 @@ class ExplorerPresenter @AssistedInject constructor(
 
 interface UserInteractions {
     fun onItemClicked(file: IBaseFile)
+    fun onParentDirectoryClicked(parentDirectory: ParentDirectory)
     fun onBackPressed()
     fun onNavigateUp()
     fun confirmDialog()

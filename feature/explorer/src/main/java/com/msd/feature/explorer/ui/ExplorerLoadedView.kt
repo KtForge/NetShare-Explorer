@@ -50,6 +50,7 @@ import com.msd.core.ui.theme.NetworkStorageConfigurationTheme
 import com.msd.domain.explorer.model.IBaseFile
 import com.msd.domain.explorer.model.NetworkDirectory
 import com.msd.domain.explorer.model.NetworkFile
+import com.msd.domain.explorer.model.ParentDirectory
 import com.msd.domain.explorer.model.WorkingDirectory
 import com.msd.domain.smb.model.SMBConfiguration
 import com.msd.feature.explorer.R
@@ -75,6 +76,37 @@ fun ExplorerLoadedView(loaded: Loaded, userInteractions: UserInteractions) {
                 .fillMaxSize()
                 .padding(vertical = sizeS)
         ) {
+            if (loaded.parentDirectory != null) {
+                item {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(sizeS)
+                            .clickable { userInteractions.onParentDirectoryClicked(loaded.parentDirectory) },
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                        border = BorderStroke(2.dp, MaterialTheme.colorScheme.surfaceVariant)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = sizeXXL)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Folder,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .padding(horizontal = sizeXL)
+                                    .size(sizeXXXL)
+                            )
+                            Text(
+                                text = "..",
+                                modifier = Modifier.align(Alignment.CenterVertically),
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    }
+                }
+            }
             loaded.filesOrDirectories.forEach { file ->
                 item {
                     val containerColor = if (file is NetworkFile) {
@@ -260,6 +292,7 @@ fun ExplorerLoadedPreview() {
     )
     val userInteractions = object : UserInteractions {
         override fun onItemClicked(file: IBaseFile) = Unit
+        override fun onParentDirectoryClicked(parentDirectory: ParentDirectory) = Unit
         override fun onBackPressed() = Unit
         override fun onNavigateUp() = Unit
         override fun confirmDialog() = Unit
@@ -302,6 +335,7 @@ fun ExplorerLoadedErrorDialogPreview() {
     )
     val userInteractions = object : UserInteractions {
         override fun onItemClicked(file: IBaseFile) = Unit
+        override fun onParentDirectoryClicked(parentDirectory: ParentDirectory) = Unit
         override fun onBackPressed() = Unit
         override fun onNavigateUp() = Unit
         override fun confirmDialog() = Unit
@@ -344,6 +378,7 @@ fun ExplorerLoadedDownloadDialogPreview() {
     )
     val userInteractions = object : UserInteractions {
         override fun onItemClicked(file: IBaseFile) = Unit
+        override fun onParentDirectoryClicked(parentDirectory: ParentDirectory) = Unit
         override fun onBackPressed() = Unit
         override fun onNavigateUp() = Unit
         override fun confirmDialog() = Unit

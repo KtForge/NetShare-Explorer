@@ -55,7 +55,7 @@ class SMBHelper @Inject constructor(private val client: SMBClient) {
             null
         )
 
-        return buildFilesResult(diskShare, server, sharedPath, path, directory.list(), fileManager)
+        return buildFilesResult(server, sharedPath, path, directory.list(), fileManager)
     }
 
     fun openFile(diskShare: DiskShare, filePath: String, fileName: String): File {
