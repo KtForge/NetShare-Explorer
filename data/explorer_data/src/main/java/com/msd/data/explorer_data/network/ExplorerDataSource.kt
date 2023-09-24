@@ -130,16 +130,6 @@ class ExplorerDataSource @Inject constructor(
         }
     }
 
-    fun openFile(localFilePath: String, fileName: String): File {
-        return fileManager.getLocalFile(localFilePath, fileName).also {
-            explorerTracker.logOpenFileEvent(it.length())
-        }
-    }
-
-    fun deleteLocalFile(localFilePath: String, fileName: String) {
-        fileManager.deleteFile(localFilePath, fileName)
-    }
-
     private fun isLocalFileValid(localFile: File, remoteFile: SMBFile): Boolean {
         if (localFile.exists()) {
             val fileLastChangeTime = smbHelper.getModificationTime(remoteFile)
@@ -151,6 +141,17 @@ class ExplorerDataSource @Inject constructor(
         }
 
         return false
+    }
+
+    @Throws(Exception::class)
+    fun openFile(localFilePath: String, fileName: String): File {
+        return fileManager.getLocalFile(localFilePath, fileName).also {
+            explorerTracker.logOpenFileEvent(it.length())
+        }
+    }
+
+    fun deleteLocalFile(localFilePath: String, fileName: String) {
+        fileManager.deleteFile(localFilePath, fileName)
     }
 
     private suspend fun InputStream.copyTo(out: OutputStream) {

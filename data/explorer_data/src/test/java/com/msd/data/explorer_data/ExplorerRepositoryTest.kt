@@ -1,8 +1,11 @@
 package com.msd.data.explorer_data
 
 import com.msd.data.explorer_data.network.ExplorerDataSource
+import com.msd.domain.explorer.model.FilesResult
 import com.msd.domain.explorer.model.NetworkDirectory
 import com.msd.domain.explorer.model.NetworkFile
+import com.msd.domain.explorer.model.ParentDirectory
+import com.msd.domain.explorer.model.WorkingDirectory
 import com.msd.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -20,45 +23,38 @@ class ExplorerRepositoryTest : CoroutineTest() {
 
     @Test
     fun `when retrieving files and directories should return the expected data`() = runTest {
+        val parentDirectory = ParentDirectory("..", "path", "absolutePath")
+        val workingDirectory = WorkingDirectory("path", "absolutePath")
         val filesAndDirectories = listOf(
-            NetworkFile("B", "path"),
-            NetworkFile("A", "path"),
-            NetworkParentDirectory("B", "path"),
-            NetworkParentDirectory("A", "path"),
-            NetworkDirectory("B", "path"),
-            NetworkDirectory("A", "path"),
+            NetworkFile("B", "path", "localPath", isLocal = false),
+            NetworkFile("A", "path", "localPath", isLocal = false),
+            NetworkDirectory("B", "path", "absolutePath"),
+            NetworkDirectory("A", "path", "absolutePath"),
         )
+        val filesResult = FilesResult(parentDirectory, workingDirectory, filesAndDirectories)
         whenever(
-            dataSource.getFilesAndDirectories(
+            dataSource.getFilesResult(
                 server = "Server",
                 sharedPath = "SharedPath",
-                absolutePath = "path",
+                directoryPath = "path",
                 user = "User",
                 psw = "Psw",
             )
-        ).thenReturn(filesAndDirectories)
-        val expectedResult = listOf(
-            NetworkParentDirectory("A", "path"),
-            NetworkParentDirectory("B", "path"),
-            NetworkDirectory("A", "path"),
-            NetworkDirectory("B", "path"),
-            NetworkFile("A", "path"),
-            NetworkFile("B", "path"),
-        )
+        ).thenReturn(filesResult)
 
         val result = repository.retrieveFilesAndDirectories(
             server = "Server",
             sharedPath = "SharedPath",
-            absolutePath = "path",
+            directoryPath = "path",
             user = "User",
             psw = "Psw",
         )
 
-        //assert(result == expectedResult)
-        verify(dataSource).getFilesAndDirectories(
+        assert(result == filesResult)
+        verify(dataSource).getFilesResult(
             server = "Server",
             sharedPath = "SharedPath",
-            absolutePath = "path",
+            directoryPath = "path",
             user = "User",
             psw = "Psw",
         )
@@ -69,10 +65,10 @@ class ExplorerRepositoryTest : CoroutineTest() {
         runTest {
             val expectedException: Exception = mock()
             whenever(
-                dataSource.getFilesAndDirectories(
+                dataSource.getFilesResult(
                     server = "Server",
                     sharedPath = "SharedPath",
-                    absolutePath = "path",
+                    directoryPath = "path",
                     user = "User",
                     psw = "Psw",
                 )
@@ -82,7 +78,7 @@ class ExplorerRepositoryTest : CoroutineTest() {
                 repository.retrieveFilesAndDirectories(
                     server = "Server",
                     sharedPath = "SharedPath",
-                    absolutePath = "path",
+                    directoryPath = "path",
                     user = "User",
                     psw = "Psw",
                 )
@@ -90,10 +86,10 @@ class ExplorerRepositoryTest : CoroutineTest() {
             } catch (exception: Exception) {
                 assert(exception == expectedException)
             }
-            verify(dataSource).getFilesAndDirectories(
+            verify(dataSource).getFilesResult(
                 server = "Server",
                 sharedPath = "SharedPath",
-                absolutePath = "path",
+                directoryPath = "path",
                 user = "User",
                 psw = "Psw",
             )
@@ -103,89 +99,105 @@ class ExplorerRepositoryTest : CoroutineTest() {
     fun `when opening file should return the file`() = runTest {
         val expectedResult: File = mock()
         whenever(
-            dataSource.openFile(
+            dataSource.isLocalFileValid(
                 server = "Server",
                 sharedPath = "SharedPath",
-                absolutePath = "path",
                 fileName = "name",
+                filePath = "path",
+                localFilePath = "localPath",
                 user = "User",
                 psw = "Psw",
             )
-        ).thenReturn(expectedResult)
+        ).thenReturn(true)
+        whenever(dataSource.openFile(fileName = "name", localFilePath = "localPath"))
+            .thenReturn(expectedResult)
 
         val result = repository.openFile(
             server = "Server",
             sharedPath = "SharedPath",
-            absolutePath = "path",
             fileName = "name",
+            filePath = "path",
+            localFilePath = "localPath",
             user = "User",
             psw = "Psw",
         )
 
         assert(result == expectedResult)
-        verify(dataSource).openFile(
+        verify(dataSource).isLocalFileValid(
             server = "Server",
             sharedPath = "SharedPath",
-            absolutePath = "path",
             fileName = "name",
+            filePath = "path",
+            localFilePath = "localPath",
             user = "User",
             psw = "Psw",
         )
+        verify(dataSource).openFile(fileName = "name", localFilePath = "localPath")
     }
 
     @Test
     fun `when opening null file should return null`() = runTest {
         whenever(
-            dataSource.openFile(
+            dataSource.isLocalFileValid(
                 server = "Server",
                 sharedPath = "SharedPath",
-                absolutePath = "path",
                 fileName = "name",
+                filePath = "path",
+                localFilePath = "localPath",
                 user = "User",
                 psw = "Psw",
             )
-        ).thenReturn(null)
+        ).thenReturn(true)
+        whenever(dataSource.openFile(fileName = "name", localFilePath = "localPath"))
+            .thenReturn(null)
 
         val result = repository.openFile(
             server = "Server",
             sharedPath = "SharedPath",
-            absolutePath = "path",
             fileName = "name",
+            filePath = "path",
+            localFilePath = "localPath",
             user = "User",
             psw = "Psw",
         )
 
         assert(result == null)
-        verify(dataSource).openFile(
+        verify(dataSource).isLocalFileValid(
             server = "Server",
             sharedPath = "SharedPath",
-            absolutePath = "path",
             fileName = "name",
+            filePath = "path",
+            localFilePath = "localPath",
             user = "User",
             psw = "Psw",
         )
+        verify(dataSource).openFile(fileName = "name", localFilePath = "localPath")
     }
 
     @Test
     fun `when exception while opening file should throw the exception`() = runTest {
         val expectedException: Exception = mock()
         whenever(
-            dataSource.openFile(
+            dataSource.isLocalFileValid(
                 server = "Server",
                 sharedPath = "SharedPath",
-                absolutePath = "path",
                 fileName = "name",
+                filePath = "path",
+                localFilePath = "localPath",
                 user = "User",
                 psw = "Psw",
             )
-        ).thenThrow(expectedException)
+        ).thenReturn(true)
+        whenever(dataSource.openFile(fileName = "name", localFilePath = "localPath"))
+            .thenThrow(expectedException)
 
         try {
             repository.openFile(
                 server = "Server",
                 sharedPath = "SharedPath",
-                absolutePath = "path",
                 fileName = "name",
+                filePath = "path",
+                localFilePath = "localPath",
                 user = "User",
                 psw = "Psw",
             )
@@ -193,13 +205,15 @@ class ExplorerRepositoryTest : CoroutineTest() {
         } catch (exception: Exception) {
             assert(exception == expectedException)
         }
-        verify(dataSource).openFile(
+        verify(dataSource).isLocalFileValid(
             server = "Server",
             sharedPath = "SharedPath",
-            absolutePath = "path",
             fileName = "name",
+            filePath = "path",
+            localFilePath = "localPath",
             user = "User",
             psw = "Psw",
         )
+        verify(dataSource).openFile(fileName = "name", localFilePath = "localPath")
     }
 }

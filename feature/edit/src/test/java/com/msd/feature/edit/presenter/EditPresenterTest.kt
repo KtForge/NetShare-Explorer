@@ -37,6 +37,7 @@ class EditPresenterTest : CoroutineTest() {
     private val presenter by lazy {
         EditPresenter(
             core,
+            mainCoroutineRule.dispatcher,
             getSMBConfigurationUseCase,
             storeSMBConfigurationUseCase,
             editTracker,
@@ -54,6 +55,7 @@ class EditPresenterTest : CoroutineTest() {
     )
     private val loaded = Loaded(
         smbConfiguration,
+        isPasswordVisible = false,
         actionButtonLabel = R.string.edit_configuration_button,
         serverError = false,
         sharedPathError = false
@@ -91,6 +93,7 @@ class EditPresenterTest : CoroutineTest() {
         verify(core).tryEmit(
             Loaded(
                 emptySmbConfiguration,
+                isPasswordVisible = false,
                 actionButtonLabel = R.string.save_configuration_button,
                 serverError = false,
                 sharedPathError = false

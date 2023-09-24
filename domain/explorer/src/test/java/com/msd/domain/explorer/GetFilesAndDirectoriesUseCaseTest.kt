@@ -1,11 +1,8 @@
 package com.msd.domain.explorer
 
-import com.msd.domain.explorer.GetFilesAndDirectoriesUseCase
-import com.msd.domain.explorer.IExplorerRepository
-import com.msd.domain.explorer.model.IBaseFile
+import com.msd.domain.explorer.model.FilesResult
 import com.msd.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.mockito.kotlin.mock
@@ -21,21 +18,21 @@ class GetFilesAndDirectoriesUseCaseTest : CoroutineTest() {
 
     @Test
     fun `when getting files and directories should invoke the repository`() = runTest {
-        val filesAndDirectories: List<IBaseFile> = mock()
+        val filesResult: FilesResult = mock()
         whenever(
             repository.retrieveFilesAndDirectories(
                 server = "Server",
                 sharedPath = "SharedPath",
-                absolutePath = "path",
+                directoryPath = "path",
                 user = "User",
                 psw = "Psw"
             )
-        ).thenReturn(filesAndDirectories)
+        ).thenReturn(filesResult)
 
         val result = useCase(
             server = "Server",
             sharedPath = "SharedPath",
-            absolutePath = "path",
+            directoryPath = "path",
             user = "User",
             psw = "Psw",
         )
@@ -43,12 +40,12 @@ class GetFilesAndDirectoriesUseCaseTest : CoroutineTest() {
         verify(repository).retrieveFilesAndDirectories(
             server = "Server",
             sharedPath = "SharedPath",
-            absolutePath = "path",
+            directoryPath = "path",
             user = "User",
             psw = "Psw"
         )
         verifyNoMoreInteractions(repository)
-        assert(result == filesAndDirectories)
+        assert(result == filesResult)
     }
 
     @Test
@@ -58,7 +55,7 @@ class GetFilesAndDirectoriesUseCaseTest : CoroutineTest() {
             repository.retrieveFilesAndDirectories(
                 server = "Server",
                 sharedPath = "SharedPath",
-                absolutePath = "path",
+                directoryPath = "path",
                 user = "User",
                 psw = "Psw"
             )
@@ -68,7 +65,7 @@ class GetFilesAndDirectoriesUseCaseTest : CoroutineTest() {
             useCase(
                 server = "Server",
                 sharedPath = "SharedPath",
-                absolutePath = "path",
+                directoryPath = "path",
                 user = "User",
                 psw = "Psw",
             )
@@ -79,7 +76,7 @@ class GetFilesAndDirectoriesUseCaseTest : CoroutineTest() {
         verify(repository).retrieveFilesAndDirectories(
             server = "Server",
             sharedPath = "SharedPath",
-            absolutePath = "path",
+            directoryPath = "path",
             user = "User",
             psw = "Psw"
         )

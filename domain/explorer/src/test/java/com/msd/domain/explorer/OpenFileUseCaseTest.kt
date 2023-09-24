@@ -23,8 +23,9 @@ class OpenFileUseCaseTest : CoroutineTest() {
             repository.openFile(
                 server = "Server",
                 sharedPath = "SharedPath",
-                absolutePath = "path",
                 fileName = "file",
+                filePath = "path",
+                localFilePath = "localPath",
                 user = "User",
                 psw = "Psw",
             )
@@ -33,8 +34,9 @@ class OpenFileUseCaseTest : CoroutineTest() {
         val result = useCase(
             server = "Server",
             sharedPath = "SharedPath",
-            absolutePath = "path",
             fileName = "file",
+            filePath = "path",
+            localFilePath = "localPath",
             user = "User",
             psw = "Psw",
         )
@@ -43,8 +45,9 @@ class OpenFileUseCaseTest : CoroutineTest() {
         verify(repository).openFile(
             server = "Server",
             sharedPath = "SharedPath",
-            absolutePath = "path",
             fileName = "file",
+            filePath = "path",
+            localFilePath = "localPath",
             user = "User",
             psw = "Psw",
         )
@@ -58,8 +61,9 @@ class OpenFileUseCaseTest : CoroutineTest() {
             repository.openFile(
                 server = "Server",
                 sharedPath = "SharedPath",
-                absolutePath = "path",
                 fileName = "file",
+                filePath = "path",
+                localFilePath = "localPath",
                 user = "User",
                 psw = "Psw",
             )
@@ -69,8 +73,9 @@ class OpenFileUseCaseTest : CoroutineTest() {
             useCase(
                 server = "Server",
                 sharedPath = "SharedPath",
-                absolutePath = "path",
                 fileName = "file",
+                filePath = "path",
+                localFilePath = "localPath",
                 user = "User",
                 psw = "Psw",
             )
@@ -82,8 +87,9 @@ class OpenFileUseCaseTest : CoroutineTest() {
         verify(repository).openFile(
             server = "Server",
             sharedPath = "SharedPath",
-            absolutePath = "path",
             fileName = "file",
+            filePath = "path",
+            localFilePath = "localPath",
             user = "User",
             psw = "Psw",
         )

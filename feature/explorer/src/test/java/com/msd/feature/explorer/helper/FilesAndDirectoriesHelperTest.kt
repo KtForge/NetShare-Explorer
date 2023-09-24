@@ -1,9 +1,10 @@
 package com.msd.feature.explorer.helper
 
 import com.msd.domain.explorer.DeleteFileUseCase
+import com.msd.domain.explorer.DownloadFileUseCase
 import com.msd.domain.explorer.GetFilesAndDirectoriesUseCase
 import com.msd.domain.explorer.OpenFileUseCase
-import com.msd.domain.explorer.model.NetworkDirectory
+import com.msd.domain.explorer.model.FilesResult
 import com.msd.domain.explorer.model.NetworkFile
 import com.msd.domain.explorer.model.SMBException
 import com.msd.domain.smb.model.SMBConfiguration
@@ -20,10 +21,13 @@ import java.io.File
 class FilesAndDirectoriesHelperTest : CoroutineTest() {
 
     private val getFilesAndDirectoriesUseCase: GetFilesAndDirectoriesUseCase = mock()
+    private val downloadFileUseCase: DownloadFileUseCase = mock()
     private val openFileUseCase: OpenFileUseCase = mock()
     private val deleteFileUseCase: DeleteFileUseCase = mock()
+
     private val helper = FilesAndDirectoriesHelper(
         getFilesAndDirectoriesUseCase,
+        downloadFileUseCase,
         openFileUseCase,
         deleteFileUseCase
     )
@@ -36,23 +40,11 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
         user = "User",
         psw = "Psw",
     )
-    private val file = NetworkFile("File", "path", isLocal = false)
-
-    @Test
-    fun `when getting root path should return the expected String`() {
-        val expectedResult = "\\\\Server\\SharedPath"
-
-        val result = helper.getRootPath(smbConfiguration)
-
-        assert(result == expectedResult)
-    }
+    private val file = NetworkFile("File", "path", "localPath", isLocal = false)
 
     @Test
     fun `when getting files and directories should return the expected list`() = runTest {
-        val expectedResult = listOf(
-            NetworkFile("File", "path", isLocal = false),
-            NetworkDirectory("Directory", "path")
-        )
+        val expectedResult: FilesResult = mock()
         whenever(
             getFilesAndDirectoriesUseCase.invoke(
                 "Server",
@@ -65,9 +57,7 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
 
         val result = helper.getFilesAndDirectories(smbConfiguration, path = "path")
 
-        assert(result.size == expectedResult.size)
-        assert(result.first() == expectedResult.first())
-        assert(result.last() == expectedResult.last())
+        assert(result == expectedResult)
         verify(getFilesAndDirectoriesUseCase).invoke(
             "Server",
             "SharedPath",
@@ -171,21 +161,23 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
             openFileUseCase.invoke(
                 "Server",
                 "SharedPath",
-                "path",
                 "File",
+                "path",
+                "localPath",
                 "User",
                 "Psw",
             )
         ).thenReturn(expectedResult)
 
-        val result = helper.openFile(smbConfiguration, file, path = "path")
+        val result = helper.openFile(smbConfiguration, file)
 
         assert(result == expectedResult)
         verify(openFileUseCase).invoke(
             "Server",
             "SharedPath",
-            "path",
             "File",
+            "path",
+            "localPath",
             "User",
             "Psw",
         )
@@ -197,21 +189,23 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
             openFileUseCase.invoke(
                 "Server",
                 "SharedPath",
-                "path",
                 "File",
+                "path",
+                "localPath",
                 "User",
                 "Psw",
             )
         ).thenReturn(null)
 
-        val result = helper.openFile(smbConfiguration, file, path = "path")
+        val result = helper.openFile(smbConfiguration, file)
 
         assert(result == null)
         verify(openFileUseCase).invoke(
             "Server",
             "SharedPath",
-            "path",
             "File",
+            "path",
+            "localPath",
             "User",
             "Psw",
         )
@@ -224,15 +218,16 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
             openFileUseCase.invoke(
                 "Server",
                 "SharedPath",
-                "path",
                 "File",
+                "path",
+                "localPath",
                 "User",
                 "Psw",
             )
         ).thenThrow(expectedException)
 
         try {
-            helper.openFile(smbConfiguration, file, path = "path")
+            helper.openFile(smbConfiguration, file)
             assert(false)
         } catch (exception: Exception) {
             assert(exception == expectedException)
@@ -246,15 +241,16 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
             openFileUseCase.invoke(
                 "Server",
                 "SharedPath",
-                "path",
                 "File",
+                "path",
+                "localPath",
                 "User",
                 "Psw",
             )
         ).thenThrow(expectedException)
 
         try {
-            helper.openFile(smbConfiguration, file, path = "path")
+            helper.openFile(smbConfiguration, file)
             assert(false)
         } catch (exception: Exception) {
             assert(exception == expectedException)
@@ -268,15 +264,16 @@ class FilesAndDirectoriesHelperTest : CoroutineTest() {
             openFileUseCase.invoke(
                 "Server",
                 "SharedPath",
-                "path",
                 "File",
+                "path",
+                "localPath",
                 "User",
                 "Psw",
             )
         ).thenThrow(expectedException)
 
         try {
-            helper.openFile(smbConfiguration, file, path = "path")
+            helper.openFile(smbConfiguration, file)
             assert(false)
         } catch (exception: Exception) {
             assert(exception == expectedException)
