@@ -15,7 +15,4 @@ sealed interface EditState : State {
         val serverError: Boolean,
         val sharedPathError: Boolean,
     ) : EditState
-
-    override fun isUninitialized(): Boolean = this != Uninitialized
-    override fun initialState(): State = Uninitialized
 }

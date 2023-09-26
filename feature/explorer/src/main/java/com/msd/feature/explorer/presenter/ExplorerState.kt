@@ -50,7 +50,4 @@ sealed class ExplorerState(open val name: String, open val path: String) : State
             override val path: String
         ) : Error(name, path, R.string.connection_error_message)
     }
-
-    override fun isUninitialized(): Boolean = this == initialState()
-    override fun initialState(): State = Uninitialized(name = "", path = "")
 }

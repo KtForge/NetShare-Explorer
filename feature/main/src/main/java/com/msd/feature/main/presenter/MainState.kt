@@ -12,7 +12,4 @@ sealed interface MainState : State {
         val smbConfigurations: List<SMBConfiguration>,
         val smbConfigurationItemIdToDelete: Int?,
     ) : MainState
-
-    override fun isUninitialized(): Boolean = this != Uninitialized
-    override fun initialState(): State = Uninitialized
 }

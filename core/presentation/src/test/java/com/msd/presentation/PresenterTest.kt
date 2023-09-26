@@ -17,9 +17,6 @@ class PresenterTest {
     sealed interface TestState : State {
         object State1 : TestState
         object State2 : TestState
-
-        override fun isUninitialized(): Boolean = this == State1
-        override fun initialState(): State = State1
     }
     private val core: IPresenterCore<TestState> = mock()
     private val presenter = object : Presenter<TestState>(core) {}

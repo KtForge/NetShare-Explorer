@@ -1,6 +1,5 @@
 package com.msd.data.explorer_data.tracker
 
-import androidx.core.os.bundleOf
 import com.msd.core.tracking.Constants
 import com.msd.core.tracking.EventsTracker
 import javax.inject.Inject
@@ -8,7 +7,7 @@ import javax.inject.Inject
 class ExplorerTracker @Inject constructor(private val eventsTracker: EventsTracker) {
 
     fun logListFilesAndDirectoriesEvent(filesNumber: Int, openTime: Long) {
-        val parameters = bundleOf(
+        val parameters = mapOf(
             Constants.FILES_NUMBER to filesNumber,
             Constants.OPEN_TIME to getReadableTime(openTime)
         )
@@ -19,7 +18,7 @@ class ExplorerTracker @Inject constructor(private val eventsTracker: EventsTrack
     fun logOpenFileEvent(fileSize: Long) {
         val readableFileSize = fileSize.toDouble().div(1000000)
 
-        val parameters = bundleOf(Constants.FILE_SIZE to readableFileSize)
+        val parameters = mapOf(Constants.FILE_SIZE to readableFileSize)
 
         eventsTracker.logEvent(Constants.OPEN_FILE_EVENT, parameters)
     }
@@ -27,7 +26,7 @@ class ExplorerTracker @Inject constructor(private val eventsTracker: EventsTrack
     fun logDownloadFile(fileSize: Long, openTime: Long) {
         val readableFileSize = fileSize.toDouble().div(1000000)
 
-        val parameters = bundleOf(
+        val parameters = mapOf(
             Constants.FILE_SIZE to readableFileSize,
             Constants.OPEN_TIME to getReadableTime(openTime)
         )

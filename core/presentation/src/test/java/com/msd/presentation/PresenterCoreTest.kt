@@ -16,9 +16,6 @@ class PresenterCoreTest : CoroutineTest() {
     sealed interface TestState : State {
         object State1 : TestState
         object State2 : TestState
-
-        override fun isUninitialized(): Boolean = this == State1
-        override fun initialState(): State = State1
     }
 
     private val core = PresenterCore<TestState>(State1)

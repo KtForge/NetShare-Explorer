@@ -19,7 +19,6 @@ import com.msd.presentation.IoDispatcher
 import com.msd.presentation.Presenter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
