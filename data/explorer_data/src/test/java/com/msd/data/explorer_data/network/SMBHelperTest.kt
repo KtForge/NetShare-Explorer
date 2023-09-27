@@ -29,6 +29,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
+import java.io.InputStream
 import java.util.EnumSet
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -142,36 +143,6 @@ class SMBHelperTest : CoroutineTest() {
     }
 
     @Test
-    fun `when opening file should return the expected result`() {
-        val expectedResult: File = mock()
-        whenever(
-            diskShare.openFile(
-                "filePath/name",
-                EnumSet.of(AccessMask.MAXIMUM_ALLOWED),
-                null,
-                SMB2ShareAccess.ALL,
-                SMB2CreateDisposition.FILE_OPEN,
-                null
-            )
-        ).thenReturn(expectedResult)
-
-        val result = helper.openFile(diskShare, filePath = "filePath", fileName = "name")
-
-        assert(result == expectedResult)
-        verify(diskShare).openFile(
-            "filePath/name",
-            EnumSet.of(AccessMask.MAXIMUM_ALLOWED),
-            null,
-            SMB2ShareAccess.ALL,
-            SMB2CreateDisposition.FILE_OPEN,
-            null
-        )
-        verifyNoMoreInteractions(diskShare)
-        verifyNoInteractions(filesAndDirectoriesMapper)
-        verifyNoInteractions(smbClient)
-    }
-
-    @Test
     fun `when getting file size should return the expected result`() {
         val expectedResult = 10L
         val standardInformation: FileStandardInformation = mock {
@@ -183,10 +154,29 @@ class SMBHelperTest : CoroutineTest() {
         val file: File = mock {
             on { this.fileInformation } doReturn fileInformation
         }
+        whenever(
+            diskShare.openFile(
+                "filePath/name",
+                EnumSet.of(AccessMask.MAXIMUM_ALLOWED),
+                null,
+                SMB2ShareAccess.ALL,
+                SMB2CreateDisposition.FILE_OPEN,
+                null
+            )
+        ).thenReturn(file)
 
-        val result = helper.getFileSize(file)
+        val result = helper.getFileSize(diskShare, "filePath", "name")
 
         assert(result == expectedResult)
+        verify(diskShare).openFile(
+            "filePath/name",
+            EnumSet.of(AccessMask.MAXIMUM_ALLOWED),
+            null,
+            SMB2ShareAccess.ALL,
+            SMB2CreateDisposition.FILE_OPEN,
+            null
+        )
+        verifyNoMoreInteractions(diskShare)
         verify(file).fileInformation
         verifyNoMoreInteractions(file)
         verify(fileInformation).standardInformation
@@ -212,10 +202,29 @@ class SMBHelperTest : CoroutineTest() {
         val file: File = mock {
             on { this.fileInformation } doReturn fileInformation
         }
+        whenever(
+            diskShare.openFile(
+                "filePath/name",
+                EnumSet.of(AccessMask.MAXIMUM_ALLOWED),
+                null,
+                SMB2ShareAccess.ALL,
+                SMB2CreateDisposition.FILE_OPEN,
+                null
+            )
+        ).thenReturn(file)
 
-        val result = helper.getModificationTime(file)
+        val result = helper.getModificationTime(diskShare, "filePath", "name")
 
         assert(result == expectedResult)
+        verify(diskShare).openFile(
+            "filePath/name",
+            EnumSet.of(AccessMask.MAXIMUM_ALLOWED),
+            null,
+            SMB2ShareAccess.ALL,
+            SMB2CreateDisposition.FILE_OPEN,
+            null
+        )
+        verifyNoMoreInteractions(diskShare)
         verify(file).fileInformation
         verifyNoMoreInteractions(file)
         verify(fileInformation).basicInformation
@@ -224,6 +233,41 @@ class SMBHelperTest : CoroutineTest() {
         verifyNoMoreInteractions(basicInformation)
         verify(fileTime).toEpochMillis()
         verifyNoMoreInteractions(fileTime)
+        verifyNoInteractions(filesAndDirectoriesMapper)
+        verifyNoInteractions(smbClient)
+    }
+
+    @Test
+    fun `when getting file input stream should return the expected result`() {
+        val expectedResult: InputStream = mock()
+        val file: File = mock {
+            on { inputStream } doReturn expectedResult
+        }
+        whenever(
+            diskShare.openFile(
+                "filePath/name",
+                EnumSet.of(AccessMask.MAXIMUM_ALLOWED),
+                null,
+                SMB2ShareAccess.ALL,
+                SMB2CreateDisposition.FILE_OPEN,
+                null
+            )
+        ).thenReturn(file)
+
+        val result = helper.getInputStream(diskShare, "filePath", "name")
+
+        assert(result == expectedResult)
+        verify(diskShare).openFile(
+            "filePath/name",
+            EnumSet.of(AccessMask.MAXIMUM_ALLOWED),
+            null,
+            SMB2ShareAccess.ALL,
+            SMB2CreateDisposition.FILE_OPEN,
+            null
+        )
+        verifyNoMoreInteractions(diskShare)
+        verify(file).inputStream
+        verifyNoMoreInteractions(file)
         verifyNoInteractions(filesAndDirectoriesMapper)
         verifyNoInteractions(smbClient)
     }

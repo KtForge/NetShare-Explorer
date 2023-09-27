@@ -13,7 +13,6 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.net.SocketTimeoutException
 import javax.inject.Inject
-import com.hierynomus.smbj.share.File as SMBFile
 
 class ExplorerDataSource @Inject constructor(
     private val smbHelper: SMBHelper,
@@ -80,14 +79,13 @@ class ExplorerDataSource @Inject constructor(
                 user = user,
                 psw = psw
             ) { diskShare ->
-                val remoteFile = smbHelper.openFile(diskShare, filePath, fileName)
-
                 fileManager.makeDirectoriesForNewFile(server, sharedPath, filePath)
                 val localFile = fileManager.getLocalFile(localFilePath, fileName)
 
-                val fileSize = smbHelper.getFileSize(remoteFile)
+                val fileSize = smbHelper.getFileSize(diskShare, filePath, fileName)
 
-                remoteFile.inputStream.copyTo(localFile.outputStream())
+                smbHelper.getInputStream(diskShare, filePath, fileName)
+                    .copyTo(localFile.outputStream())
 
                 val openTime = System.currentTimeMillis() - start
                 explorerTracker.logDownloadFile(fileSize, openTime)
@@ -120,27 +118,23 @@ class ExplorerDataSource @Inject constructor(
                 user = user,
                 psw = psw
             ) { diskShare ->
-                val remoteFile = smbHelper.openFile(diskShare, filePath, fileName)
                 val localFile = fileManager.getLocalFile(localFilePath, fileName)
 
-                isLocalFileValid(localFile, remoteFile)
+                if (localFile.exists()) {
+                    val fileLastChangeTime =
+                        smbHelper.getModificationTime(diskShare, filePath, fileName)
+                    val localFileCreationTime = fileManager.getCreationTimeMillis(localFile)
+
+                    if (localFileCreationTime > fileLastChangeTime) {
+                        return@onConnection true
+                    }
+                }
+
+                return@onConnection false
             }
         } catch (exception: Exception) {
             throw handleException(exception)
         }
-    }
-
-    private fun isLocalFileValid(localFile: File, remoteFile: SMBFile): Boolean {
-        if (localFile.exists()) {
-            val fileLastChangeTime = smbHelper.getModificationTime(remoteFile)
-            val localFileCreationTime = fileManager.getCreationTimeMillis(localFile)
-
-            if (localFileCreationTime > fileLastChangeTime) {
-                return true
-            }
-        }
-
-        return false
     }
 
     @Throws(Exception::class)

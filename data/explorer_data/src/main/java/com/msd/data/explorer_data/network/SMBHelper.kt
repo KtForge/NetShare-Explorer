@@ -7,11 +7,11 @@ import com.hierynomus.smbj.SMBClient
 import com.hierynomus.smbj.auth.AuthenticationContext
 import com.hierynomus.smbj.share.DiskShare
 import com.hierynomus.smbj.share.File
-import com.msd.data.explorer_data.mapper.FilesAndDirectoriesMapper.buildFilesResult
 import com.msd.data.explorer_data.mapper.IFilesAndDirectoriesMapper
 import com.msd.data.files.FileManager
 import com.msd.domain.explorer.model.FilesResult
 import com.msd.domain.explorer.model.SMBException
+import java.io.InputStream
 import java.util.EnumSet
 import javax.inject.Inject
 
@@ -68,7 +68,25 @@ class SMBHelper @Inject constructor(
         )
     }
 
-    fun openFile(diskShare: DiskShare, filePath: String, fileName: String): File {
+    fun getFileSize(diskShare: DiskShare, filePath: String, fileName: String): Long {
+        val file = openFile(diskShare, filePath, fileName)
+
+        return file.fileInformation.standardInformation.endOfFile
+    }
+
+    fun getModificationTime(diskShare: DiskShare, filePath: String, fileName: String): Long {
+        val file = openFile(diskShare, filePath, fileName)
+
+        return file.fileInformation.basicInformation.changeTime.toEpochMillis()
+    }
+
+    fun getInputStream(diskShare: DiskShare, filePath: String, fileName: String): InputStream {
+        val file = openFile(diskShare, filePath, fileName)
+
+        return file.inputStream
+    }
+
+    private fun openFile(diskShare: DiskShare, filePath: String, fileName: String): File {
         return diskShare.openFile(
             "$filePath/$fileName",
             EnumSet.of(AccessMask.MAXIMUM_ALLOWED),
@@ -77,11 +95,5 @@ class SMBHelper @Inject constructor(
             SMB2CreateDisposition.FILE_OPEN,
             null
         )
-    }
-
-    fun getFileSize(file: File): Long = file.fileInformation.standardInformation.endOfFile
-
-    fun getModificationTime(file: File): Long {
-        return file.fileInformation.basicInformation.changeTime.toEpochMillis()
     }
 }
