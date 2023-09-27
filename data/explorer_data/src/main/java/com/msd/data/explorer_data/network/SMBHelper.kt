@@ -8,13 +8,17 @@ import com.hierynomus.smbj.auth.AuthenticationContext
 import com.hierynomus.smbj.share.DiskShare
 import com.hierynomus.smbj.share.File
 import com.msd.data.explorer_data.mapper.FilesAndDirectoriesMapper.buildFilesResult
+import com.msd.data.explorer_data.mapper.IFilesAndDirectoriesMapper
 import com.msd.data.files.FileManager
 import com.msd.domain.explorer.model.FilesResult
 import com.msd.domain.explorer.model.SMBException
 import java.util.EnumSet
 import javax.inject.Inject
 
-class SMBHelper @Inject constructor(private val client: SMBClient) {
+class SMBHelper @Inject constructor(
+    private val client: SMBClient,
+    private val filesAndDirectoriesMapper: IFilesAndDirectoriesMapper
+) {
 
     suspend fun <T : Any> onConnection(
         server: String,
@@ -55,7 +59,13 @@ class SMBHelper @Inject constructor(private val client: SMBClient) {
             null
         )
 
-        return buildFilesResult(server, sharedPath, path, directory.list(), fileManager)
+        return filesAndDirectoriesMapper.buildFilesResult(
+            server,
+            sharedPath,
+            path,
+            directory.list(),
+            fileManager
+        )
     }
 
     fun openFile(diskShare: DiskShare, filePath: String, fileName: String): File {

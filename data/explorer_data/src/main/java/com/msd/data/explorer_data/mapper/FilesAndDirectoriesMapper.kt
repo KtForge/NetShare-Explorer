@@ -14,9 +14,9 @@ private const val DOT_DIRECTORY = "."
 private const val DOUBLE_DOT_DIRECTORY = ".."
 private const val SEPARATOR = "\\"
 
-object FilesAndDirectoriesMapper {
+object FilesAndDirectoriesMapper : IFilesAndDirectoriesMapper {
 
-    fun buildFilesResult(
+    override fun buildFilesResult(
         server: String,
         sharedPath: String,
         parentPath: String,
