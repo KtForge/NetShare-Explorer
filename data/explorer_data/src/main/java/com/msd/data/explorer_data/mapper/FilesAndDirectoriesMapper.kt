@@ -61,7 +61,7 @@ object FilesAndDirectoriesMapper : IFilesAndDirectoriesMapper {
 
         return if (fileAttributes == FileAttributes.FILE_ATTRIBUTE_DIRECTORY.value) {
             val path = parentPath + SEPARATOR + fileName
-            val absolutePath = "\\\\$server$SEPARATOR$sharedPath$SEPARATOR$parentPath$fileName"
+            val absolutePath = "\\\\$server$SEPARATOR$sharedPath$parentPath$SEPARATOR$fileName"
 
             NetworkDirectory(fileName, path, absolutePath = absolutePath)
         } else {

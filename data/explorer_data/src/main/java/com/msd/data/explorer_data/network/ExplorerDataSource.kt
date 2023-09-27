@@ -1,17 +1,12 @@
 package com.msd.data.explorer_data.network
 
-import com.hierynomus.mserref.NtStatus
-import com.hierynomus.mssmb2.SMBApiException
 import com.msd.data.explorer_data.tracker.ExplorerTracker
 import com.msd.data.files.FileManager
 import com.msd.domain.explorer.model.FilesResult
-import com.msd.domain.explorer.model.SMBException
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.yield
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
-import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 class ExplorerDataSource @Inject constructor(
@@ -56,7 +51,7 @@ class ExplorerDataSource @Inject constructor(
                 filesResult
             }
         } catch (exception: Exception) {
-            throw handleException(exception)
+            throw exception
         }
     }
 
@@ -97,7 +92,7 @@ class ExplorerDataSource @Inject constructor(
                 localFile.delete()
             }
 
-            throw handleException(exception)
+            throw exception
         }
     }
 
@@ -133,7 +128,7 @@ class ExplorerDataSource @Inject constructor(
                 return@onConnection false
             }
         } catch (exception: Exception) {
-            throw handleException(exception)
+            throw exception
         }
     }
 
@@ -159,21 +154,6 @@ class ExplorerDataSource @Inject constructor(
             bytesCopied += bytes
             // progressListener(bytesCopied.toFloat().div(fileSize))
             bytes = read(buffer)
-        }
-    }
-
-    private fun handleException(exception: Exception): Throwable {
-        return when (exception) {
-            is SocketTimeoutException -> SMBException.ConnectionError
-            is SMBApiException -> {
-                when (exception.status) {
-                    NtStatus.STATUS_ACCESS_DENIED -> SMBException.AccessDenied
-                    else -> SMBException.UnknownError
-                }
-            }
-
-            is CancellationException -> SMBException.CancelException
-            else -> SMBException.UnknownError
         }
     }
 }

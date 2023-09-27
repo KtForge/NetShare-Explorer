@@ -3,13 +3,20 @@ package com.msd.data.explorer_data.network
 import com.msd.data.explorer_data.tracker.ExplorerTracker
 import com.msd.data.files.FileManager
 import com.msd.domain.explorer.model.FilesResult
+import com.msd.domain.explorer.model.SMBException
 import com.msd.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.doThrow
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
+import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
+import java.io.File
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ExplorerDataSourceTest : CoroutineTest() {
@@ -31,5 +38,213 @@ class ExplorerDataSourceTest : CoroutineTest() {
         val result = dataSource.getFilesResult(server, sharedPath, "", "", "")
 
         assert(result == expectedResult)
+        verify(smbHelper).onConnection<FilesResult>(any(), any(), any(), any(), any())
+        verifyNoMoreInteractions(smbHelper)
+        verifyNoInteractions(fileManager)
+    }
+
+    @Test
+    fun `when connection error while retrieving files and directories should return the expected data`() =
+        runTest {
+            val expectedException = SMBException.ConnectionError
+            whenever(smbHelper.onConnection<FilesResult>(any(), any(), any(), any(), any()))
+                .thenThrow(expectedException)
+
+            try {
+                dataSource.getFilesResult(server, sharedPath, "", "", "")
+                assert(false)
+            } catch (exception: Exception) {
+                assert(exception == expectedException)
+            }
+
+            verify(smbHelper).onConnection<FilesResult>(any(), any(), any(), any(), any())
+            verifyNoMoreInteractions(smbHelper)
+            verifyNoInteractions(fileManager)
+        }
+
+    @Test
+    fun `when access error while retrieving files and directories should return the expected data`() =
+        runTest {
+            val expectedException = SMBException.AccessDenied
+            whenever(smbHelper.onConnection<FilesResult>(any(), any(), any(), any(), any()))
+                .thenThrow(expectedException)
+
+            try {
+                dataSource.getFilesResult(server, sharedPath, "", "", "")
+                assert(false)
+            } catch (exception: Exception) {
+                assert(exception == expectedException)
+            }
+
+            verify(smbHelper).onConnection<FilesResult>(any(), any(), any(), any(), any())
+            verifyNoMoreInteractions(smbHelper)
+            verifyNoInteractions(fileManager)
+        }
+
+    @Test
+    fun `when cancellation error while retrieving files and directories should return the expected data`() =
+        runTest {
+            val expectedException = SMBException.CancelException
+            whenever(smbHelper.onConnection<FilesResult>(any(), any(), any(), any(), any()))
+                .thenThrow(expectedException)
+
+            try {
+                dataSource.getFilesResult(server, sharedPath, "", "", "")
+                assert(false)
+            } catch (exception: Exception) {
+                assert(exception == expectedException)
+            }
+
+            verify(smbHelper).onConnection<FilesResult>(any(), any(), any(), any(), any())
+            verifyNoMoreInteractions(smbHelper)
+            verifyNoInteractions(fileManager)
+        }
+
+    @Test
+    fun `when unknown error while retrieving files and directories should return the expected data`() =
+        runTest {
+            val expectedException = SMBException.UnknownError
+            whenever(smbHelper.onConnection<FilesResult>(any(), any(), any(), any(), any()))
+                .thenThrow(expectedException)
+
+            try {
+                dataSource.getFilesResult(server, sharedPath, "", "", "")
+                assert(false)
+            } catch (exception: Exception) {
+                assert(exception == expectedException)
+            }
+
+            verify(smbHelper).onConnection<FilesResult>(any(), any(), any(), any(), any())
+            verifyNoMoreInteractions(smbHelper)
+            verifyNoInteractions(fileManager)
+        }
+
+    @Test
+    fun `when downloading file should invoke the expected function`() = runTest {
+        dataSource.downloadFile(server, sharedPath, "", "", "", "", "")
+
+        verify(smbHelper).onConnection<Unit>(any(), any(), any(), any(), any())
+        verifyNoMoreInteractions(smbHelper)
+        verifyNoInteractions(fileManager)
+    }
+
+    @Test
+    fun `when exception while downloading file should delete the local file`() = runTest {
+        val expectedException = Exception()
+        doThrow(expectedException).whenever(smbHelper)
+            .onConnection<Unit>(any(), any(), any(), any(), any())
+        val file: File = mock {
+            on { exists() } doReturn true
+            on { delete() } doReturn true
+        }
+        whenever(fileManager.getLocalFile("", "")).thenReturn(file)
+
+        try {
+            dataSource.downloadFile(server, sharedPath, "", "", "", "", "")
+            assert(false)
+        } catch (exception: Exception) {
+            assert(exception == expectedException)
+        }
+
+        verify(smbHelper).onConnection<Unit>(any(), any(), any(), any(), any())
+        verifyNoMoreInteractions(smbHelper)
+        verify(fileManager).getLocalFile("", "")
+        verifyNoMoreInteractions(fileManager)
+        verify(file).exists()
+        verify(file).delete()
+        verifyNoMoreInteractions(file)
+    }
+
+    @Test
+    fun `when connection error while downloading file should return the exception`() = runTest {
+        val expectedException = SMBException.ConnectionError
+        doThrow(expectedException).whenever(smbHelper)
+            .onConnection<Unit>(any(), any(), any(), any(), any())
+        val file: File = mock {
+            on { exists() } doReturn false
+        }
+        whenever(fileManager.getLocalFile("", "")).thenReturn(file)
+
+        try {
+            dataSource.downloadFile(server, sharedPath, "", "", "", "", "")
+            assert(false)
+        } catch (exception: Exception) {
+            assert(exception == expectedException)
+        }
+
+        verify(smbHelper).onConnection<Unit>(any(), any(), any(), any(), any())
+        verifyNoMoreInteractions(smbHelper)
+        verify(fileManager).getLocalFile("", "")
+        verifyNoMoreInteractions(fileManager)
+    }
+
+    @Test
+    fun `when access error while downloading file should return the exception`() = runTest {
+        val expectedException = SMBException.AccessDenied
+        doThrow(expectedException).whenever(smbHelper)
+            .onConnection<Unit>(any(), any(), any(), any(), any())
+        val file: File = mock {
+            on { exists() } doReturn false
+        }
+        whenever(fileManager.getLocalFile("", "")).thenReturn(file)
+
+        try {
+            dataSource.downloadFile(server, sharedPath, "", "", "", "", "")
+            assert(false)
+        } catch (exception: Exception) {
+            assert(exception == expectedException)
+        }
+
+        verify(smbHelper).onConnection<Unit>(any(), any(), any(), any(), any())
+        verifyNoMoreInteractions(smbHelper)
+        verify(fileManager).getLocalFile("", "")
+        verifyNoMoreInteractions(fileManager)
+    }
+
+    @Test
+    fun `when cancellation error while downloading file should return the exception`() =
+        runTest {
+            val expectedException = SMBException.CancelException
+            doThrow(expectedException).whenever(smbHelper)
+                .onConnection<Unit>(any(), any(), any(), any(), any())
+            val file: File = mock {
+                on { exists() } doReturn false
+            }
+            whenever(fileManager.getLocalFile("", "")).thenReturn(file)
+
+            try {
+                dataSource.downloadFile(server, sharedPath, "", "", "", "", "")
+                assert(false)
+            } catch (exception: Exception) {
+                assert(exception == expectedException)
+            }
+
+            verify(smbHelper).onConnection<Unit>(any(), any(), any(), any(), any())
+            verifyNoMoreInteractions(smbHelper)
+            verify(fileManager).getLocalFile("", "")
+            verifyNoMoreInteractions(fileManager)
+        }
+
+    @Test
+    fun `when unknown error while downloading file should return the exception`() = runTest {
+        val expectedException = SMBException.UnknownError
+        doThrow(expectedException).whenever(smbHelper)
+            .onConnection<Unit>(any(), any(), any(), any(), any())
+        val file: File = mock {
+            on { exists() } doReturn false
+        }
+        whenever(fileManager.getLocalFile("", "")).thenReturn(file)
+
+        try {
+            dataSource.downloadFile(server, sharedPath, "", "", "", "", "")
+            assert(false)
+        } catch (exception: Exception) {
+            assert(exception == expectedException)
+        }
+
+        verify(smbHelper).onConnection<Unit>(any(), any(), any(), any(), any())
+        verifyNoMoreInteractions(smbHelper)
+        verify(fileManager).getLocalFile("", "")
+        verifyNoMoreInteractions(fileManager)
     }
 }

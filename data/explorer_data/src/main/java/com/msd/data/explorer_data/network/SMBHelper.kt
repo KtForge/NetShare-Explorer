@@ -1,8 +1,10 @@
 package com.msd.data.explorer_data.network
 
 import com.hierynomus.msdtyp.AccessMask
+import com.hierynomus.mserref.NtStatus
 import com.hierynomus.mssmb2.SMB2CreateDisposition
 import com.hierynomus.mssmb2.SMB2ShareAccess
+import com.hierynomus.mssmb2.SMBApiException
 import com.hierynomus.smbj.SMBClient
 import com.hierynomus.smbj.auth.AuthenticationContext
 import com.hierynomus.smbj.share.DiskShare
@@ -11,7 +13,9 @@ import com.msd.data.explorer_data.mapper.IFilesAndDirectoriesMapper
 import com.msd.data.files.FileManager
 import com.msd.domain.explorer.model.FilesResult
 import com.msd.domain.explorer.model.SMBException
+import kotlinx.coroutines.CancellationException
 import java.io.InputStream
+import java.net.SocketTimeoutException
 import java.util.EnumSet
 import javax.inject.Inject
 
@@ -20,6 +24,7 @@ class SMBHelper @Inject constructor(
     private val filesAndDirectoriesMapper: IFilesAndDirectoriesMapper
 ) {
 
+    @Throws(Exception::class)
     suspend fun <T : Any> onConnection(
         server: String,
         sharedPath: String,
@@ -37,9 +42,24 @@ class SMBHelper @Inject constructor(
                 } ?: throw SMBException.UnknownError
             }
         } catch (e: Exception) {
-            throw e
+            throw handleException(e)
         } finally {
             client.close()
+        }
+    }
+
+    private fun handleException(exception: Exception): Throwable {
+        return when (exception) {
+            is SocketTimeoutException -> SMBException.ConnectionError
+            is SMBApiException -> {
+                when (exception.status) {
+                    NtStatus.STATUS_ACCESS_DENIED -> SMBException.AccessDenied
+                    else -> SMBException.UnknownError
+                }
+            }
+
+            is CancellationException -> SMBException.CancelException
+            else -> SMBException.UnknownError
         }
     }
 
