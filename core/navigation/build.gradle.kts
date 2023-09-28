@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.msd.navigation"
+    namespace = "com.msd.core.navigation"
     compileSdk = Configuration.compileSdk
 
 

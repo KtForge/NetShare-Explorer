@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.msd.presentation"
+    namespace = "com.msd.core.presentation"
     compileSdk = Configuration.compileSdk
 
 
