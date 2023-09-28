@@ -2,9 +2,11 @@ name: Android CI
 
 on:
   push:
-    branches: [ $default-branch ]
-  pull_request:
-    branches: [ $default-branch ]
+    branches:
+      - main
+  pull_request_target:
+    branches:
+      - main
 
 jobs:
   Unit-tests:
