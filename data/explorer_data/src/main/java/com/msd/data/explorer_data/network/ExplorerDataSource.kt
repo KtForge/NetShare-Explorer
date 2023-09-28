@@ -3,10 +3,7 @@ package com.msd.data.explorer_data.network
 import com.msd.data.explorer_data.tracker.ExplorerTracker
 import com.msd.data.files.FileManager
 import com.msd.domain.explorer.model.FilesResult
-import kotlinx.coroutines.yield
 import java.io.File
-import java.io.InputStream
-import java.io.OutputStream
 import javax.inject.Inject
 
 class ExplorerDataSource @Inject constructor(
@@ -79,8 +76,10 @@ class ExplorerDataSource @Inject constructor(
 
                 val fileSize = smbHelper.getFileSize(diskShare, filePath, fileName)
 
-                smbHelper.getInputStream(diskShare, filePath, fileName)
-                    .copyTo(fileManager.getOutputStream(localFile))
+                fileManager.copyFile(
+                    inputStream = smbHelper.getInputStream(diskShare, filePath, fileName),
+                    localFile
+                )
 
                 val openTime = System.currentTimeMillis() - start
                 explorerTracker.logDownloadFile(fileSize, openTime)
@@ -141,19 +140,5 @@ class ExplorerDataSource @Inject constructor(
 
     fun deleteLocalFile(localFilePath: String, fileName: String) {
         fileManager.deleteFile(localFilePath, fileName)
-    }
-
-    private suspend fun InputStream.copyTo(out: OutputStream) {
-        var bytesCopied: Long = 0
-        val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
-        var bytes = read(buffer)
-
-        while (bytes >= 0) {
-            yield()
-            out.write(buffer, 0, bytes)
-            bytesCopied += bytes
-            // progressListener(bytesCopied.toFloat().div(fileSize))
-            bytes = read(buffer)
-        }
     }
 }

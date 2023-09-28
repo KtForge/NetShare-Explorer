@@ -4,6 +4,7 @@ import android.content.Context
 import com.msd.domain.explorer.model.IBaseFile
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
+import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.attribute.BasicFileAttributes
 import javax.inject.Inject
@@ -78,7 +79,9 @@ class FileManager @Inject constructor(@ApplicationContext private val context: C
 
     fun getLocalFile(localFilePath: String, fileName: String) = File(localFilePath, fileName)
 
-    fun getOutputStream(file: File) = file.outputStream()
+    fun copyFile(inputStream: InputStream, outFile: File) {
+        inputStream.copyTo(outFile.outputStream())
+    }
 
     // Returns the creation date of a file in milliseconds
     fun getCreationTimeMillis(file: File): Long {

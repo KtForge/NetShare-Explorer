@@ -26,7 +26,6 @@ import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 import java.io.File
-import java.io.FileOutputStream
 import java.io.InputStream
 import java.util.EnumSet
 
@@ -104,10 +103,8 @@ class ExplorerDataSourceIntegrationTest {
 
     private val smbHelper = SMBHelper(smbClient, filesAndDirectoriesMapper)
     private val localFile: File = mock()
-    private val outputStream: FileOutputStream = mock()
     private val fileManager: FileManager = mock {
         on { getLocalFile("localPath", "Name") } doReturn localFile
-        on { getOutputStream(localFile) } doReturn outputStream
         on { getCreationTimeMillis(localFile) } doReturn 15L
     }
     private val explorerTracker: ExplorerTracker = mock()
@@ -150,7 +147,8 @@ class ExplorerDataSourceIntegrationTest {
     fun `when local file is valid should return the expected data`() = runTest {
         whenever(localFile.exists()).thenReturn(true)
 
-        val isValid = dataSource.isLocalFileValid(server, sharedPath, "Name", "path", "localPath", user, psw)
+        val isValid =
+            dataSource.isLocalFileValid(server, sharedPath, "Name", "path", "localPath", user, psw)
 
         assert(isValid)
         verify(smbClient).connect(server)
@@ -167,7 +165,8 @@ class ExplorerDataSourceIntegrationTest {
     fun `when local file is not valid should return the expected data`() = runTest {
         whenever(localFile.exists()).thenReturn(false)
 
-        val isValid = dataSource.isLocalFileValid(server, sharedPath, "Name", "path", "localPath", user, psw)
+        val isValid =
+            dataSource.isLocalFileValid(server, sharedPath, "Name", "path", "localPath", user, psw)
 
         assert(!isValid)
         verify(smbClient).connect(server)

@@ -12,6 +12,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 import java.io.File
 
@@ -58,12 +59,13 @@ class ExplorerRepositoryTest : CoroutineTest() {
             user = "User",
             psw = "Psw",
         )
+        verifyNoMoreInteractions(dataSource)
     }
 
     @Test
     fun `when exception while retrieving files and directories should throw the exception`() =
         runTest {
-            val expectedException: Exception = mock()
+            val expectedException = Exception()
             whenever(
                 dataSource.getFilesResult(
                     server = "Server",
@@ -93,7 +95,74 @@ class ExplorerRepositoryTest : CoroutineTest() {
                 user = "User",
                 psw = "Psw",
             )
+            verifyNoMoreInteractions(dataSource)
         }
+
+    @Test
+    fun `when downloading file should invoke the data source`() = runTest {
+        repository.downloadFile(
+            server = "Server",
+            sharedPath = "SharedPath",
+            fileName = "name",
+            filePath = "path",
+            localFilePath = "localPath",
+            user = "User",
+            psw = "Psw",
+        )
+
+        verify(dataSource).downloadFile(
+            server = "Server",
+            sharedPath = "SharedPath",
+            fileName = "name",
+            filePath = "path",
+            localFilePath = "localPath",
+            user = "User",
+            psw = "Psw",
+        )
+        verifyNoMoreInteractions(dataSource)
+    }
+
+    @Test
+    fun `when exception while downloading file should invoke the data source`() = runTest {
+        val expectedException = Exception()
+        whenever(
+            dataSource.downloadFile(
+                server = "Server",
+                sharedPath = "SharedPath",
+                fileName = "name",
+                filePath = "path",
+                localFilePath = "localPath",
+                user = "User",
+                psw = "Psw",
+            )
+        ).thenThrow(expectedException)
+
+        try {
+            repository.downloadFile(
+                server = "Server",
+                sharedPath = "SharedPath",
+                fileName = "name",
+                filePath = "path",
+                localFilePath = "localPath",
+                user = "User",
+                psw = "Psw",
+            )
+            assert(false)
+        } catch (exception: Exception) {
+            assert(exception == expectedException)
+        }
+
+        verify(dataSource).downloadFile(
+            server = "Server",
+            sharedPath = "SharedPath",
+            fileName = "name",
+            filePath = "path",
+            localFilePath = "localPath",
+            user = "User",
+            psw = "Psw",
+        )
+        verifyNoMoreInteractions(dataSource)
+    }
 
     @Test
     fun `when opening file should return the file`() = runTest {
@@ -133,7 +202,59 @@ class ExplorerRepositoryTest : CoroutineTest() {
             psw = "Psw",
         )
         verify(dataSource).openFile(fileName = "name", localFilePath = "localPath")
+        verifyNoMoreInteractions(dataSource)
     }
+
+    @Test
+    fun `when opening file and local file is not valid should download and return the file`() =
+        runTest {
+            val expectedResult: File = mock()
+            whenever(
+                dataSource.isLocalFileValid(
+                    server = "Server",
+                    sharedPath = "SharedPath",
+                    fileName = "name",
+                    filePath = "path",
+                    localFilePath = "localPath",
+                    user = "User",
+                    psw = "Psw",
+                )
+            ).thenReturn(false)
+            whenever(dataSource.openFile(fileName = "name", localFilePath = "localPath"))
+                .thenReturn(expectedResult)
+
+            val result = repository.openFile(
+                server = "Server",
+                sharedPath = "SharedPath",
+                fileName = "name",
+                filePath = "path",
+                localFilePath = "localPath",
+                user = "User",
+                psw = "Psw",
+            )
+
+            assert(result == expectedResult)
+            verify(dataSource).isLocalFileValid(
+                server = "Server",
+                sharedPath = "SharedPath",
+                fileName = "name",
+                filePath = "path",
+                localFilePath = "localPath",
+                user = "User",
+                psw = "Psw",
+            )
+            verify(dataSource).downloadFile(
+                server = "Server",
+                sharedPath = "SharedPath",
+                fileName = "name",
+                filePath = "path",
+                localFilePath = "localPath",
+                user = "User",
+                psw = "Psw",
+            )
+            verify(dataSource).openFile(fileName = "name", localFilePath = "localPath")
+            verifyNoMoreInteractions(dataSource)
+        }
 
     @Test
     fun `when opening null file should return null`() = runTest {
@@ -172,6 +293,7 @@ class ExplorerRepositoryTest : CoroutineTest() {
             psw = "Psw",
         )
         verify(dataSource).openFile(fileName = "name", localFilePath = "localPath")
+        verifyNoMoreInteractions(dataSource)
     }
 
     @Test
@@ -215,5 +337,14 @@ class ExplorerRepositoryTest : CoroutineTest() {
             psw = "Psw",
         )
         verify(dataSource).openFile(fileName = "name", localFilePath = "localPath")
+        verifyNoMoreInteractions(dataSource)
+    }
+
+    @Test
+    fun `when deleting file should invoke the data source`() {
+        repository.deleteFile("localPath", "Name")
+
+        verify(dataSource).deleteLocalFile("localPath", "Name")
+        verifyNoMoreInteractions(dataSource)
     }
 }

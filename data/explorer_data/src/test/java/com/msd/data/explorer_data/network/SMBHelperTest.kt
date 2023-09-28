@@ -2,12 +2,14 @@ package com.msd.data.explorer_data.network
 
 import com.hierynomus.msdtyp.AccessMask
 import com.hierynomus.msdtyp.FileTime
+import com.hierynomus.mserref.NtStatus
 import com.hierynomus.msfscc.fileinformation.FileAllInformation
 import com.hierynomus.msfscc.fileinformation.FileBasicInformation
 import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation
 import com.hierynomus.msfscc.fileinformation.FileStandardInformation
 import com.hierynomus.mssmb2.SMB2CreateDisposition
 import com.hierynomus.mssmb2.SMB2ShareAccess
+import com.hierynomus.mssmb2.SMBApiException
 import com.hierynomus.smbj.SMBClient
 import com.hierynomus.smbj.connection.Connection
 import com.hierynomus.smbj.session.Session
@@ -19,6 +21,7 @@ import com.msd.data.files.FileManager
 import com.msd.domain.explorer.model.FilesResult
 import com.msd.domain.explorer.model.SMBException
 import com.msd.unittest.CoroutineTest
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -75,6 +78,100 @@ class SMBHelperTest : CoroutineTest() {
         runTest {
             val expectedException = SMBException.UnknownError
             whenever(session.connectShare(sharedPath)).thenReturn(null)
+
+            try {
+                helper.onConnection(server, sharedPath, user, psw) {}
+                assert(false)
+            } catch (exception: Exception) {
+                assert(exception == expectedException)
+            }
+
+            verify(smbClient).connect(server)
+            verify(connection).authenticate(any())
+            verify(session).connectShare(sharedPath)
+            verify(smbClient).close()
+            verifyNoMoreInteractions(session)
+            verifyNoMoreInteractions(smbClient)
+            verifyNoInteractions(filesAndDirectoriesMapper)
+        }
+
+    @Test
+    fun `when SMBApiException while connecting to disk share should throw the exception`() =
+        runTest {
+            val expectedException = SMBException.UnknownError
+            val exception: SMBApiException = mock {
+                on { status } doReturn NtStatus.STATUS_CANCELLED
+            }
+            whenever(session.connectShare(sharedPath)).thenThrow(exception)
+
+            try {
+                helper.onConnection(server, sharedPath, user, psw) {}
+                assert(false)
+            } catch (exception: Exception) {
+                assert(exception == expectedException)
+            }
+
+            verify(smbClient).connect(server)
+            verify(connection).authenticate(any())
+            verify(session).connectShare(sharedPath)
+            verify(smbClient).close()
+            verifyNoMoreInteractions(session)
+            verifyNoMoreInteractions(smbClient)
+            verifyNoInteractions(filesAndDirectoriesMapper)
+        }
+
+    @Test
+    fun `when SMBApiException access denied while connecting to disk share should throw the exception`() =
+        runTest {
+            val expectedException = SMBException.AccessDenied
+            val exception: SMBApiException = mock {
+                on { status } doReturn NtStatus.STATUS_ACCESS_DENIED
+            }
+            whenever(session.connectShare(sharedPath)).thenThrow(exception)
+
+            try {
+                helper.onConnection(server, sharedPath, user, psw) {}
+                assert(false)
+            } catch (exception: Exception) {
+                assert(exception == expectedException)
+            }
+
+            verify(smbClient).connect(server)
+            verify(connection).authenticate(any())
+            verify(session).connectShare(sharedPath)
+            verify(smbClient).close()
+            verifyNoMoreInteractions(session)
+            verifyNoMoreInteractions(smbClient)
+            verifyNoInteractions(filesAndDirectoriesMapper)
+        }
+
+    @Test
+    fun `when CancellationException while connecting to disk share should throw the exception`() =
+        runTest {
+            val expectedException = SMBException.CancelException
+            whenever(session.connectShare(sharedPath)).thenThrow(CancellationException())
+
+            try {
+                helper.onConnection(server, sharedPath, user, psw) {}
+                assert(false)
+            } catch (exception: Exception) {
+                assert(exception == expectedException)
+            }
+
+            verify(smbClient).connect(server)
+            verify(connection).authenticate(any())
+            verify(session).connectShare(sharedPath)
+            verify(smbClient).close()
+            verifyNoMoreInteractions(session)
+            verifyNoMoreInteractions(smbClient)
+            verifyNoInteractions(filesAndDirectoriesMapper)
+        }
+
+    @Test
+    fun `when generic exception while connecting to disk share should throw the exception`() =
+        runTest {
+            val expectedException = SMBException.UnknownError
+            whenever(session.connectShare(sharedPath)).thenThrow(RuntimeException())
 
             try {
                 helper.onConnection(server, sharedPath, user, psw) {}
