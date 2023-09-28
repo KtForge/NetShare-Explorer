@@ -22,6 +22,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
+import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -60,6 +61,23 @@ class EditPresenterTest : CoroutineTest() {
         serverError = false,
         sharedPathError = false
     )
+
+    @Test
+    fun `when providing factory should return the expected data`() {
+        val expectedViewModel: EditPresenter = mock()
+        val assistedFactory: EditPresenter.Factory = mock {
+            on { create(smbConfigurationId) } doReturn expectedViewModel
+        }
+
+        val factory = EditPresenter.provideFactory(assistedFactory, smbConfigurationId)
+        val viewModel = factory.create(EditPresenter::class.java)
+
+        assert(viewModel == expectedViewModel)
+        verifyNoInteractions(core)
+        verifyNoInteractions(getSMBConfigurationUseCase)
+        verifyNoInteractions(storeSMBConfigurationUseCase)
+        verifyNoInteractions(editTracker)
+    }
 
     @Test
     fun `when initializing with valid id should emit the loaded state`() = runTest {
@@ -157,7 +175,37 @@ class EditPresenterTest : CoroutineTest() {
         verify(core).tryEmit(Loading)
         verify(core).navigate(NavigateBack)
         verify(editTracker).logSMBConfigurationEditedEvent()
+        verifyNoMoreInteractions(editTracker)
     }
+
+    @Test
+    fun `when confirming new configuration in loaded state should save and navigate back`() =
+        runTest {
+            smbConfigurationId = -1
+            whenever(core.currentState()).thenReturn(loaded)
+
+            presenter.onConfirmButtonClicked(
+                name = "Name",
+                server = "Server",
+                sharedPath = "SharedPath",
+                user = "User",
+                psw = "Password",
+            )
+            advanceUntilIdle()
+
+            verify(storeSMBConfigurationUseCase).invoke(
+                id = 0,
+                name = "Name",
+                server = "Server",
+                sharedPath = "SharedPath",
+                user = "User",
+                psw = "Password",
+            )
+            verify(core).tryEmit(Loading)
+            verify(core).navigate(NavigateBack)
+            verify(editTracker).logSMBConfigurationCreatedEvent()
+            verifyNoMoreInteractions(editTracker)
+        }
 
     @Test
     fun `when confirming invalid server in loaded state should update the state`() {
@@ -266,4 +314,16 @@ class EditPresenterTest : CoroutineTest() {
             verify(core).tryEmit(Loading)
             verify(core).navigate(NavigateBack)
         }
+
+    @Test
+    fun `when toggling password visibility should update the state`() {
+        whenever(core.currentState()).thenReturn(loaded.copy(isPasswordVisible = false))
+
+        presenter.onPasswordVisibilityIconClicked()
+
+        verify(core).tryEmit(loaded.copy(isPasswordVisible = true))
+        verifyNoInteractions(getSMBConfigurationUseCase)
+        verifyNoInteractions(storeSMBConfigurationUseCase)
+        verifyNoInteractions(editTracker)
+    }
 }

@@ -29,6 +29,8 @@ dependencies {
 
     implementation(project(":domain:smb"))
 
+    implementation(project(":data:files"))
+
     implementation(platform(Dependencies.kotlinBom))
     implementation(Dependencies.coreKtx)
 

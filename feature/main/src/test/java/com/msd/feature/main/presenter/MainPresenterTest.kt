@@ -6,6 +6,7 @@ import com.msd.domain.smb.model.SMBConfiguration
 import com.msd.feature.main.presenter.MainState.Empty
 import com.msd.feature.main.presenter.MainState.Loaded
 import com.msd.feature.main.presenter.MainState.Loading
+import com.msd.feature.main.presenter.MainState.Uninitialized
 import com.msd.feature.main.tracker.MainTracker
 import com.msd.navigation.Navigate
 import com.msd.presentation.IPresenterCore
@@ -54,8 +55,24 @@ class MainPresenterTest : CoroutineTest() {
 
     @Test
     fun `when initializing should emit Loaded state with the expected models`() = runTest {
+        whenever(core.currentState()).thenReturn(Uninitialized)
         whenever(getSMBConfigurationsUseCase.invoke()).thenReturn(flowOf(smbConfigurations))
         val expectedState = Loaded(smbConfigurations, smbConfigurationItemIdToDelete = null)
+
+        presenter.initialize()
+        advanceUntilIdle()
+
+        verify(getSMBConfigurationsUseCase).invoke()
+        inOrder(core) {
+            verify(core).tryEmit(Loading)
+            verify(core).tryEmit(expectedState)
+        }
+    }
+
+    @Test
+    fun `when initializing empty should emit Loaded state with the expected models`() = runTest {
+        whenever(getSMBConfigurationsUseCase.invoke()).thenReturn(flowOf(emptyList()))
+        val expectedState = Empty
 
         presenter.initialize()
         advanceUntilIdle()

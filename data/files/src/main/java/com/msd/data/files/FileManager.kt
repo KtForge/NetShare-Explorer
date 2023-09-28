@@ -3,6 +3,7 @@ package com.msd.data.files
 import android.content.Context
 import com.msd.domain.explorer.model.IBaseFile
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.yield
 import java.io.File
 import java.io.InputStream
 import java.nio.file.Files
@@ -79,8 +80,19 @@ class FileManager @Inject constructor(@ApplicationContext private val context: C
 
     fun getLocalFile(localFilePath: String, fileName: String) = File(localFilePath, fileName)
 
-    fun copyFile(inputStream: InputStream, outFile: File) {
-        inputStream.copyTo(outFile.outputStream())
+    suspend fun copyFile(inputStream: InputStream, outFile: File) {
+        val out = outFile.outputStream()
+        var bytesCopied: Long = 0
+        val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+        var bytes = inputStream.read(buffer)
+
+        while (bytes >= 0) {
+            yield()
+            out.write(buffer, 0, bytes)
+            bytesCopied += bytes
+            // progressListener(bytesCopied.toFloat().div(fileSize))
+            bytes = inputStream.read(buffer)
+        }
     }
 
     // Returns the creation date of a file in milliseconds
@@ -95,6 +107,15 @@ class FileManager @Inject constructor(@ApplicationContext private val context: C
 
         if (file.exists()) {
             file.delete()
+        }
+    }
+
+    fun deleteServerContents(server: String, sharedPath: String) {
+        val directoryPath = getCacheDirectoryPath(server, sharedPath, directory = "")
+        val directory = File(directoryPath)
+
+        if (directory.exists()) {
+            directory.deleteRecursively()
         }
     }
 }

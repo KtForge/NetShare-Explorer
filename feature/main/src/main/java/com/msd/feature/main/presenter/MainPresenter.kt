@@ -36,8 +36,17 @@ class MainPresenter @Inject constructor(
 
         tryEmit(Loading)
         viewModelScope.launch(ioDispatcher) {
-            getSMBConfigurationsUseCase().collect {
-                handleSMBConfigurations(it)
+            getSMBConfigurationsUseCase().collect { smbConfigurations ->
+                if (smbConfigurations.isEmpty()) {
+                    tryEmit(Empty)
+                } else {
+                    tryEmit(
+                        Loaded(
+                            smbConfigurations,
+                            smbConfigurationItemIdToDelete = null
+                        )
+                    )
+                }
             }
         }
     }
@@ -97,19 +106,6 @@ class MainPresenter @Inject constructor(
     override fun dismissDeleteDialog() {
         (currentState as? Loaded)?.let { loaded ->
             tryEmit(loaded.copy(smbConfigurationItemIdToDelete = null))
-        }
-    }
-
-    private fun handleSMBConfigurations(smbConfigurations: List<SMBConfiguration>) {
-        if (smbConfigurations.isEmpty()) {
-            tryEmit(Empty)
-        } else {
-            tryEmit(
-                Loaded(
-                    smbConfigurations,
-                    smbConfigurationItemIdToDelete = null
-                )
-            )
         }
     }
 }

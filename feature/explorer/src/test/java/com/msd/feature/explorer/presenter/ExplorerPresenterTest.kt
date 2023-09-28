@@ -85,7 +85,26 @@ class ExplorerPresenterTest : CoroutineTest() {
     )
 
     @Test
+    fun `when providing factory should return the expected data`() {
+        val expectedViewModel: ExplorerPresenter = mock()
+        val assistedFactory: ExplorerPresenter.Factory = mock {
+            on { create(smbConfigurationId, smbConfigurationName) } doReturn expectedViewModel
+        }
+
+        val factory = ExplorerPresenter.provideFactory(
+            assistedFactory,
+            smbConfigurationId,
+            smbConfigurationName
+        )
+        val viewModel = factory.create(ExplorerPresenter::class.java)
+
+        assert(viewModel == expectedViewModel)
+        verifyNoInteractions(core, getSMBConfigurationUseCase, filesAndDirectoriesHelper)
+    }
+
+    @Test
     fun `when initializing with valid id successfully should emit Loaded state`() = runTest {
+        whenever(core.currentState()).thenReturn(ExplorerState.Uninitialized("", ""))
         whenever(getSMBConfigurationUseCase(smbConfigurationId)).thenReturn(smbConfiguration)
         whenever(filesAndDirectoriesHelper.getFilesAndDirectories(smbConfiguration, path = ""))
             .thenReturn(filesResult)
