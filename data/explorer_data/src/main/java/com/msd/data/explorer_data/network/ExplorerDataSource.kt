@@ -80,7 +80,7 @@ class ExplorerDataSource @Inject constructor(
                 val fileSize = smbHelper.getFileSize(diskShare, filePath, fileName)
 
                 smbHelper.getInputStream(diskShare, filePath, fileName)
-                    .copyTo(localFile.outputStream())
+                    .copyTo(fileManager.getOutputStream(localFile))
 
                 val openTime = System.currentTimeMillis() - start
                 explorerTracker.logDownloadFile(fileSize, openTime)

@@ -247,4 +247,137 @@ class ExplorerDataSourceTest : CoroutineTest() {
         verify(fileManager).getLocalFile("", "")
         verifyNoMoreInteractions(fileManager)
     }
+
+    @Test
+    fun `when local file is valid should return true`() = runTest {
+        whenever(smbHelper.onConnection<Boolean>(any(), any(), any(), any(), any()))
+            .thenReturn(true)
+
+        val isValid = dataSource.isLocalFileValid(server, sharedPath, "", "", "", "", "")
+
+        assert(isValid)
+        verify(smbHelper).onConnection<Boolean>(any(), any(), any(), any(), any())
+        verifyNoMoreInteractions(smbHelper)
+        verifyNoInteractions(fileManager)
+    }
+
+    @Test
+    fun `when local file is not valid should return false`() = runTest {
+        whenever(smbHelper.onConnection<Boolean>(any(), any(), any(), any(), any()))
+            .thenReturn(false)
+
+        val isValid = dataSource.isLocalFileValid(server, sharedPath, "", "", "", "", "")
+
+        assert(!isValid)
+        verify(smbHelper).onConnection<Boolean>(any(), any(), any(), any(), any())
+        verifyNoMoreInteractions(smbHelper)
+        verifyNoInteractions(fileManager)
+    }
+
+    @Test
+    fun `when exception while checking if local file is valid should throw the expected error`() =
+        runTest {
+            val expectedException = Exception()
+            doThrow(expectedException).whenever(smbHelper)
+                .onConnection<Boolean>(any(), any(), any(), any(), any())
+
+            try {
+                dataSource.isLocalFileValid(server, sharedPath, "", "", "", "", "")
+                assert(false)
+            } catch (exception: Exception) {
+                assert(exception == expectedException)
+            }
+
+            verify(smbHelper).onConnection<Boolean>(any(), any(), any(), any(), any())
+            verifyNoMoreInteractions(smbHelper)
+        }
+
+    @Test
+    fun `when connection error while checking if local file is valid should throw the expected error`() =
+        runTest {
+            val expectedException = SMBException.ConnectionError
+            doThrow(expectedException).whenever(smbHelper)
+                .onConnection<Boolean>(any(), any(), any(), any(), any())
+
+            try {
+                dataSource.isLocalFileValid(server, sharedPath, "", "", "", "", "")
+                assert(false)
+            } catch (exception: Exception) {
+                assert(exception == expectedException)
+            }
+
+            verify(smbHelper).onConnection<Boolean>(any(), any(), any(), any(), any())
+            verifyNoMoreInteractions(smbHelper)
+        }
+
+    @Test
+    fun `when access error while checking if local file is valid should throw the expected error`() =
+        runTest {
+            val expectedException = SMBException.AccessDenied
+            doThrow(expectedException).whenever(smbHelper)
+                .onConnection<Boolean>(any(), any(), any(), any(), any())
+
+            try {
+                dataSource.isLocalFileValid(server, sharedPath, "", "", "", "", "")
+                assert(false)
+            } catch (exception: Exception) {
+                assert(exception == expectedException)
+            }
+
+            verify(smbHelper).onConnection<Boolean>(any(), any(), any(), any(), any())
+            verifyNoMoreInteractions(smbHelper)
+        }
+
+    @Test
+    fun `when cancellation error while checking if local file is valid should throw the expected error`() =
+        runTest {
+            val expectedException = SMBException.CancelException
+            doThrow(expectedException).whenever(smbHelper)
+                .onConnection<Boolean>(any(), any(), any(), any(), any())
+
+            try {
+                dataSource.isLocalFileValid(server, sharedPath, "", "", "", "", "")
+                assert(false)
+            } catch (exception: Exception) {
+                assert(exception == expectedException)
+            }
+
+            verify(smbHelper).onConnection<Boolean>(any(), any(), any(), any(), any())
+            verifyNoMoreInteractions(smbHelper)
+        }
+
+    @Test
+    fun `when unknown error while checking if local file is valid should throw the expected error`() =
+        runTest {
+            val expectedException = SMBException.UnknownError
+            doThrow(expectedException).whenever(smbHelper)
+                .onConnection<Boolean>(any(), any(), any(), any(), any())
+
+            try {
+                dataSource.isLocalFileValid(server, sharedPath, "", "", "", "", "")
+                assert(false)
+            } catch (exception: Exception) {
+                assert(exception == expectedException)
+            }
+
+            verify(smbHelper).onConnection<Boolean>(any(), any(), any(), any(), any())
+            verifyNoMoreInteractions(smbHelper)
+        }
+
+    @Test
+    fun `when opening local file should return the expected data`() {
+        val expectedResult: File = mock()
+        whenever(fileManager.getLocalFile("localPath", "Name")).thenReturn(expectedResult)
+
+        val result = dataSource.openFile("localPath", "Name")
+
+        assert(result == expectedResult)
+    }
+
+    @Test
+    fun `when deleting local file should return the expected data`() {
+        dataSource.deleteLocalFile("localPath", "Name")
+
+        verify(fileManager).deleteFile("localPath", "Name")
+    }
 }
