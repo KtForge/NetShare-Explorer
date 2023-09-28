@@ -8,10 +8,10 @@ import com.msd.feature.edit.presenter.EditState.Loaded
 import com.msd.feature.edit.presenter.EditState.Loading
 import com.msd.feature.edit.presenter.EditState.Uninitialized
 import com.msd.feature.edit.tracker.EditTracker
-import com.msd.navigation.NavigateBack
-import com.msd.navigation.NavigateUp
-import com.msd.presentation.IPresenterCore
-import com.msd.unittest.CoroutineTest
+import com.msd.core.navigation.NavigateBack
+import com.msd.core.navigation.NavigateUp
+import com.msd.core.presentation.IPresenterCore
+import com.msd.core.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest

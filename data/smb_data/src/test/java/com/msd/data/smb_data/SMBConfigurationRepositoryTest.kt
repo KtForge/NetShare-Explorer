@@ -5,7 +5,7 @@ import com.msd.data.files.FileManager
 import com.msd.data.smb_data.local.SMBConfigurationDao
 import com.msd.data.smb_data.model.DataSMBConfiguration
 import com.msd.domain.smb.model.SMBConfiguration
-import com.msd.unittest.CoroutineTest
+import com.msd.core.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf

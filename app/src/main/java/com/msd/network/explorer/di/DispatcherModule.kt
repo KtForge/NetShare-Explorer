@@ -1,8 +1,8 @@
 package com.msd.network.explorer.di
 
-import com.msd.presentation.DefaultDispatcher
-import com.msd.presentation.IoDispatcher
-import com.msd.presentation.MainDispatcher
+import com.msd.core.presentation.DefaultDispatcher
+import com.msd.core.presentation.IoDispatcher
+import com.msd.core.presentation.MainDispatcher
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

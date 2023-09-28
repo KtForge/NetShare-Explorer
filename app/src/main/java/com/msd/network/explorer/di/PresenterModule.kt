@@ -1,8 +1,8 @@
 package com.msd.network.explorer.di
 
 import com.msd.feature.main.presenter.MainState
-import com.msd.presentation.IPresenterCore
-import com.msd.presentation.PresenterCore
+import com.msd.core.presentation.IPresenterCore
+import com.msd.core.presentation.PresenterCore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

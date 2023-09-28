@@ -1,10 +1,10 @@
-package com.msd.presentation
+package com.msd.core.presentation
 
-import com.msd.navigation.Idle
-import com.msd.navigation.NavigateUp
-import com.msd.presentation.PresenterCoreTest.TestState.State1
-import com.msd.presentation.PresenterCoreTest.TestState.State2
-import com.msd.unittest.CoroutineTest
+import com.msd.core.navigation.Idle
+import com.msd.core.navigation.NavigateUp
+import com.msd.core.presentation.PresenterCoreTest.TestState.State1
+import com.msd.core.presentation.PresenterCoreTest.TestState.State2
+import com.msd.core.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest

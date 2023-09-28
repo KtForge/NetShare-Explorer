@@ -1,6 +1,6 @@
-package com.msd.presentation
+package com.msd.core.presentation
 
-import com.msd.navigation.NavigationEvent
+import com.msd.core.navigation.NavigationEvent
 import kotlinx.coroutines.flow.Flow
 
 interface IPresenterCore<S: State> {

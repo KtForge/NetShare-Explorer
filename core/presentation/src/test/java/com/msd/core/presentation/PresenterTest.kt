@@ -1,14 +1,15 @@
-package com.msd.presentation
+package com.msd.core.presentation
 
-import com.msd.navigation.Idle
-import com.msd.navigation.NavigateBack
-import com.msd.navigation.NavigationEvent
-import com.msd.presentation.PresenterTest.TestState.State1
-import com.msd.presentation.PresenterTest.TestState.State2
+import com.msd.core.navigation.Idle
+import com.msd.core.navigation.NavigateBack
+import com.msd.core.navigation.NavigationEvent
+import com.msd.core.presentation.PresenterTest.TestState.State1
+import com.msd.core.presentation.PresenterTest.TestState.State2
 import kotlinx.coroutines.flow.Flow
 import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 
@@ -43,6 +44,13 @@ class PresenterTest {
 
         verify(core).isInitialized()
         verifyNoMoreInteractions(core)
+    }
+
+    @Test
+    fun `initializing should be accessible`() {
+        presenter.initialize()
+
+        verifyNoInteractions(core)
     }
 
     @Test

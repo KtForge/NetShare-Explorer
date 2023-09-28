@@ -8,9 +8,9 @@ import com.msd.feature.main.presenter.MainState.Loaded
 import com.msd.feature.main.presenter.MainState.Loading
 import com.msd.feature.main.presenter.MainState.Uninitialized
 import com.msd.feature.main.tracker.MainTracker
-import com.msd.navigation.Navigate
-import com.msd.presentation.IPresenterCore
-import com.msd.unittest.CoroutineTest
+import com.msd.core.navigation.Navigate
+import com.msd.core.presentation.IPresenterCore
+import com.msd.core.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceUntilIdle

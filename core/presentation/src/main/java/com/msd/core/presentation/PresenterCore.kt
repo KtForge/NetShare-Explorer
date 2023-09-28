@@ -1,7 +1,7 @@
-package com.msd.presentation
+package com.msd.core.presentation
 
-import com.msd.navigation.Idle
-import com.msd.navigation.NavigationEvent
+import com.msd.core.navigation.Idle
+import com.msd.core.navigation.NavigationEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 

@@ -6,7 +6,7 @@ import com.msd.domain.explorer.model.NetworkDirectory
 import com.msd.domain.explorer.model.NetworkFile
 import com.msd.domain.explorer.model.ParentDirectory
 import com.msd.domain.explorer.model.WorkingDirectory
-import com.msd.unittest.CoroutineTest
+import com.msd.core.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Test

@@ -1,8 +1,8 @@
-package com.msd.presentation
+package com.msd.core.presentation
 
 import androidx.lifecycle.ViewModel
-import com.msd.navigation.Idle
-import com.msd.navigation.NavigationEvent
+import com.msd.core.navigation.Idle
+import com.msd.core.navigation.NavigationEvent
 import kotlinx.coroutines.flow.Flow
 
 abstract class Presenter<S : State>(private val core: IPresenterCore<S>) : ViewModel() {

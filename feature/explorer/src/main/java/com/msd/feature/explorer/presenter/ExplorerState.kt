@@ -6,7 +6,7 @@ import com.msd.domain.explorer.model.ParentDirectory
 import com.msd.domain.explorer.model.WorkingDirectory
 import com.msd.domain.smb.model.SMBConfiguration
 import com.msd.feature.explorer.R
-import com.msd.presentation.State
+import com.msd.core.presentation.State
 
 sealed class ExplorerState(open val name: String, open val path: String) : State {
 

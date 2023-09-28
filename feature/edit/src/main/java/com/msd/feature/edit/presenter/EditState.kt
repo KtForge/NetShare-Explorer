@@ -1,7 +1,7 @@
 package com.msd.feature.edit.presenter
 
 import androidx.annotation.StringRes
-import com.msd.presentation.State
+import com.msd.core.presentation.State
 import com.msd.domain.smb.model.SMBConfiguration
 
 sealed interface EditState : State {

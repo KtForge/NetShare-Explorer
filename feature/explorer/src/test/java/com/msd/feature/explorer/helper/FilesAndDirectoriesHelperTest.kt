@@ -8,7 +8,7 @@ import com.msd.domain.explorer.model.FilesResult
 import com.msd.domain.explorer.model.NetworkFile
 import com.msd.domain.explorer.model.SMBException
 import com.msd.domain.smb.model.SMBConfiguration
-import com.msd.unittest.CoroutineTest
+import com.msd.core.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Test

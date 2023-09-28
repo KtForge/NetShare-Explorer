@@ -4,7 +4,7 @@ import com.msd.data.explorer_data.tracker.ExplorerTracker
 import com.msd.data.files.FileManager
 import com.msd.domain.explorer.model.FilesResult
 import com.msd.domain.explorer.model.SMBException
-import com.msd.unittest.CoroutineTest
+import com.msd.core.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Test

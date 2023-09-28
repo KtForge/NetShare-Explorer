@@ -1,4 +1,4 @@
-package com.msd.unittest
+package com.msd.core.unittest
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

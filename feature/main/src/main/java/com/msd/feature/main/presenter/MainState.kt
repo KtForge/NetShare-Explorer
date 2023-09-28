@@ -1,6 +1,6 @@
 package com.msd.feature.main.presenter
 
-import com.msd.presentation.State
+import com.msd.core.presentation.State
 import com.msd.domain.smb.model.SMBConfiguration
 
 sealed interface MainState : State {

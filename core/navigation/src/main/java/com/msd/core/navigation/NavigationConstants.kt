@@ -1,4 +1,4 @@
-package com.msd.navigation
+package com.msd.core.navigation
 
 object NavigationConstants {
 

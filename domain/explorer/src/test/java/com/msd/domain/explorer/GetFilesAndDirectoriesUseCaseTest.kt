@@ -1,7 +1,7 @@
 package com.msd.domain.explorer
 
 import com.msd.domain.explorer.model.FilesResult
-import com.msd.unittest.CoroutineTest
+import com.msd.core.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Test

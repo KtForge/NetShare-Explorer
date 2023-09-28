@@ -25,14 +25,14 @@ import com.msd.feature.explorer.presenter.ExplorerPresenter
 import com.msd.feature.explorer.ui.ExplorerView
 import com.msd.feature.main.presenter.MainPresenter
 import com.msd.feature.main.ui.MainView
-import com.msd.navigation.Idle
-import com.msd.navigation.Navigate
-import com.msd.navigation.NavigateBack
-import com.msd.navigation.NavigateUp
-import com.msd.navigation.NavigationConstants
-import com.msd.navigation.OpenFile
-import com.msd.presentation.Presenter
-import com.msd.presentation.State
+import com.msd.core.navigation.Idle
+import com.msd.core.navigation.Navigate
+import com.msd.core.navigation.NavigateBack
+import com.msd.core.navigation.NavigateUp
+import com.msd.core.navigation.NavigationConstants
+import com.msd.core.navigation.OpenFile
+import com.msd.core.presentation.Presenter
+import com.msd.core.presentation.State
 
 @ExperimentalTransitionApi
 @ExperimentalComposeUiApi

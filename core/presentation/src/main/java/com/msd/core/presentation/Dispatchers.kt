@@ -1,4 +1,4 @@
-package com.msd.presentation
+package com.msd.core.presentation
 
 import javax.inject.Qualifier
 
