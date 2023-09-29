@@ -43,4 +43,5 @@ dependencies {
     implementation(Dependencies.roomKtx)
 
     testImplementation(project(":core:unittest"))
+    androidTestImplementation(project(":core:uitest"))
 }
