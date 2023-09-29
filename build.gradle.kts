@@ -12,10 +12,6 @@ plugins {
     jacoco
 }
 
-jacoco {
-    toolVersion = Versions.jacocoVersion
-}
-
 buildscript {
     dependencies {
         classpath("com.google.firebase:firebase-crashlytics-gradle:2.9.9")
@@ -52,13 +48,13 @@ tasks.register("debugUnitTest") {
 
 tasks.register("debugUnitTestCoverage") {
     val subprojectTasks = subprojects.filter { subproject ->
-        subproject.plugins.hasPlugin(Plugins.androidLibrary) // || subproject.plugins.hasPlugin(Plugins.javaLibrary)
+        subproject.plugins.hasPlugin(Plugins.androidLibrary) || subproject.plugins.hasPlugin(Plugins.javaLibrary)
     }.mapNotNull { subproject ->
         if (subproject.plugins.hasPlugin(Plugins.androidLibrary)) {
             val taskName = subproject.tasks.findByName("testDebugUnitTestCoverage")?.name
             "${subproject.path}:$taskName".takeUnless { taskName.isNullOrEmpty() }
         } else {
-            null // "${subproject.path}:${subproject.tasks.findByName("test")?.name}"
+            "${subproject.path}:${subproject.tasks.findByName("test")?.name}"
         }
     }
 
@@ -73,53 +69,4 @@ tasks.register("debugUiTest") {
     }
 
     dependsOn(subprojectTasks)
-}
-
-tasks.register<JacocoReport>("jacocoCombinedTestReports") {
-    group = "Verification"
-    description =
-        "Creates JaCoCo test coverage report for Unit and Instrumented Tests (combined) on the Debug build"
-
-    dependsOn("debugUnitTestCoverage")
-
-    reports {
-        xml.required.set(true)
-        html.required.set(true)
-    }
-
-    // Files to exclude:
-    // Generated classes, platform classes, etc.
-    val excludedFiles = setOf(
-        "**/R.class",
-        "**/R$*.class",
-        "**/BuildConfig.*",
-        "**/Manifest*.*",
-        "**/*Test*.*",
-        "android/**/*.*"
-    )
-
-    // generated classes
-    classDirectories.setFrom(
-        files(
-            fileTree("$buildDir/intermediates/classes/debug") { exclude(excludedFiles) },
-            fileTree("$buildDir/tmp/kotlin-classes/debug") { exclude(excludedFiles) }
-        )
-    )
-    val coverageSrcDirectories = listOf("src/main/java")
-
-    // sources
-    sourceDirectories.setFrom(files(coverageSrcDirectories))
-    // Output and existing data
-    // Combine Unit test and Instrumented test reports
-    executionData.setFrom(
-        files(fileTree(buildDir) {
-            include(
-                setOf(
-                    "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
-                    "outputs/code_coverage/debugAndroidTest/connected/*coverage.ec"
-                )
-            )
-        }
-        )
-    )
 }
