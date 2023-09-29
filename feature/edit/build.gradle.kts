@@ -51,4 +51,5 @@ dependencies {
     kapt(Dependencies.daggerHiltAndroidCompiler)
 
     testImplementation(project(":core:unittest"))
+    androidTestImplementation(project(":core:uitest"))
 }
