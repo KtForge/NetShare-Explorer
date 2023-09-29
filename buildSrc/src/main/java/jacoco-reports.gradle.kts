@@ -77,7 +77,8 @@ val excludedFiles = mutableSetOf(
     "**/*Module*",
     "**/*Component*",
     "**android**",
-    "**/BR.class"
+    "**/BR.class",
+    "**/ui/**",
 )
 
 fun Project.registerCodeCoverageTask(
