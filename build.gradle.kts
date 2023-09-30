@@ -73,7 +73,8 @@ tasks.register("debugUiTest") {
 
 project.afterEvaluate {
 
-    tasks.register<JacocoReport>("allDebugCoverage") {
+    tasks.register<JacocoReport>("createTestCoverageReport") {
+        dependsOn("debugUnitTestCoverage")
 
         group = "Reporting"
         description = "Generate overall Jacoco coverage report for the debug build."
