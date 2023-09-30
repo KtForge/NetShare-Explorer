@@ -48,12 +48,10 @@ jobs:
             sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
             sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
             java -version
-            export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
-            echo $JAVA_HOME
+            echo 'export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"' >> "$BASH_ENV"
       - run:
           name: Test gradlew
           command: |
-            echo $JAVA_HOME
             ./gradlew lintDebug
 
 # Orchestrate jobs using workflows
