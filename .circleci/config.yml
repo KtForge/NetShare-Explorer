@@ -2,6 +2,9 @@
 # See: https://circleci.com/docs/configuration-reference
 version: 2.1
 
+orbs:
+  android: circleci/android@2.3.0
+
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
@@ -14,38 +17,13 @@ jobs:
     # See: https://circleci.com/docs/configuration-reference/#steps
     steps:
       - checkout
-      - run:
-          name: Install OpenJDK 17
-          command: |
-            sudo apt-get update && sudo apt-get install openjdk-17-jdk
-            sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
-            sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
-            java -version
-      - run:
-          name: Create avd
-          command: |
-            SYSTEM_IMAGES="system-images;android-29;default;x86"
-            sdkmanager "$SYSTEM_IMAGES"
-            echo "no" | avdmanager --verbose create avd -n test -k "$SYSTEM_IMAGES"
-      - run:
-          name: Launch emulator
-          command: |
-            emulator -avd test -delay-adb -verbose -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
-          background: true
-      - run:
-          name: Wait for emulator to start
-          command: |
-            circle-android wait-for-boot
-      - run:
-          name: Disable emulator animations
-          command: |
-            adb shell settings put global window_animation_scale 0.0
-            adb shell settings put global transition_animation_scale 0.0
-            adb shell settings put global animator_duration_scale 0.0
-      - run:
-          name: Run createTestCoverageReport task
-          command: |
-            ./gradlew createTestCoverageReport
+      - change-java-version:
+          java-version: 17
+      - android/restore-gradle-cache
+      - android/start-emulator-and-run-tests:
+          system-image: system-images;android-29;default;x86
+          test-command: ./gradlew createTestCoverageReport
+      - android/save-gradle-cache
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
