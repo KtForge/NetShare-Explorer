@@ -25,30 +25,6 @@ jobs:
             sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
             java -version
             echo 'export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"' >> "$BASH_ENV"
-      - android/restore-gradle-cache
-      - android/start-emulator-and-run-tests:
-          system-image: system-images;android-29;default;x86
-          test-command: ./gradlew createTestCoverageReport
-      - android/save-gradle-cache
-      - store_artifacts:
-          path:  build/reports/jacoco/createTestCoverageReport/createTestCoverageReport.xml
-  test-java:
-    machine:
-      image: android:202102-01
-      # To optimize build times, we recommend "large" and above for Android-related jobs
-      resource_class: large
-    # Add steps to the job
-    # See: https://circleci.com/docs/configuration-reference/#steps
-    steps:
-      - checkout
-      - run:
-          name: Install OpenJDK 17
-          command: |
-            sudo apt-get update && sudo apt-get install openjdk-17-jdk
-            sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
-            sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
-            java -version
-            echo 'export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"' >> "$BASH_ENV"
       - run:
           # Export base64 encoded google-services.json
           # into local bash variables
@@ -58,16 +34,21 @@ jobs:
           # Decode the base64 string
           name: Decode Google Services Json
           command: echo $GOOGLE_SERVICES_JSON | base64 -di > app/google-services.json
-      - run:
-          name: Test gradlew
-          command: |
-            ./gradlew lintDebug
+      - android/restore-gradle-cache
+      - android/start-emulator-and-run-tests:
+          system-image: system-images;android-29;default;x86
+          test-command: ./gradlew createTestCoverageReport
+      - android/save-gradle-cache
+      - store_artifacts:
+          path:  build/reports/jacoco/createTestCoverageReport/createTestCoverageReport.xml
+      - store_test_results:
+          path:  build/reports/jacoco/createTestCoverageReport/createTestCoverageReport.xml
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
   test-report:
     jobs:
-      - test-java:
+      - test-report:
          context:
            - android
