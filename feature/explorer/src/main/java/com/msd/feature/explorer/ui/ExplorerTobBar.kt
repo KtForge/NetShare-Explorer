@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.msd.core.ui.annotations.ExcludeFromJacocoGeneratedReport
 import com.msd.core.ui.theme.NetworkStorageConfigurationTheme
 import com.msd.core.ui.widget.AppTopBar
 import com.msd.domain.explorer.model.IBaseFile
@@ -57,6 +58,7 @@ fun ExplorerTopBar(currentState: ExplorerState, userInteractions: UserInteractio
     )
 }
 
+@ExcludeFromJacocoGeneratedReport
 @Composable
 @Preview
 fun ExplorerTopBarPreview() {

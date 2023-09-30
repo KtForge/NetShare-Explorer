@@ -25,6 +25,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import com.msd.core.ui.annotations.ExcludeFromJacocoGeneratedReport
 import com.msd.core.ui.theme.Dimensions.sizeM
 import com.msd.core.ui.theme.Dimensions.sizeXL
 import com.msd.core.ui.theme.NetworkStorageConfigurationTheme
@@ -161,6 +162,7 @@ private fun TextInputField(
     )
 }
 
+@ExcludeFromJacocoGeneratedReport
 @Composable
 @Preview
 fun EditLoadedEditConfigurationPreview() {
@@ -194,6 +196,7 @@ fun EditLoadedEditConfigurationPreview() {
     }
 }
 
+@ExcludeFromJacocoGeneratedReport
 @Composable
 @Preview
 fun EditLoadedEditConfigurationPasswordVisiblePreview() {
@@ -227,6 +230,7 @@ fun EditLoadedEditConfigurationPasswordVisiblePreview() {
     }
 }
 
+@ExcludeFromJacocoGeneratedReport
 @Composable
 @Preview
 fun EditLoadedNewConfigurationPreview() {
@@ -260,6 +264,7 @@ fun EditLoadedNewConfigurationPreview() {
     }
 }
 
+@ExcludeFromJacocoGeneratedReport
 @Composable
 @Preview
 fun EditLoadedNewConfigurationErrorsPreview() {

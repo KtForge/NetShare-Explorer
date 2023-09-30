@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.msd.core.ui.annotations.ExcludeFromJacocoGeneratedReport
 import com.msd.core.ui.theme.Dimensions.sizeL
 import com.msd.core.ui.theme.Dimensions.sizeS
 import com.msd.core.ui.theme.Dimensions.sizeXL
@@ -274,6 +275,7 @@ private fun DownloadProgressDialog(userInteractions: UserInteractions) {
     )
 }
 
+@ExcludeFromJacocoGeneratedReport
 @Composable
 @Preview
 fun ExplorerLoadedPreview() {
@@ -316,6 +318,7 @@ fun ExplorerLoadedPreview() {
     }
 }
 
+@ExcludeFromJacocoGeneratedReport
 @Composable
 @Preview
 fun ExplorerLoadedParentDirectoryPreview() {
@@ -358,6 +361,7 @@ fun ExplorerLoadedParentDirectoryPreview() {
     }
 }
 
+@ExcludeFromJacocoGeneratedReport
 @Composable
 @Preview
 fun ExplorerLoadedErrorDialogPreview() {
@@ -400,6 +404,7 @@ fun ExplorerLoadedErrorDialogPreview() {
     }
 }
 
+@ExcludeFromJacocoGeneratedReport
 @Composable
 @Preview
 fun ExplorerLoadedDownloadDialogPreview() {

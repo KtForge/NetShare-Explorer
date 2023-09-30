@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.msd.core.ui.annotations.ExcludeFromJacocoGeneratedReport
 import com.msd.core.ui.theme.Dimensions.sizeXL
 import com.msd.core.ui.theme.Dimensions.sizeXXL
 import com.msd.core.ui.theme.NetworkStorageConfigurationTheme
@@ -47,6 +48,7 @@ fun MainEmptyView(userInteractions: UserInteractions) {
     }
 }
 
+@ExcludeFromJacocoGeneratedReport
 @Composable
 @Preview
 fun MainEmptyPreview() {
