@@ -12,7 +12,7 @@ jobs:
     machine:
       image: android:202102-01
       # To optimize build times, we recommend "large" and above for Android-related jobs
-      resource_class: xlarge
+      resource_class: large
     # Add steps to the job
     # See: https://circleci.com/docs/configuration-reference/#steps
     steps:
