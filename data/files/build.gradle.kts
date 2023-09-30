@@ -2,6 +2,7 @@ plugins {
     kotlin(Plugins.kapt)
     id(Plugins.androidLibrary)
     id(Plugins.kotlinAndroid)
+    `jacoco-reports`
 }
 
 android {
