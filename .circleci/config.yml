@@ -2,16 +2,14 @@
 # See: https://circleci.com/docs/configuration-reference
 version: 2.1
 
-orbs:
-  android: circleci/android@2.3.0
-
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
   test-report:
-    executor:
-      name: android/android-machine
-      resource-class: large
+    machine:
+      image: android:202102-01
+      # To optimize build times, we recommend "large" and above for Android-related jobs
+      resource_class: large
     # Add steps to the job
     # See: https://circleci.com/docs/configuration-reference/#steps
     steps:
@@ -24,7 +22,10 @@ jobs:
           avd-name: Emulator
           no-window: true
           restore-gradle-cache-prefix: v1a
-      - run: ./gradlew createTestCoverageReport
+      - run:
+          name: Run createTestCoverageReport task
+          command: |
+            ./gradlew createTestCoverageReport
       - android/save-gradle-cache:
           cache-prefix: v1a
 
