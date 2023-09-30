@@ -24,14 +24,14 @@ jobs:
             sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
             sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
             java -version
-            export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
-      - android/change-java-version:
-          java-version: 17
+            echo 'export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"' >> "$BASH_ENV"
       - android/restore-gradle-cache
       - android/start-emulator-and-run-tests:
           system-image: system-images;android-29;default;x86
           test-command: ./gradlew createTestCoverageReport
       - android/save-gradle-cache
+      - store_artifacts:
+          path:  build/reports/jacoco/createTestCoverageReport/createTestCoverageReport.xml
   test-java:
     machine:
       image: android:202102-01
@@ -50,6 +50,15 @@ jobs:
             java -version
             echo 'export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"' >> "$BASH_ENV"
       - run:
+          # Export base64 encoded google-services.json
+          # into local bash variables
+          name: Export Google Services Json
+          command: echo 'export GOOGLE_SERVICES_JSON="$GOOGLE_SERVICES_JSON"' >> $BASH_ENV
+      - run:
+          # Decode the base64 string
+          name: Decode Google Services Json
+          command: echo $GOOGLE_SERVICES_JSON | base64 -di > app/google-services.json
+      - run:
           name: Test gradlew
           command: |
             ./gradlew lintDebug
@@ -59,4 +68,6 @@ jobs:
 workflows:
   test-report:
     jobs:
-      - test-java
+      - test-java:
+         context:
+           - android
