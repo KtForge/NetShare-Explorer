@@ -39,8 +39,6 @@ jobs:
           name: Run createTestCoverageReport task
           command: |
             ./gradlew createTestCoverageReport
-      - android/save-gradle-cache:
-          cache-prefix: v1a
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
