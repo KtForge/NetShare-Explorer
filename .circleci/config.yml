@@ -17,7 +17,7 @@ jobs:
     # See: https://circleci.com/docs/configuration-reference/#steps
     steps:
       - checkout
-      - change-java-version:
+      - android/change-java-version:
           java-version: 17
       - android/restore-gradle-cache
       - android/start-emulator-and-run-tests:
