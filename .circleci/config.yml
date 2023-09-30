@@ -32,10 +32,33 @@ jobs:
           system-image: system-images;android-29;default;x86
           test-command: ./gradlew createTestCoverageReport
       - android/save-gradle-cache
+  test-java:
+    machine:
+      image: android:202102-01
+      # To optimize build times, we recommend "large" and above for Android-related jobs
+      resource_class: large
+    # Add steps to the job
+    # See: https://circleci.com/docs/configuration-reference/#steps
+    steps:
+      - checkout
+      - run:
+          name: Install OpenJDK 17
+          command: |
+            sudo apt-get update && sudo apt-get install openjdk-17-jdk
+            sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+            sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
+            java -version
+            export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
+            echo $JAVA_HOME
+      - run:
+          name: Test gradlew
+          command: |
+            echo $JAVA_HOME
+            ./gradlew lintDebug
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
   test-report:
     jobs:
-      - test-report
+      - test-java
