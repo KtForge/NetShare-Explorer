@@ -133,8 +133,8 @@ workflows:
                 # fail if any commands fails
                 set -e
 
-                mkdir -p ~/test-results/junit/
-                find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
+                mkdir -p $BITRISE_TEST_DEPLOY_DIR/test-results/junit/
+                find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $BITRISE_TEST_DEPLOY_DIR/test-results/junit/ \;
       - script@1:
           title: Save instrumentation test reports
           inputs:
@@ -143,12 +143,10 @@ workflows:
                 # fail if any commands fails
                 set -e
 
-                mkdir -p ~/test-results/instrumentation/
-                find . -type f -regex ".*/build/outputs/androidTest-results/connected/debug/**/.*xml" -exec cp {} ~/test-results/instrumentation/ \;
+                mkdir -p $BITRISE_TEST_DEPLOY_DIR/test-results/instrumentation/
+                find . -type f -regex ".*/build/outputs/androidTest-results/connected/debug/**/.*xml" -exec cp {} $BITRISE_TEST_DEPLOY_DIR/test-results/instrumentation/ \;
       - deploy-to-bitrise-io:
           title: Deploy unit test report files
-          inputs:
-            - deploy_path: ~/test-results/
   cucumber-tests:
     summary: Run cucumber tests.
     description: The workflow will first clone your Git repository, cache your Gradle
