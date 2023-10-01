@@ -144,10 +144,19 @@ workflows:
             - gradlew_path: ./gradlew
             - gradle_task: createTestCoverageReport
       - save-gradle-cache@1: {}
-      - custom-test-results-export@1:
+      - script-runner@0:
+          title: Move test results to a common directroy
           inputs:
-            - search_pattern: '*/build/test-results/testDebugUnitTest/*.xml'
-            - test_name: Unit tests
+            - file_path: $BITRISE_SOURCE_DIR/tooling/scripts/aggregate_test_results
+      - script@1:
+          title: Install Github CLI
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                # fail if any commands fails
+                set -e
+
+                cp -a test-results/. $BITRISE_TEST_RESULT_DIR
       - deploy-to-bitrise-io@2: {}
 meta:
   bitrise.io:
