@@ -47,22 +47,27 @@ jobs:
           key: android-build-{{ checksum "buildSrc/src/main/java/Versions.kt" }}-{{ checksum "buildSrc/src/main/java/Dependencies.kt" }}
       - run:
           name: Save unit test results
+          when: always
           command: |
             mkdir -p ~/test-results/junit/
             find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
       - run:
           name: Save instrumentation test results
+          when: always
           command: |
             mkdir -p ~/test-results/instrumentation/
             find . -type f -regex ".*/build/outputs/androidTest-results/connected/debug/**/.*xml" -exec cp {} ~/test-results/instrumentation/ \;
       - store_test_results:
+          when: always
           path: ~/test-results
       - run:
           name: Save test coverage html report
+          when: always
           command: |
             mkdir -p ~/test-coverage/
-            cp -a /build/reports/jacoco/createTestCoverageReport/html/. ~/test-coverage/
+            cp -a build/reports/jacoco/createTestCoverageReport/html/. ~/test-coverage/
       - store_artifacts:
+          when: always
           path: ~/test-coverage
 
 # Orchestrate jobs using workflows
