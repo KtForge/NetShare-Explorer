@@ -144,20 +144,12 @@ workflows:
             - gradlew_path: ./gradlew
             - gradle_task: createTestCoverageReport
       - save-gradle-cache@1: {}
-      - script-runner@0:
-          title: Move test results to a common directroy
+      - custom-test-results-export@1:
           inputs:
-            - file_path: $BITRISE_SOURCE_DIR/tooling/scripts/aggregate_test_results
-      - script@1:
-          title: Move test results to test results directory
-          inputs:
-            - content: |-
-                #!/usr/bin/env bash
-                # fail if any commands fails
-                set -e
-
-                cp -a $BITRISE_SOURCE_DIR/test-results/. $BITRISE_TEST_DEPLOY_DIR
-      - deploy-to-bitrise-io@2: {}
+            - search_pattern: 'test-results-deploy/all_reports.xml'
+            - test_name: Unit tests
+      - deploy-to-bitrise-io:
+          title: Deploy unit test report files
 meta:
   bitrise.io:
     stack: linux-docker-android-20.04

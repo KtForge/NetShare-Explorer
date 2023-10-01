@@ -1,5 +1,9 @@
 #!/bin/bash
 
+mkdir -p test-results-deploy
+
+all_reports_file="test-results-deploy/all_reports.xml"
+
 mkdir -p test-results
 
 # Move unit test results to results directory
@@ -7,3 +11,13 @@ find . -type f -regex ".*/build/test-results/.*.xml" -exec cp {} test-results/ \
 
 # Move instrumentation test results to results directory
 find . -type f -regex ".*/build/outputs/androidTest-results/connected/debug/**/.*xml" -exec cp {} test-results/ \;
+
+files=(test-results/*)
+first_line=$(head -n 1 "${files[0]}")
+
+echo "$first_line" > $all_reports_file
+
+for file in test-results/*
+do
+  awk 'NR>1' "$file" >> $all_reports_file
+done
