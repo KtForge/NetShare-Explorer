@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.msd.feature.edit.presenter.EditPresenterTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2023-09-30T17:55:13" hostname="DESKTOP-TUF9PBG" time="3.954">
+  <properties/>
+  <testcase name="when confirming invalid server and sharedPath in loaded state should update the state" classname="com.msd.feature.edit.presenter.EditPresenterTest" time="2.81"/>
+  <testcase name="when initializing with valid id should emit the loaded state" classname="com.msd.feature.edit.presenter.EditPresenterTest" time="0.887"/>
+  <testcase name="when clicking on back arrow should navigate up" classname="com.msd.feature.edit.presenter.EditPresenterTest" time="0.005"/>
+  <testcase name="when confirming invalid sharedPath in loaded state should update the state" classname="com.msd.feature.edit.presenter.EditPresenterTest" time="0.004"/>
+  <testcase name="when providing factory should return the expected data" classname="com.msd.feature.edit.presenter.EditPresenterTest" time="0.177"/>
+  <testcase name="when toggling password visibility should update the state" classname="com.msd.feature.edit.presenter.EditPresenterTest" time="0.004"/>
+  <testcase name="when confirming without optional fields in loaded state should save and navigate back" classname="com.msd.feature.edit.presenter.EditPresenterTest" time="0.02"/>
+  <testcase name="when confirming valid changes in loaded state should save and navigate back" classname="com.msd.feature.edit.presenter.EditPresenterTest" time="0.012"/>
+  <testcase name="when initializing with no id should emit the loaded state" classname="com.msd.feature.edit.presenter.EditPresenterTest" time="0.005"/>
+  <testcase name="when confirming new configuration in loaded state should save and navigate back" classname="com.msd.feature.edit.presenter.EditPresenterTest" time="0.015"/>
+  <testcase name="when initializing with invalid id should navigate back" classname="com.msd.feature.edit.presenter.EditPresenterTest" time="0.007"/>
+  <testcase name="when confirming invalid server in loaded state should update the state" classname="com.msd.feature.edit.presenter.EditPresenterTest" time="0.003"/>
+  <testcase name="when already initialized should do nothing" classname="com.msd.feature.edit.presenter.EditPresenterTest" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

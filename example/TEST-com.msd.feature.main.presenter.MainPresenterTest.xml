@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.msd.feature.main.presenter.MainPresenterTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2023-09-30T17:55:13" hostname="DESKTOP-TUF9PBG" time="4.034">
+  <properties/>
+  <testcase name="when dismissing delete dialog in loaded state should clear the id to delete" classname="com.msd.feature.main.presenter.MainPresenterTest" time="3.163"/>
+  <testcase name="when initializing should emit Loaded state with the expected models" classname="com.msd.feature.main.presenter.MainPresenterTest" time="0.805"/>
+  <testcase name="when delete item button clicked and in loaded state should update the state" classname="com.msd.feature.main.presenter.MainPresenterTest" time="0.007"/>
+  <testcase name="when deleting item in loaded state with no id to delete should do nothing" classname="com.msd.feature.main.presenter.MainPresenterTest" time="0.01"/>
+  <testcase name="when initializing empty should emit Loaded state with the expected models" classname="com.msd.feature.main.presenter.MainPresenterTest" time="0.017"/>
+  <testcase name="when add button clicked should navigate to the edit screen" classname="com.msd.feature.main.presenter.MainPresenterTest" time="0.004"/>
+  <testcase name="when dismissing delete dialog not in loaded state should do nothing" classname="com.msd.feature.main.presenter.MainPresenterTest" time="0.003"/>
+  <testcase name="when deleting item not in loaded state should do nothing" classname="com.msd.feature.main.presenter.MainPresenterTest" time="0.002"/>
+  <testcase name="when delete item button clicked and not in loaded state should do nothing" classname="com.msd.feature.main.presenter.MainPresenterTest" time="0.002"/>
+  <testcase name="when already initialized should not fetch configuration" classname="com.msd.feature.main.presenter.MainPresenterTest" time="0.003"/>
+  <testcase name="when item clicked should navigate to the explorer screen" classname="com.msd.feature.main.presenter.MainPresenterTest" time="0.002"/>
+  <testcase name="when edit item button clicked should navigate to the edit screen" classname="com.msd.feature.main.presenter.MainPresenterTest" time="0.003"/>
+  <testcase name="when deleting item in loaded state with id to delete should invoke delete use case" classname="com.msd.feature.main.presenter.MainPresenterTest" time="0.012"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.msd.data.explorer_data.tracker.ExplorerTrackerTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2023-09-30T15:47:02" hostname="DESKTOP-TUF9PBG" time="0.02">
+  <properties/>
+  <testcase name="when tracking open file should invoke the tracker" classname="com.msd.data.explorer_data.tracker.ExplorerTrackerTest" time="0.019"/>
+  <testcase name="when tracking download file should invoke the tracker" classname="com.msd.data.explorer_data.tracker.ExplorerTrackerTest" time="0.001"/>
+  <testcase name="when tracking list and directories should invoke the tracker" classname="com.msd.data.explorer_data.tracker.ExplorerTrackerTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

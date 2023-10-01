@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.msd.domain.explorer.DownloadFileUseCaseTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2023-09-30T15:45:51" hostname="DESKTOP-TUF9PBG" time="1.068">
+  <properties/>
+  <testcase name="when access error while downloading file should invoke the repository" classname="com.msd.domain.explorer.DownloadFileUseCaseTest" time="1.039"/>
+  <testcase name="when downloading file should invoke the repository" classname="com.msd.domain.explorer.DownloadFileUseCaseTest" time="0.005"/>
+  <testcase name="when connection error while downloading file should invoke the repository" classname="com.msd.domain.explorer.DownloadFileUseCaseTest" time="0.006"/>
+  <testcase name="when unknown error while downloading file should invoke the repository" classname="com.msd.domain.explorer.DownloadFileUseCaseTest" time="0.008"/>
+  <testcase name="when cancel error while downloading file should invoke the repository" classname="com.msd.domain.explorer.DownloadFileUseCaseTest" time="0.01"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

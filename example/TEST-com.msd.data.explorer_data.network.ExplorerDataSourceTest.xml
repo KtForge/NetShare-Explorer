@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.msd.data.explorer_data.network.ExplorerDataSourceTest" tests="20" skipped="0" failures="0" errors="0" timestamp="2023-09-30T15:47:01" hostname="DESKTOP-TUF9PBG" time="0.179">
+  <properties/>
+  <testcase name="when access error while downloading file should return the exception" classname="com.msd.data.explorer_data.network.ExplorerDataSourceTest" time="0.05"/>
+  <testcase name="when cancellation error while downloading file should return the exception" classname="com.msd.data.explorer_data.network.ExplorerDataSourceTest" time="0.009"/>
+  <testcase name="when access error while checking if local file is valid should throw the expected error" classname="com.msd.data.explorer_data.network.ExplorerDataSourceTest" time="0.005"/>
+  <testcase name="when unknown error while downloading file should return the exception" classname="com.msd.data.explorer_data.network.ExplorerDataSourceTest" time="0.009"/>
+  <testcase name="when unknown error while checking if local file is valid should throw the expected error" classname="com.msd.data.explorer_data.network.ExplorerDataSourceTest" time="0.006"/>
+  <testcase name="when unknown error while retrieving files and directories should return the expected data" classname="com.msd.data.explorer_data.network.ExplorerDataSourceTest" time="0.006"/>
+  <testcase name="when opening local file should return the expected data" classname="com.msd.data.explorer_data.network.ExplorerDataSourceTest" time="0.002"/>
+  <testcase name="when exception while downloading file should delete the local file" classname="com.msd.data.explorer_data.network.ExplorerDataSourceTest" time="0.01"/>
+  <testcase name="when connection error while downloading file should return the exception" classname="com.msd.data.explorer_data.network.ExplorerDataSourceTest" time="0.008"/>
+  <testcase name="when cancellation error while checking if local file is valid should throw the expected error" classname="com.msd.data.explorer_data.network.ExplorerDataSourceTest" time="0.007"/>
+  <testcase name="when retrieving files and directories should return the expected data" classname="com.msd.data.explorer_data.network.ExplorerDataSourceTest" time="0.008"/>
+  <testcase name="when deleting local file should return the expected data" classname="com.msd.data.explorer_data.network.ExplorerDataSourceTest" time="0.001"/>
+  <testcase name="when connection error while checking if local file is valid should throw the expected error" classname="com.msd.data.explorer_data.network.ExplorerDataSourceTest" time="0.007"/>
+  <testcase name="when connection error while retrieving files and directories should return the expected data" classname="com.msd.data.explorer_data.network.ExplorerDataSourceTest" time="0.007"/>
+  <testcase name="when local file is not valid should return false" classname="com.msd.data.explorer_data.network.ExplorerDataSourceTest" time="0.007"/>
+  <testcase name="when downloading file should invoke the expected function" classname="com.msd.data.explorer_data.network.ExplorerDataSourceTest" time="0.007"/>
+  <testcase name="when cancellation error while retrieving files and directories should return the expected data" classname="com.msd.data.explorer_data.network.ExplorerDataSourceTest" time="0.007"/>
+  <testcase name="when access error while retrieving files and directories should return the expected data" classname="com.msd.data.explorer_data.network.ExplorerDataSourceTest" time="0.006"/>
+  <testcase name="when local file is valid should return true" classname="com.msd.data.explorer_data.network.ExplorerDataSourceTest" time="0.007"/>
+  <testcase name="when exception while checking if local file is valid should throw the expected error" classname="com.msd.data.explorer_data.network.ExplorerDataSourceTest" time="0.007"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

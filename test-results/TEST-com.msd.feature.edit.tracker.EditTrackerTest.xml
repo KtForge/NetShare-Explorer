@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.msd.feature.edit.tracker.EditTrackerTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2023-09-30T17:55:17" hostname="DESKTOP-TUF9PBG" time="0.039">
+  <properties/>
+  <testcase name="when tracking configuration edited should invoke the tracker" classname="com.msd.feature.edit.tracker.EditTrackerTest" time="0.038"/>
+  <testcase name="when tracking configuration created should invoke the tracker" classname="com.msd.feature.edit.tracker.EditTrackerTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

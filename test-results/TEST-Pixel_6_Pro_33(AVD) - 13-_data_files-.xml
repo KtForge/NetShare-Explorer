@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuite name="com.msd.data.files.FileManagerTest" tests="11" failures="0" errors="0" skipped="0" time="0.559" timestamp="2023-09-30T17:55:21" hostname="localhost">
+  <properties>
+    <property name="device" value="Pixel_6_Pro_33(AVD) - 13" />
+    <property name="flavor" value="" />
+    <property name="project" value=":data:files" />
+  </properties>
+  <testcase name="cleaningFilesShouldKeepNonEmptyDirectories" classname="com.msd.data.files.FileManagerTest" time="0.012" />
+  <testcase name="getLocalPathShouldReturnTheExpectedPath" classname="com.msd.data.files.FileManagerTest" time="0.002" />
+  <testcase name="getLocalFileShouldReturnTheExpectedFile" classname="com.msd.data.files.FileManagerTest" time="0.003" />
+  <testcase name="getFileCreationTimeShouldReturnTheExpectedValue" classname="com.msd.data.files.FileManagerTest" time="0.002" />
+  <testcase name="copyingFileWorksAsExpected" classname="com.msd.data.files.FileManagerTest" time="0.105" />
+  <testcase name="cleaningFilesShouldMaintainSpecifiedFiles" classname="com.msd.data.files.FileManagerTest" time="0.003" />
+  <testcase name="removeLocalFileShouldWorkProperly" classname="com.msd.data.files.FileManagerTest" time="0.001" />
+  <testcase name="deleteServerContentsShouldRemoveAllFiles" classname="com.msd.data.files.FileManagerTest" time="0.002" />
+  <testcase name="cleaningFilesShouldDeleteEmptyNestedDirectories" classname="com.msd.data.files.FileManagerTest" time="0.003" />
+  <testcase name="cleaningFilesShouldRemoveCacheFiles" classname="com.msd.data.files.FileManagerTest" time="0.003" />
+  <testcase name="makeDirectoriesForNewFileShouldMakeTheNeededDirectories" classname="com.msd.data.files.FileManagerTest" time="0.002" />
+</testsuite>

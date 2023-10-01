@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.msd.feature.explorer.presenter.ExplorerPresenterTest" tests="44" skipped="0" failures="0" errors="0" timestamp="2023-09-30T17:55:18" hostname="DESKTOP-TUF9PBG" time="0.467">
+  <properties/>
+  <testcase name="when initializing with valid id with access error should emit Error state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.16"/>
+  <testcase name="when dismissing file access error dialog not in loaded state should do nothing" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.009"/>
+  <testcase name="when back pressed in loaded state and parent directory should retrieve files" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.009"/>
+  <testcase name="when initializing with valid id with connection error should emit Error state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.007"/>
+  <testcase name="when clicking on a directory in loaded state and connection error should emit Error state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.006"/>
+  <testcase name="when clicking on a parent directory in loaded state and not in root path and access error should emit error state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.006"/>
+  <testcase name="when clicking on a directory in loaded state should update the state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.005"/>
+  <testcase name="when clicking on a file in loaded state should update the state and open the file" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.009"/>
+  <testcase name="when clicking on a directory not in loaded state should do nothing" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.002"/>
+  <testcase name="when dismissing file access error dialog should update the state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.002"/>
+  <testcase name="when clicking on back arrow should navigate up" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.001"/>
+  <testcase name="when dismissing progress dialog not in loaded state should do nothing" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.002"/>
+  <testcase name="when confirming file access error dialog should update the state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.003"/>
+  <testcase name="when downloading a file and cancellation exception should update the state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.009"/>
+  <testcase name="when dismissing progress dialog should update the state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.001"/>
+  <testcase name="when clicking on a directory in loaded state and access error should emit Error state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.006"/>
+  <testcase name="when initializing with valid id and not found configuration should emit Error state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.008"/>
+  <testcase name="when downloading a file and access exception should show the error" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.008"/>
+  <testcase name="when clicking on a file in loaded state and unknown error should emit error state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.007"/>
+  <testcase name="when clicking on a downloaded file in loaded state should update the state and open the file" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.007"/>
+  <testcase name="when downloading a file and unknown exception should show the error" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.006"/>
+  <testcase name="when clicking on a file in loaded state and null file should restore the state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.005"/>
+  <testcase name="when clicking on a file in loaded state and connection error should emit error state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.005"/>
+  <testcase name="when clicking on a directory in loaded state and unknown error should emit Error state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.005"/>
+  <testcase name="when deleting file should update the state with files and directories" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.005"/>
+  <testcase name="when providing factory should return the expected data" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.081"/>
+  <testcase name="when clicking on a file not in loaded state should do nothing" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.001"/>
+  <testcase name="when clicking on a file in loaded state and access error should emit error state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.005"/>
+  <testcase name="when clicking on a parent directory in loaded state and not in root path and unknown error should emit error state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.006"/>
+  <testcase name="when deleting file with connection error should update the state with error" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.007"/>
+  <testcase name="when deleting file with access error should update the state with error" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.006"/>
+  <testcase name="when deleting file with cancellation error should do nothing" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.004"/>
+  <testcase name="when clicking on a parent directory not in loaded state should do nothing" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.001"/>
+  <testcase name="when clicking on a parent directory in loaded state and not in root path and connection error should emit error state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.006"/>
+  <testcase name="when deleting file and not in loaded state should do nothing" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.004"/>
+  <testcase name="when downloading a file successfully should update the state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.007"/>
+  <testcase name="when initializing with valid id successfully should emit Loaded state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.008"/>
+  <testcase name="when initializing with valid id with unknown error should emit Error state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.006"/>
+  <testcase name="when downloading a file and connection exception should show the error" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.005"/>
+  <testcase name="when clicking on a parent directory in loaded state and not in root path should update the state" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.006"/>
+  <testcase name="when deleting file with unknown error should update the state with error" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.006"/>
+  <testcase name="when initializing with invalid id should navigate back" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.003"/>
+  <testcase name="when back pressed in loaded state and no parent directory should navigate back" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.001"/>
+  <testcase name="when already initialized should do nothing" classname="com.msd.feature.explorer.presenter.ExplorerPresenterTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
