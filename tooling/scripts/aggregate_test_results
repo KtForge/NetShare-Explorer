@@ -21,3 +21,9 @@ for file in test-results/*
 do
   awk 'NR>1' "$file" >> $all_reports_file
 done
+
+ls
+
+echo "----"
+
+ls test-results-deploy
