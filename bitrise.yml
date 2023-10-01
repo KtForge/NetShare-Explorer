@@ -158,12 +158,11 @@ workflows:
     summary: Run unit test coverage.
     description: The workflow will first clone your Git repository, cache your Gradle dependencies, install Android tools, run your Cucumber tests and save the test report.
     before_run:
-      - _start_emulator
       - _clone_repository
     steps:
       - custom-test-results-export@1:
           inputs:
-            - search_pattern: 'test-results-deploy/*.xml'
+            - search_pattern: "test-results-deploy/*"
             - test_name: Unit tests
       - deploy-to-bitrise-io:
           title: Deploy unit test report files
