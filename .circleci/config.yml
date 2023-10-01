@@ -40,6 +40,7 @@ jobs:
           system-image: system-images;android-29;default;x86
           test-command: ./gradlew createTestCoverageReport
           restore-gradle-cache-post-emulator-launch: false
+          save-gradle-cache: false
       - save_cache:
           paths:
             - ~/.gradle
@@ -56,13 +57,8 @@ jobs:
             find . -type f -regex ".*/build/outputs/androidTest-results/connected/debug/**/.*xml" -exec cp {} ~/test-results/instrumentation/ \;
       - store_test_results:
           path: ~/test-results
-      - run:
-          name: Save unit test coverage
-          command: |
-            mkdir -p ~/test-coverage/
-            find . -type f -regex ".*/build/jacoco/testDebugUnitTest.exec" -exec cp {} ~/test-coverage/ \;
       - store_artifacts:
-          path: ~/test-coverage
+          path: ~/build/reports/jacoco/createTestCoverageReport/html
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
