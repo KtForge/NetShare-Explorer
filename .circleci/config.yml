@@ -60,15 +60,15 @@ jobs:
       - store_test_results:
           when: always
           path: ~/test-results
-      - run:
-          name: Save test coverage html report
-          when: always
-          command: |
-            mkdir -p ~/test-coverage/
-            cp -a build/reports/jacoco/createTestCoverageReport/html/. ~/test-coverage/
-      - store_artifacts:
-          when: always
-          path: ~/test-coverage
+      #- run:
+      #    name: Save test coverage html report
+      #    when: always
+      #    command: |
+      #      mkdir -p ~/test-coverage/
+      #      cp -a build/reports/jacoco/createTestCoverageReport/html/. ~/test-coverage/
+      #- store_artifacts:
+      #    when: always
+      #    path: ~/test-coverage
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
