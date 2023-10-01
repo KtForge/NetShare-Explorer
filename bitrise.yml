@@ -150,18 +150,6 @@ workflows:
             - file_path: $BITRISE_SOURCE_DIR/tooling/scripts/aggregate_test_results
       - custom-test-results-export@1:
           inputs:
-            - search_pattern: 'test-results-deploy/all_reports.xml'
-            - test_name: Unit tests
-      - deploy-to-bitrise-io:
-          title: Deploy unit test report files
-  test-deploy:
-    summary: Run unit test coverage.
-    description: The workflow will first clone your Git repository, cache your Gradle dependencies, install Android tools, run your Cucumber tests and save the test report.
-    before_run:
-      - _clone_repository
-    steps:
-      - custom-test-results-export@1:
-          inputs:
             - search_pattern: '*/test-results-deploy/*'
             - test_name: Unit tests
       - deploy-to-bitrise-io:
