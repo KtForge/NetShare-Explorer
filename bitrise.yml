@@ -156,10 +156,7 @@ workflows:
                 # fail if any commands fails
                 set -e
 
-                cp -a $BITRISE_SOURCE_DIR/test-results/. $BITRISE_TEST_RESULT_DIR
-
-                ls $BITRISE_SOURCE_DIR
-                ls $BITRISE_TEST_RESULT_DIR
+                cp -a $BITRISE_SOURCE_DIR/test-results/. $BITRISE_TEST_DEPLOY_DIR
       - deploy-to-bitrise-io@2: {}
 meta:
   bitrise.io:
