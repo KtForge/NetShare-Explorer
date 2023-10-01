@@ -162,7 +162,7 @@ workflows:
     steps:
       - custom-test-results-export@1:
           inputs:
-            - search_pattern: './test-results-deploy/*'
+            - search_pattern: '*/test-results-deploy/*'
             - test_name: Unit tests
       - deploy-to-bitrise-io:
           title: Deploy unit test report files
