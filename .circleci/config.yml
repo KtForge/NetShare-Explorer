@@ -35,20 +35,23 @@ jobs:
           name: Decode Google Services Json
           command: echo $GOOGLE_SERVICES_JSON | base64 -di > app/google-services.json
       - restore_cache:
-          key: jars-{{ checksum "buildSrc/**/Versions.kt" }}-{{ checksum "buildSrc/**/Dependencies.kt" }}
-      - android/restore-gradle-cache
+          key: android-build-{{ checksum "buildSrc/src/main/java/Versions.kt" }}-{{ checksum "buildSrc/src/main/java/Dependencies.kt" }}
       - android/start-emulator-and-run-tests:
           system-image: system-images;android-29;default;x86
           test-command: ./gradlew createTestCoverageReport
       - save_cache:
           paths:
             - ~/.gradle
-          key: jars-{{ checksum "buildSrc/**/Versions.kt" }}-{{ checksum "buildSrc/**/Dependencies.kt" }}
+          key: android-build-{{ checksum "buildSrc/src/main/java/Versions.kt" }}-{{ checksum "buildSrc/src/main/java/Dependencies.kt" }}
       - run:
-          name: Save test results
+          name: Save unit test results
           command: |
             mkdir -p ~/test-results/junit/
             find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
+      - run:
+          name: Save instrumentation test results
+          command: |
+            find . -type f -regex ".*/build/outputs/androidTest-results/connected/debug/**/.*xml" -exec cp {} ~/test-results/junit/ \;
       - store_test_results:
           path: ~/test-results
 
