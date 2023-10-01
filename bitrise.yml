@@ -1,46 +1,45 @@
----
-format_version: '13'
+format_version: "13"
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 project_type: android
 workflows:
   _clone_repository:
     steps:
-    - activate-ssh-key@4: {}
-    - git-clone@8: {}
+      - activate-ssh-key@4: {}
+      - git-clone@8: {}
   _create-release-candidate:
     steps:
       - file-downloader@1:
           title: Download keystore
           inputs:
-            - destination: "$BITRISE_SOURCE_DIR/app/nfe_android_keystore"
-            - source: "$BITRISEIO_ANDROID_KEYSTORE_URL"
+            - destination: $BITRISE_SOURCE_DIR/app/nfe_android_keystore
+            - source: $BITRISEIO_ANDROID_KEYSTORE_URL
       - file-downloader@1:
           title: Download Firebase json file
           inputs:
-            - destination: "$BITRISE_SOURCE_DIR/app/google-services.json"
-            - source: "$BITRISEIO_FIREBASE_JSON_URL"
+            - destination: $BITRISE_SOURCE_DIR/app/google-services.json
+            - source: $BITRISEIO_FIREBASE_JSON_URL
       - set-java-version@1:
           inputs:
-            - set_java_version: '17'
+            - set_java_version: "17"
           title: Set Java to version 17
       - gradle-runner@2:
           title: Create release apk and aab
           inputs:
-            - gradlew_path: "./gradlew"
-            - gradle_file: ''
+            - gradlew_path: ./gradlew
+            - gradle_file: ""
             - gradle_task: assembleRelease bundleRelease
       - deploy-to-bitrise-io@2:
           title: Deploy release apk
           inputs:
-            - deploy_path: "$BITRISE_SOURCE_DIR/app/build/outputs/apk/release/app-release.apk"
+            - deploy_path: $BITRISE_SOURCE_DIR/app/build/outputs/apk/release/app-release.apk
       - deploy-to-bitrise-io@2:
           title: Deploy release aab
           inputs:
-            - deploy_path: "$BITRISE_SOURCE_DIR/app/build/outputs/bundle/release/app-release.aab"
+            - deploy_path: $BITRISE_SOURCE_DIR/app/build/outputs/bundle/release/app-release.aab
       - script-runner@0:
           title: Push new version tag
           inputs:
-            - file_path: "$BITRISE_SOURCE_DIR/tooling/scripts/update_version_and_tag"
+            - file_path: $BITRISE_SOURCE_DIR/tooling/scripts/update_version_and_tag
       - script@1:
           title: Install Github CLI
           inputs:
@@ -58,20 +57,20 @@ workflows:
       - script-runner@0:
           title: Create new Github release
           inputs:
-            - file_path: "$BITRISE_SOURCE_DIR/tooling/scripts/publish_github_release"
+            - file_path: $BITRISE_SOURCE_DIR/tooling/scripts/publish_github_release
     after_run:
       - _deploy_alpha_google_play_store
   _deploy_alpha_google_play_store:
     steps:
-    - file-downloader@1:
-        title: Download fastlane api key json file
-        inputs:
-        - destination: "$BITRISE_SOURCE_DIR/google_play_key.json"
-        - source: "$BITRISEIO_GOOGLE_PLAY_KEY_JSON_URL"
-    - fastlane@3:
-        title: Upload app to Google PlayStore's alpha track
-        inputs:
-        - lane: upload_alpha
+      - file-downloader@1:
+          title: Download fastlane api key json file
+          inputs:
+            - destination: $BITRISE_SOURCE_DIR/google_play_key.json
+            - source: $BITRISEIO_GOOGLE_PLAY_KEY_JSON_URL
+      - fastlane@3:
+          title: Upload app to Google PlayStore's alpha track
+          inputs:
+            - lane: upload_alpha
   _start_emulator:
     steps:
       - avd-manager@1: {}
@@ -82,7 +81,7 @@ workflows:
       - script-runner@0:
           title: Increase major version
           inputs:
-            - file_path: "$BITRISE_SOURCE_DIR/tooling/scripts/increase_major_version"
+            - file_path: $BITRISE_SOURCE_DIR/tooling/scripts/increase_major_version
     after_run:
       - _create-release-candidate
   create-minor-release-candidate:
@@ -92,7 +91,7 @@ workflows:
       - script-runner@0:
           title: Increase minor version
           inputs:
-            - file_path: "$BITRISE_SOURCE_DIR/tooling/scripts/increase_minor_version"
+            - file_path: $BITRISE_SOURCE_DIR/tooling/scripts/increase_minor_version
     after_run:
       - _create-release-candidate
   create-patch-release-candidate:
@@ -102,75 +101,53 @@ workflows:
       - script-runner@0:
           title: Increase patch version
           inputs:
-            - file_path: "$BITRISE_SOURCE_DIR/tooling/scripts/increase_patch_version"
+            - file_path: $BITRISE_SOURCE_DIR/tooling/scripts/increase_patch_version
     after_run:
       - _create-release-candidate
-  unit-test-coverage:
-    summary: Run unit test coverage.
-    description: The workflow will first clone your Git repository, cache your Gradle
-      dependencies, install Android tools, run your Cucumber tests and save the test
-      report.
+  cucumber-tests:
+    summary: Run cucumber tests.
+    description: The workflow will first clone your Git repository, cache your Gradle dependencies, install Android tools, run your Cucumber tests and save the test report.
     before_run:
       - _start_emulator
       - _clone_repository
     steps:
       - set-java-version@1:
           inputs:
-            - set_java_version: '17'
+            - set_java_version: "17"
+      - restore-gradle-cache@1: {}
+      - wait-for-android-emulator@1: {}
+      - gradle-runner@2:
+          title: Run cucumber tests
+          inputs:
+            - gradlew_path: ./gradlew
+            - gradle_task: cucumber
+      - save-gradle-cache@1: {}
+      - deploy-to-bitrise-io:
+          title: Deploy cucumber report zip file
+          inputs:
+            - deploy_path: ./cucumber/build/cucumber_report.zip
+  unit-test-coverage:
+    summary: Run unit test coverage.
+    description: The workflow will first clone your Git repository, cache your Gradle dependencies, install Android tools, run your Cucumber tests and save the test report.
+    before_run:
+      - _start_emulator
+      - _clone_repository
+    steps:
+      - set-java-version@1:
+          inputs:
+            - set_java_version: "17"
       - restore-gradle-cache@1: {}
       - wait-for-android-emulator@1: {}
       - gradle-runner@2:
           title: Run unit tests
           inputs:
-            - gradlew_path: "./gradlew"
+            - gradlew_path: ./gradlew
             - gradle_task: createTestCoverageReport
       - save-gradle-cache@1: {}
-      - script@1:
-          title: Save unit test reports
+      - custom-test-results-export@1:
           inputs:
-            - content: |-
-                #!/usr/bin/env bash
-                # fail if any commands fails
-                set -e
-
-                mkdir -p $BITRISE_TEST_DEPLOY_DIR/test-results/junit/
-                find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $BITRISE_TEST_DEPLOY_DIR/test-results/junit/ \;
-      - script@1:
-          title: Save instrumentation test reports
-          inputs:
-            - content: |-
-                #!/usr/bin/env bash
-                # fail if any commands fails
-                set -e
-
-                mkdir -p $BITRISE_TEST_DEPLOY_DIR/test-results/instrumentation/
-                find . -type f -regex ".*/build/outputs/androidTest-results/connected/debug/**/.*xml" -exec cp {} $BITRISE_TEST_DEPLOY_DIR/test-results/instrumentation/ \;
-      - deploy-to-bitrise-io:
-          title: Deploy unit test report files
-  cucumber-tests:
-    summary: Run cucumber tests.
-    description: The workflow will first clone your Git repository, cache your Gradle
-      dependencies, install Android tools, run your Cucumber tests and save the test
-      report.
-    before_run:
-      - _start_emulator
-      - _clone_repository
-    steps:
-    - set-java-version@1:
-        inputs:
-        - set_java_version: '17'
-    - restore-gradle-cache@1: {}
-    - wait-for-android-emulator@1: {}
-    - gradle-runner@2:
-        title: Run cucumber tests
-        inputs:
-        - gradlew_path: "./gradlew"
-        - gradle_task: cucumber
-    - save-gradle-cache@1: {}
-    - deploy-to-bitrise-io:
-        title: Deploy cucumber report zip file
-        inputs:
-        - deploy_path: "./cucumber/build/cucumber_report.zip"
+            - search_pattern: '*/build/test-results/testDebugUnitTest/*.xml'
+            - test_name: Unit tests
 meta:
   bitrise.io:
     stack: linux-docker-android-20.04
