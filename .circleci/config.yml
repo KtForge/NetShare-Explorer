@@ -34,15 +34,23 @@ jobs:
           # Decode the base64 string
           name: Decode Google Services Json
           command: echo $GOOGLE_SERVICES_JSON | base64 -di > app/google-services.json
+      - restore_cache:
+          key: jars-{{ checksum "buildSrc/**/Versions.kt" }}-{{ checksum "buildSrc/**/Dependencies.kt" }}
       - android/restore-gradle-cache
       - android/start-emulator-and-run-tests:
           system-image: system-images;android-29;default;x86
           test-command: ./gradlew createTestCoverageReport
-      - android/save-gradle-cache
-      - store_artifacts:
-          path:  build/reports/jacoco/createTestCoverageReport/createTestCoverageReport.xml
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "buildSrc/**/Versions.kt" }}-{{ checksum "buildSrc/**/Dependencies.kt" }}
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
       - store_test_results:
-          path:  build/reports/jacoco/createTestCoverageReport/createTestCoverageReport.xml
+          path: ~/test-results
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
