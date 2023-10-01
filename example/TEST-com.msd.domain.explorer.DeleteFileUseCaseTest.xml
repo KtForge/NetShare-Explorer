@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.msd.domain.explorer.DeleteFileUseCaseTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-09-30T15:45:49" hostname="DESKTOP-TUF9PBG" time="2.411">
-  <properties/>
-  <testcase name="when deleting file should invoke the repository" classname="com.msd.domain.explorer.DeleteFileUseCaseTest" time="2.411"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

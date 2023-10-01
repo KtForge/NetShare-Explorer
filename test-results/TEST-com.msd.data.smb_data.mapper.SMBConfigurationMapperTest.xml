@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.msd.data.smb_data.mapper.SMBConfigurationMapperTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2023-09-30T15:46:53" hostname="DESKTOP-TUF9PBG" time="0.0">
-  <properties/>
-  <testcase name="when mapping a domain object to data should return the expected model" classname="com.msd.data.smb_data.mapper.SMBConfigurationMapperTest" time="0.0"/>
-  <testcase name="when mapping a list of data objects to domain should return the expected models" classname="com.msd.data.smb_data.mapper.SMBConfigurationMapperTest" time="0.0"/>
-  <testcase name="when mapping a data object to domain should return the expected model" classname="com.msd.data.smb_data.mapper.SMBConfigurationMapperTest" time="0.0"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
