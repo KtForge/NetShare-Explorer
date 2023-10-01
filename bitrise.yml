@@ -148,6 +148,7 @@ workflows:
           inputs:
             - search_pattern: '*/build/test-results/testDebugUnitTest/*.xml'
             - test_name: Unit tests
+      - deploy-to-bitrise-io@2: {}
 meta:
   bitrise.io:
     stack: linux-docker-android-20.04
