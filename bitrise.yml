@@ -105,6 +105,50 @@ workflows:
             - file_path: "$BITRISE_SOURCE_DIR/tooling/scripts/increase_patch_version"
     after_run:
       - _create-release-candidate
+  unit-test-coverage:
+    summary: Run unit test coverage.
+    description: The workflow will first clone your Git repository, cache your Gradle
+      dependencies, install Android tools, run your Cucumber tests and save the test
+      report.
+    before_run:
+      - _start_emulator
+      - _clone_repository
+    steps:
+      - set-java-version@1:
+          inputs:
+            - set_java_version: '17'
+      - restore-gradle-cache@1: {}
+      - wait-for-android-emulator@1: {}
+      - gradle-runner@2:
+          title: Run unit tests
+          inputs:
+            - gradlew_path: "./gradlew"
+            - gradle_task: createTestCoverageReport
+      - save-gradle-cache@1: {}
+      - script@1:
+          title: Save unit test reports
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                # fail if any commands fails
+                set -e
+
+                mkdir -p ~/test-results/junit/
+                find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
+      - script@1:
+          title: Save instrumentation test reports
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                # fail if any commands fails
+                set -e
+
+                mkdir -p ~/test-results/instrumentation/
+                find . -type f -regex ".*/build/outputs/androidTest-results/connected/debug/**/.*xml" -exec cp {} ~/test-results/instrumentation/ \;
+      - deploy-to-bitrise-io:
+          title: Deploy unit test report files
+          inputs:
+            - deploy_path: ~/test-results/
   cucumber-tests:
     summary: Run cucumber tests.
     description: The workflow will first clone your Git repository, cache your Gradle

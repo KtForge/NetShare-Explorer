@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.msd.core.ui.annotations.ExcludeFromJacocoGeneratedReport
 import com.msd.core.ui.theme.Dimensions.sizeL
 import com.msd.core.ui.theme.Dimensions.sizeM
 import com.msd.core.ui.theme.Dimensions.sizeS
@@ -170,6 +171,7 @@ private fun DeleteConfigurationDialog(userInteractions: UserInteractions) {
     )
 }
 
+@ExcludeFromJacocoGeneratedReport
 @Composable
 @Preview
 fun MainLoadedPreview() {
@@ -215,6 +217,7 @@ fun MainLoadedPreview() {
     }
 }
 
+@ExcludeFromJacocoGeneratedReport
 @Composable
 @Preview
 fun MainLoadedDeleteDialogPreview() {
