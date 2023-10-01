@@ -16,14 +16,11 @@ files=(test-results/*)
 first_line=$(head -n 1 "${files[0]}")
 
 echo "$first_line" > $all_reports_file
+echo "<testsuites>" >> $all_reports_file
 
 for file in test-results/*
 do
   awk 'NR>1' "$file" >> $all_reports_file
 done
 
-ls
-
-echo "----"
-
-ls test-results-deploy
+echo "</testsuites>" >> $all_reports_file
