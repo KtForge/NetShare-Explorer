@@ -144,6 +144,10 @@ workflows:
             - gradlew_path: ./gradlew
             - gradle_task: createTestCoverageReport
       - save-gradle-cache@1: {}
+      - script-runner@0:
+          title: Create aggregated test report
+          inputs:
+            - file_path: $BITRISE_SOURCE_DIR/tooling/scripts/aggregate_test_results
       - custom-test-results-export@1:
           inputs:
             - search_pattern: 'test-results-deploy/all_reports.xml'
