@@ -1,4 +1,7 @@
+import org.apache.commons.io.filefilter.WildcardFileFilter
+import org.apache.tools.ant.DirectoryScanner
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import java.io.FileFilter
 
 // Test
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
@@ -76,88 +79,105 @@ jacoco {
     reportsDirectory.set(layout.buildDirectory.dir("reports/jacoco"))
 }
 
-project.afterEvaluate {
+fun getListOfReports(): Set<File> {
+    val scanner = DirectoryScanner()
+    scanner.setIncludes(arrayOf("**/reports/coverage/**/*.xml", "**/reports/jacoco/**/*.xml"))
+    scanner.setExcludes(arrayOf("build/"))
+    scanner.setBasedir(projectDir.absolutePath)
+    scanner.isCaseSensitive = false
+    scanner.scan()
 
-    tasks.register<JacocoReport>("createTestCoverageReport") {
-        dependsOn("debugUnitTestCoverage")
-
-        group = "Reporting"
-        description = "Generate overall Jacoco coverage report for the debug build."
-
-        reports {
-            html.required.set(true)
-            xml.required.set(true)
-        }
-
-        val excludes = setOf(
-            "**/R.class",
-            "**/R$*.class",
-            "**/BuildConfig.*",
-            "**/Manifest*.*",
-            "**/*Test*.*",
-            "android/**/*.*",
-            "androidx/**/*.*",
-            "**/*ViewInjector*.*",
-            "**/*Dagger*.*",
-            "**/*MembersInjector*.*",
-            "**/*_Factory.*",
-            "**/*_Provide*Factory*.*",
-            "**/*_ViewBinding*.*",
-            "**/AutoValue_*.*",
-            "**/R2.class",
-            "**/R2$*.class",
-            "**/*Directions$*",
-            "**/*Directions.*",
-            "**/*Binding.*",
-            "**/core/**"
-        )
-
-        val kClasses = subprojects.map { proj ->
-            "${proj.buildDir}/tmp/kotlin-classes/debug"
-        }
-        val classes = subprojects.map { proj ->
-            "${proj.buildDir}/classes/kotlin/main"
-        }
-        val kotlinClasses = kClasses.map { path ->
-            fileTree(path) { exclude(excludes) }
-        } + classes.map { path ->
-            fileTree(path) { exclude(excludes) }
-        }
-
-        classDirectories.setFrom(files(kotlinClasses))
-        val sources = subprojects.map { proj ->
-            "${proj.projectDir}/src/main/java"
-        }
-
-        sourceDirectories.setFrom(files(sources))
-
-        val androidExecutions = subprojects.filter { proj ->
-            val path = "${proj.buildDir}/jacoco/testDebugUnitTest.exec"
-            proj.plugins.hasPlugin(Plugins.androidLibrary) && File(path).exists()
-        }.map { proj ->
-            "${proj.buildDir}/jacoco/testDebugUnitTest.exec"
-        }
-
-        val uiExecutions = subprojects.map { proj ->
-            val path = "${proj.buildDir}/outputs/code_coverage/debugAndroidTest/connected"
-
-            val emulatorDirectory = File(path).listFiles()?.firstOrNull()
-            val executionFile = if (emulatorDirectory != null) {
-                File(emulatorDirectory.absolutePath, "coverage.ec")
-            } else {
-                null
-            }
-
-            executionFile
-        }.mapNotNull { executionFile -> executionFile?.absolutePath }
-
-        val kotlinExecutions = subprojects.filter { proj ->
-            val path = "${proj.buildDir}/jacoco/test.exec"
-            proj.plugins.hasPlugin(Plugins.javaLibrary) && File(path).exists()
-        }.map { proj ->
-            "${proj.buildDir}/jacoco/test.exec"
-        }
-
-        executionData.setFrom(files(androidExecutions, uiExecutions, kotlinExecutions))
-    }
+    val files: Array<String> = scanner.includedFiles
+    return files.map { filePath ->
+        File(filePath)
+    }.toSet()
 }
+
+tasks.register<Delete>("deleteIndividualJacocoReports") {
+    delete = getListOfReports()
+}
+
+tasks.register<JacocoReport>("createTestCoverageReport") {
+    dependsOn("debugUnitTestCoverage")
+    finalizedBy("deleteIndividualJacocoReports")
+
+    group = "Reporting"
+    description = "Generate overall Jacoco coverage report for the debug build."
+
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
+    }
+
+    val excludes = setOf(
+        "**/R.class",
+        "**/R$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*",
+        "android/**/*.*",
+        "androidx/**/*.*",
+        "**/*ViewInjector*.*",
+        "**/*Dagger*.*",
+        "**/*MembersInjector*.*",
+        "**/*_Factory.*",
+        "**/*_Provide*Factory*.*",
+        "**/*_ViewBinding*.*",
+        "**/AutoValue_*.*",
+        "**/R2.class",
+        "**/R2$*.class",
+        "**/*Directions$*",
+        "**/*Directions.*",
+        "**/*Binding.*",
+        "**/core/**"
+    )
+
+    val kClasses = subprojects.map { proj ->
+        "${proj.buildDir}/tmp/kotlin-classes/debug"
+    }
+    val classes = subprojects.map { proj ->
+        "${proj.buildDir}/classes/kotlin/main"
+    }
+    val kotlinClasses = kClasses.map { path ->
+        fileTree(path) { exclude(excludes) }
+    } + classes.map { path ->
+        fileTree(path) { exclude(excludes) }
+    }
+
+    classDirectories.setFrom(files(kotlinClasses))
+    val sources = subprojects.map { proj ->
+        "${proj.projectDir}/src/main/java"
+    }
+
+    sourceDirectories.setFrom(files(sources))
+
+    val androidExecutions = subprojects.filter { proj ->
+        val path = "${proj.buildDir}/jacoco/testDebugUnitTest.exec"
+        proj.plugins.hasPlugin(Plugins.androidLibrary) && File(path).exists()
+    }.map { proj ->
+        "${proj.buildDir}/jacoco/testDebugUnitTest.exec"
+    }
+
+    val uiExecutions = subprojects.map { proj ->
+        val path = "${proj.buildDir}/outputs/code_coverage/debugAndroidTest/connected"
+
+        val emulatorDirectory = File(path).listFiles()?.firstOrNull()
+        val executionFile = if (emulatorDirectory != null) {
+            File(emulatorDirectory.absolutePath, "coverage.ec")
+        } else {
+            null
+        }
+
+        executionFile
+    }.mapNotNull { executionFile -> executionFile?.absolutePath }
+
+    val kotlinExecutions = subprojects.filter { proj ->
+        val path = "${proj.buildDir}/jacoco/test.exec"
+        proj.plugins.hasPlugin(Plugins.javaLibrary) && File(path).exists()
+    }.map { proj ->
+        "${proj.buildDir}/jacoco/test.exec"
+    }
+
+    executionData.setFrom(files(androidExecutions, uiExecutions, kotlinExecutions))
+}
+
