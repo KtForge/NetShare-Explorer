@@ -89,6 +89,8 @@ tasks.register<Delete>("deleteIndividualJacocoReports") {
             report1Regex.containsMatchIn(file.absolutePath) || report2Regex.containsMatchIn(file.absolutePath)
         }.toSet()
 
+        filesToDelete.forEach { file -> println("Deleting $file") }
+
         delete = filesToDelete
     }
 }
