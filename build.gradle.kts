@@ -79,25 +79,18 @@ jacoco {
     reportsDirectory.set(layout.buildDirectory.dir("reports/jacoco"))
 }
 
-fun getListOfReports(): Set<File> {
-    val scanner = DirectoryScanner()
-    scanner.setIncludes(arrayOf("**/reports/coverage/**/*.xml", "**/reports/jacoco/**/*.xml"))
-    scanner.setExcludes(arrayOf("build/"))
-    scanner.setBasedir(projectDir.absolutePath)
-    scanner.isCaseSensitive = false
-    scanner.scan()
-
-    val files: Array<String> = scanner.includedFiles
-    return files.map { filePath ->
-        File(filePath)
-    }.toSet()
-}
-
 tasks.register<Delete>("deleteIndividualJacocoReports") {
-    getListOfReports().forEach { file ->
-        println("Deleting ${file.absolutePath}")
+
+    doLast {
+        val report1Regex = ".*testDebugUnitTestCoverage.xml".toRegex()
+        val report2Regex = ".*connected.*report.xml".toRegex()
+
+        val filesToDelete = File(".").walkTopDown().filter { file ->
+            report1Regex.containsMatchIn(file.absolutePath) || report2Regex.containsMatchIn(file.absolutePath)
+        }.toSet()
+
+        delete = filesToDelete
     }
-    delete = getListOfReports()
 }
 
 tasks.register<JacocoReport>("createTestCoverageReport") {
