@@ -94,6 +94,9 @@ fun getListOfReports(): Set<File> {
 }
 
 tasks.register<Delete>("deleteIndividualJacocoReports") {
+    getListOfReports().forEach { file ->
+        println("Deleting ${file.absolutePath}")
+    }
     delete = getListOfReports()
 }
 
