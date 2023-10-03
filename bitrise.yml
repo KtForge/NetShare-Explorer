@@ -185,12 +185,12 @@ workflows:
                 # fail if any commands fails
                 set -e
 
-                find . -type f -regex "./build/**/.*xml"
+                ls ./build/reports/jacoco/report.xml
       - codecov@3:
           inputs:
             - OS: linux
             - CODECOV_TOKEN: $CODECOV_TOKEN
-            - other_options: "-C $GIT_CLONE_COMMIT_HASH -f ./build/**/.*xml"
+            - other_options: "-C $GIT_CLONE_COMMIT_HASH -f ./build/reports/jacoco/report.xml"
 meta:
   bitrise.io:
     stack: linux-docker-android-20.04
