@@ -84,9 +84,12 @@ tasks.register("deleteIndividualJacocoReports") {
     doLast {
         val report1Regex = ".*testDebugUnitTestCoverage.xml".toRegex()
         val report2Regex = ".*connected.*report.xml".toRegex()
+        val report3Regex = ".*jacoco.*test.*jacocoTestReport.xml".toRegex()
 
         val filesToDelete = File(".").walkTopDown().filter { file ->
-            report1Regex.containsMatchIn(file.absolutePath) || report2Regex.containsMatchIn(file.absolutePath)
+            report1Regex.containsMatchIn(file.absolutePath) ||
+                    report2Regex.containsMatchIn(file.absolutePath) ||
+                    report3Regex.containsMatchIn(file.absolutePath)
         }.toSet()
 
         filesToDelete.forEach { file ->
