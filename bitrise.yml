@@ -161,6 +161,7 @@ workflows:
           inputs:
             - OS: linux
             - CODECOV_TOKEN: $CODECOV_TOKEN
+            - other_options: "-C $GIT_CLONE_COMMIT_HASH -f ./build/reports/jacoco/report.xml"
 meta:
   bitrise.io:
     stack: linux-docker-android-20.04
