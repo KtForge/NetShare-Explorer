@@ -3,7 +3,7 @@ default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 project_type: android
 trigger_map:
   - pull_request_target_branch: "main"
-    workflow: test-codecov
+    workflow: unit-test-coverage
 workflows:
   _clone_repository:
     steps:

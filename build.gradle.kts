@@ -1,9 +1,5 @@
-import org.apache.commons.io.filefilter.WildcardFileFilter
-import org.apache.tools.ant.DirectoryScanner
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import java.io.FileFilter
 
-// Test
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     id("com.android.application") apply false
