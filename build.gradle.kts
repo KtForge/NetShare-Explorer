@@ -79,7 +79,7 @@ jacoco {
     reportsDirectory.set(layout.buildDirectory.dir("reports/jacoco"))
 }
 
-tasks.register<Delete>("deleteIndividualJacocoReports") {
+tasks.register("deleteIndividualJacocoReports") {
 
     doLast {
         val report1Regex = ".*testDebugUnitTestCoverage.xml".toRegex()
@@ -89,9 +89,10 @@ tasks.register<Delete>("deleteIndividualJacocoReports") {
             report1Regex.containsMatchIn(file.absolutePath) || report2Regex.containsMatchIn(file.absolutePath)
         }.toSet()
 
-        filesToDelete.forEach { file -> println("Deleting $file") }
-
-        delete = filesToDelete
+        filesToDelete.forEach { file ->
+            println("Deleting $file")
+            file.delete()
+        }
     }
 }
 
