@@ -3,7 +3,7 @@ default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 project_type: android
 trigger_map:
   - pull_request_target_branch: "main"
-    workflow: unit-test-coverage
+    workflow: test-codecov
 workflows:
   _clone_repository:
     steps:
@@ -171,6 +171,21 @@ workflows:
             - OS: linux
             - CODECOV_TOKEN: $CODECOV_TOKEN
             - other_options: "-C $GIT_CLONE_COMMIT_HASH -f $BITRISE_SOURCE_DIR/build/reports/jacoco/report.xml"
+  test-codecov:
+    summary: Run unit test coverage.
+    description: The workflow will first clone your Git repository, cache your Gradle dependencies, install Android tools, run your Cucumber tests and save the test report.
+    before_run:
+      - _clone_repository
+    steps:
+      - script@1:
+          title: Display reports path content
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                # fail if any commands fails
+                set -e
+
+                ls $BITRISE_SOURCE_DIR
 meta:
   bitrise.io:
     stack: linux-docker-android-20.04
