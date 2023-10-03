@@ -109,6 +109,7 @@ tasks.register<JacocoReport>("createTestCoverageReport") {
     reports {
         html.required.set(true)
         xml.required.set(true)
+        xml.outputLocation.set(file(layout.buildDirectory.file("reports/jacoco/report.xml")))
     }
 
     val excludes = setOf(
