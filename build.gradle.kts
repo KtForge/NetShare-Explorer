@@ -98,8 +98,7 @@ tasks.register("deleteIndividualJacocoReports") {
 project.afterEvaluate {
 
     tasks.register<JacocoReport>("createTestCoverageReport") {
-        //dependsOn("debugUnitTestCoverage")
-        dependsOn(":feature:main:testDebugUnitTestCoverage")
+        dependsOn("debugUnitTestCoverage")
         finalizedBy("deleteIndividualJacocoReports")
 
         group = "Reporting"
@@ -154,32 +153,35 @@ project.afterEvaluate {
         sourceDirectories.setFrom(files(sources))
 
         val androidExecutions = subprojects.filter { proj ->
-            val path = "${proj.buildDir}/jacoco/testDebugUnitTest.exec"
-            proj.plugins.hasPlugin(Plugins.androidLibrary) && File(path).exists()
+            proj.plugins.hasPlugin(Plugins.androidLibrary)
         }.map { proj ->
-            "${proj.buildDir}/jacoco/testDebugUnitTest.exec"
+            val path = "${proj.buildDir}/jacoco/testDebugUnitTest.exec"
+            println("Android unit test report: $path")
+
+            path
         }
 
-        val uiExecutions = subprojects.map { proj ->
-            val path = "${proj.buildDir}/outputs/code_coverage/debugAndroidTest/connected"
-
-            val emulatorDirectory = File(path).listFiles()?.firstOrNull()
-            val executionFile = if (emulatorDirectory != null) {
-                File(emulatorDirectory.absolutePath, "coverage.ec")
-            } else {
-                null
+        val uiExecutions = subprojects.filter { proj ->
+            proj.plugins.hasPlugin(Plugins.androidLibrary)
+        }.map { proj ->
+            fileTree(proj.buildDir) {
+                include("outputs/**/coverage.ec")
             }
-
-            executionFile
-        }.mapNotNull { executionFile -> executionFile?.absolutePath }
+            //val path = "${proj.buildDir}/outputs/**/coverage.ec"
+            //println("UI unit tests report: $path")
+//
+            //path
+        }
 
         val kotlinExecutions = subprojects.filter { proj ->
-            val path = "${proj.buildDir}/jacoco/test.exec"
-            proj.plugins.hasPlugin(Plugins.javaLibrary) && File(path).exists()
+            proj.plugins.hasPlugin(Plugins.javaLibrary)
         }.map { proj ->
-            "${proj.buildDir}/jacoco/test.exec"
+            val path = "${proj.buildDir}/jacoco/test.exec"
+            println("Kotlin unit tests report: $path")
+
+            path
         }
 
-        executionData.setFrom(files(androidExecutions, uiExecutions, kotlinExecutions))
+        executionData.setFrom(files(androidExecutions, kotlinExecutions), uiExecutions)
     }
 }
