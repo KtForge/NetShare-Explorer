@@ -14,5 +14,8 @@ changeProject(DslContext.projectId) {
         add {
             password("env.ANDROID_KEYSTORE_PASSWORD", "credentialsJSON:5fc20552-16ee-4c52-9493-cd2b14f2d98c", label = "REDACTED", display = ParameterDisplay.HIDDEN)
         }
+        add {
+            password("env.ANDROID_KEYSTORE_ALIAS", "credentialsJSON:48197dd5-840c-4c87-af19-0f75d4d88e75", label = "REDACTED", display = ParameterDisplay.HIDDEN)
+        }
     }
 }
