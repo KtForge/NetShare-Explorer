@@ -50,7 +50,7 @@ object Build : BuildType({
     steps {
         script {
             name = "Download google json file"
-            scriptContent = """echo "${'$'}GOOGLE_JSON" | base64 -di > app/google-services.json"""
+            scriptContent = "bash tooling/scripts/files/decode_google_json"
         }
         gradle {
             tasks = "clean build"
@@ -79,54 +79,24 @@ object TestCoverage : BuildType({
     steps {
         script {
             name = "Create emulator"
-            scriptContent = """echo "no" | avdmanager create avd --force --name Emulator --abi x86_64 --package 'system-images;android-33-ext5;google_apis_playstore;x86_64'"""
+            scriptContent = "bash tooling/scripts/avd/create_emulator"
         }
         script {
             name = "Start and wait for emulator"
-            scriptContent = """
-                nohup emulator -avd Emulator -show-kernel -no-audio -netdelay none -no-snapshot -wipe-data -gpu auto -no-window -no-boot-anim -camera-back none -camera-front none &
-                adb wait-for-device
-            """.trimIndent()
+            scriptContent = "bash tooling/scripts/avd/start_and_wait_for_emulator"
         }
         gradle {
             name = "Run unit test cases"
             tasks = "debugUnitTestCoverage"
         }
         script {
-            name = "Stop emulator"
+            name = "Stop emulators"
             executionMode = BuildStep.ExecutionMode.ALWAYS
-            scriptContent = "adb devices | grep emulator | cut -f1 | while read line; do adb -s ${'$'}line emu kill; done"
+            scriptContent = "bash tooling/scripts/avd/stop_emulators"
         }
         script {
             name = "Aggregate unit test reports"
-            scriptContent = """
-                #!/bin/bash
-                
-                mkdir -p test-results-deploy
-                
-                all_reports_file="test-results-deploy/all_reports.xml"
-                
-                mkdir -p test-results
-                
-                # Move unit test results to results directory
-                find . -type f -regex ".*/build/test-results/.*.xml" -exec cp {} test-results/ \;
-                
-                # Move instrumentation test results to results directory
-                find . -type f -regex ".*/build/outputs/androidTest-results/connected/debug/**/.*xml" -exec cp {} test-results/ \;
-                
-                files=(test-results/*)
-                first_line=${'$'}(head -n 1 "${'$'}{files[0]}")
-                
-                echo "${'$'}first_line" > ${'$'}all_reports_file
-                echo "<testsuites>" >> ${'$'}all_reports_file
-                
-                for file in test-results/*
-                do
-                  awk 'NR>1' "${'$'}file" >> ${'$'}all_reports_file
-                done
-                
-                echo "</testsuites>" >> ${'$'}all_reports_file
-            """.trimIndent()
+            scriptContent = "bash tooling/scripts/reports/aggregate_test_results"
         }
     }
 
