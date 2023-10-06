@@ -1,3 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
+set -x
 
 echo "no" | avdmanager create avd --force --name Emulator --abi x86_64 --package 'system-images;android-33-ext5;google_apis_playstore;x86_64'
