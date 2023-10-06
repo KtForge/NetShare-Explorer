@@ -43,15 +43,9 @@ project {
             "env.GOOGLE_JSON",
             "ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiNzM5OTg1NzY1MTI3IiwKICAgICJwcm9qZWN0X2lkIjogIm5ldHNoYXJlLWV4cGxvcmVyLTIzNGZjIiwKICAgICJzdG9yYWdlX2J1Y2tldCI6ICJuZXRzaGFyZS1leHBsb3Jlci0yMzRmYy5hcHBzcG90LmNvbSIKICB9LAogICJjbGllbnQiOiBbCiAgICB7CiAgICAgICJjbGllbnRfaW5mbyI6IHsKICAgICAgICAibW9iaWxlc2RrX2FwcF9pZCI6ICIxOjczOTk4NTc2NTEyNzphbmRyb2lkOmU1MDdmODA1YmEwYmU3MDU1NWNiYTIiLAogICAgICAgICJhbmRyb2lkX2NsaWVudF9pbmZvIjogewogICAgICAgICAgInBhY2thZ2VfbmFtZSI6ICJjb20ubXNkLm5ldHdvcmsuZXhwbG9yZXIiCiAgICAgICAgfQogICAgICB9LAogICAgICAib2F1dGhfY2xpZW50IjogW10sCiAgICAgICJhcGlfa2V5IjogWwogICAgICAgIHsKICAgICAgICAgICJjdXJyZW50X2tleSI6ICJBSXphU3lBZkNuZUxuOEQ5V3FiVFBMWmVTMDc0TXRKZzlKbHBOVXMiCiAgICAgICAgfQogICAgICBdLAogICAgICAic2VydmljZXMiOiB7CiAgICAgICAgImFwcGludml0ZV9zZXJ2aWNlIjogewogICAgICAgICAgIm90aGVyX3BsYXRmb3JtX29hdXRoX2NsaWVudCI6IFtdCiAgICAgICAgfQogICAgICB9CiAgICB9CiAgXSwKICAiY29uZmlndXJhdGlvbl92ZXJzaW9uIjogIjEiCn0="
         )
-        param {
-            password("env.ANDROID_KEYSTORE_ALIAS", "credentialsJSON:48197dd5-840c-4c87-af19-0f75d4d88e75", label = "REDACTED", display = ParameterDisplay.HIDDEN)
-        }
-        param {
-            password("env.ANDROID_KEYSTORE_PASSWORD", "credentialsJSON:5fc20552-16ee-4c52-9493-cd2b14f2d98c", label = "REDACTED", display = ParameterDisplay.HIDDEN)
-        }
-        param {
-            password("env.ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD", "credentialsJSON:7655ce54-ac21-4cb6-b869-7411cf1f52e9", label = "REDACTED", display = ParameterDisplay.HIDDEN)
-        }
+        password("env.ANDROID_KEYSTORE_ALIAS", "credentialsJSON:48197dd5-840c-4c87-af19-0f75d4d88e75", label = "REDACTED", display = ParameterDisplay.HIDDEN)
+        password("env.ANDROID_KEYSTORE_PASSWORD", "credentialsJSON:5fc20552-16ee-4c52-9493-cd2b14f2d98c", label = "REDACTED", display = ParameterDisplay.HIDDEN)
+        password("env.ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD", "credentialsJSON:7655ce54-ac21-4cb6-b869-7411cf1f52e9", label = "REDACTED", display = ParameterDisplay.HIDDEN)
     }
 }
 
@@ -136,7 +130,7 @@ object TestCoverage : BuildType({
     triggers {
         vcs {
             branchFilter = """
-                -:<default>
+                -:main
             """.trimIndent()
         }
     }
@@ -154,6 +148,8 @@ object TestCoverage : BuildType({
                 authType = token {
                     token = "credentialsJSON:dffd27e6-f6e0-41d2-bcc3-51ef9adb3aa4"
                 }
+                filterSourceBranch = ""
+                filterTargetBranch = "+:refs/heads/main"
                 filterAuthorRole = PullRequests.GitHubRoleFilter.MEMBER
             }
         }
@@ -164,8 +160,6 @@ object TestCoverage : BuildType({
                 authType = personalToken {
                     token = "credentialsJSON:dffd27e6-f6e0-41d2-bcc3-51ef9adb3aa4"
                 }
-                filterSourceBranch = ""
-                filterTargetBranch = "+:refs/heads/main"
             }
         }
     }
