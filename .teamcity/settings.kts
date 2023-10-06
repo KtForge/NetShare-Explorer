@@ -119,7 +119,7 @@ object TestCoverage : BuildType({
     triggers {
         vcs {
             branchFilter = """
-                -:<default>
+                -:main
             """.trimIndent()
         }
     }
