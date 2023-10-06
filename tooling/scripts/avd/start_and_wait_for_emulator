@@ -1,4 +1,4 @@
 #!/bin/bash -x
 
-nohup emulator -avd Emulator -show-kernel -no-audio -netdelay none -no-snapshot -wipe-data -gpu auto -no-window -no-boot-anim -camera-back none -camera-front none &
+nohup emulator -avd Emulator -no-audio -netdelay none -no-snapshot -wipe-data -gpu auto -no-window -no-boot-anim -camera-back none -camera-front none &
 adb wait-for-device
