@@ -61,10 +61,21 @@ object Build : BuildType({
     }
 
     triggers {
+        vcs {
+        }
     }
 
     features {
         perfmon {
+        }
+        pullRequests {
+            vcsRootExtId = "${DslContext.settingsRoot.id}"
+            provider = github {
+                authType = token {
+                    token = "credentialsJSON:dffd27e6-f6e0-41d2-bcc3-51ef9adb3aa4"
+                }
+                filterAuthorRole = PullRequests.GitHubRoleFilter.MEMBER
+            }
         }
     }
 })
@@ -101,6 +112,8 @@ object TestCoverage : BuildType({
     }
 
     triggers {
+        vcs {
+        }
     }
 
     features {
@@ -109,15 +122,6 @@ object TestCoverage : BuildType({
         xmlReport {
             reportType = XmlReport.XmlReportType.JUNIT
             rules = "test-results-deploy/all_reports.xml"
-        }
-        pullRequests {
-            vcsRootExtId = "${DslContext.settingsRoot.id}"
-            provider = github {
-                authType = token {
-                    token = "credentialsJSON:dffd27e6-f6e0-41d2-bcc3-51ef9adb3aa4"
-                }
-                filterAuthorRole = PullRequests.GitHubRoleFilter.MEMBER
-            }
         }
     }
 })
