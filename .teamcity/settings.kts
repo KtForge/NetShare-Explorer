@@ -147,6 +147,8 @@ object TestCoverage : BuildType({
                 authType = personalToken {
                     token = "credentialsJSON:dffd27e6-f6e0-41d2-bcc3-51ef9adb3aa4"
                 }
+                filterSourceBranch = ""
+                filterTargetBranch = "+:refs/heads/main"
             }
         }
     }
