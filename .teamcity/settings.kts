@@ -101,8 +101,6 @@ object TestCoverage : BuildType({
     }
 
     triggers {
-        vcs {
-        }
     }
 
     features {
