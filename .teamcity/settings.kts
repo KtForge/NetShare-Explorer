@@ -112,6 +112,9 @@ object TestCoverage : BuildType({
 
     triggers {
         vcs {
+            branchFilter = """
+                +:pull/*
+            """.trimIndent()
         }
     }
 
