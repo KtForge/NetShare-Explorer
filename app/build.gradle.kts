@@ -34,9 +34,9 @@ android {
         create("release") {
             if (System.getenv("CI").toBoolean()) {
                 storeFile = file(projectDir.absolutePath + "/nfe_android_keystore")
-                storePassword = System.getenv()["BITRISEIO_ANDROID_KEYSTORE_PASSWORD"]
-                keyAlias = System.getenv()["BITRISEIO_ANDROID_KEYSTORE_ALIAS"]
-                keyPassword = System.getenv()["BITRISEIO_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD"]
+                storePassword = System.getenv()["ANDROID_KEYSTORE_PASSWORD"]
+                keyAlias = System.getenv()["ANDROID_KEYSTORE_ALIAS"]
+                keyPassword = System.getenv()["ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD"]
             } else {
                 val properties = Properties()
                 val propertiesFile = File("key.properties")
