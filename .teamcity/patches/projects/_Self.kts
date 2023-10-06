@@ -12,7 +12,7 @@ accordingly, and delete the patch script.
 changeProject(DslContext.projectId) {
     params {
         add {
-            password("env.ANDROID_KEYSTORE_PASSWORD", "credentialsJSON:653cb405-ad16-4082-8de7-04525589bc90", label = "REDACTED", display = ParameterDisplay.HIDDEN, readOnly = true)
+            password("env.ANDROID_KEYSTORE_PASSWORD", "credentialsJSON:5fc20552-16ee-4c52-9493-cd2b14f2d98c", label = "REDACTED", display = ParameterDisplay.HIDDEN)
         }
     }
 }
