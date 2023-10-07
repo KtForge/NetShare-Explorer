@@ -115,8 +115,8 @@ object TestCoverage : BuildType({
             scriptContent = "bash tooling/scripts/avd/start_and_wait_for_emulator"
         }
         gradle {
-            name = "Run unit test cases"
-            tasks = "debugUnitTestCoverage"
+            name = "Run unit test cases and create coverage report"
+            tasks = "createTestCoverageReport"
         }
         script {
             name = "Stop emulators"
@@ -126,6 +126,10 @@ object TestCoverage : BuildType({
         script {
             name = "Aggregate unit test reports"
             scriptContent = "bash tooling/scripts/reports/aggregate_test_results"
+        }
+        script {
+            name = "Upload Coverage report to Codecov"
+            scriptContent = "bash tooling/scripts/reports/upload_coverage_report"
         }
     }
 
@@ -163,32 +167,6 @@ object TestCoverage : BuildType({
                     token = "credentialsJSON:dffd27e6-f6e0-41d2-bcc3-51ef9adb3aa4"
                 }
             }
-        }
-    }
-})
-
-object TestCodecov : BuildType({
-    name = "Test Codecov"
-
-    vcs {
-        root(DslContext.settingsRoot)
-    }
-
-    steps {
-        script {
-            name = "Upload Coverage report"
-            scriptContent = "bash tooling/scripts/reports/upload_coverage_report"
-        }
-    }
-
-    triggers {
-        vcs {
-            enabled = false
-        }
-    }
-
-    features {
-        perfmon {
         }
     }
 })
