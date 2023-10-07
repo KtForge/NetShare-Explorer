@@ -3,4 +3,4 @@ set -x
 
 commit_sha=$(git rev-parse HEAD)
 
-codecov do-upload -C "$commit_sha" -f build/reports/jacoco/report.xml
+codecovcli do-upload -C "$commit_sha" -f build/reports/jacoco/report.xml
