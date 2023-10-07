@@ -37,6 +37,7 @@ project {
 
     buildType(PublishPatchReleaseCandidate)
     buildType(TestCoverage)
+    buildType(TestCodecov)
 
     params {
         param(
