@@ -164,3 +164,29 @@ object TestCoverage : BuildType({
         }
     }
 })
+
+object TestCodecov : BuildType({
+    name = "Test Codecov"
+
+    vcs {
+        root(DslContext.settingsRoot)
+    }
+
+    steps {
+        script {
+            name = "Upload Coverage report"
+            scriptContent = "bash tooling/scripts/reports/upload_coverage_report"
+        }
+    }
+
+    triggers {
+        vcs {
+            enabled = false
+        }
+    }
+
+    features {
+        perfmon {
+        }
+    }
+})

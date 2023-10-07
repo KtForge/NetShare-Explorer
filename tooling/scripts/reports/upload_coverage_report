@@ -1,0 +1,6 @@
+#!/bin/bash
+set -x
+
+commit_sha=$(git rev-parse HEAD)
+
+codecov -C "$commit_sha" -f build/reports/jacoco/report.xml
