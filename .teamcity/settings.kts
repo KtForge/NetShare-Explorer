@@ -35,7 +35,7 @@ version = "2023.05"
 
 project {
 
-    buildType(Build)
+    buildType(PublishPatchReleaseCandidate)
     buildType(TestCoverage)
 
     params {
