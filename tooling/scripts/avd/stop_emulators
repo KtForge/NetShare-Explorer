@@ -1,4 +1,5 @@
-#!/bin/bash -x
+#!/bin/bash
+set -x
 
 adb devices | grep emulator | cut -f1 | while read line; do adb -s "$line" emu kill; done
 adb kill-server

@@ -49,8 +49,8 @@ project {
     }
 }
 
-object Build : BuildType({
-    name = "Build"
+object PublishPatchReleaseCandidate : BuildType({
+    name = "Publish patch release candidate"
 
     vcs {
         root(DslContext.settingsRoot)
@@ -61,9 +61,26 @@ object Build : BuildType({
             name = "Download google json file"
             scriptContent = "bash tooling/scripts/files/decode_google_json"
         }
+        script {
+            name = "Increase patch version"
+            scriptContent = "bash tooling/scripts/versioning/increase_patch_version"
+        }
+        script {
+            name = "Update version and tag"
+            scriptContent = "bash tooling/scripts/versioning/update_version_and_tag"
+        }
         gradle {
-            tasks = "clean build"
+            name = "Build release app"
+            tasks = "assembleRelease bundleRelease"
             gradleWrapperPath = ""
+        }
+        script {
+            name = "Push changes to main"
+            scriptContent = "bash tooling/scripts/versioning/push_changes"
+        }
+        script {
+            name = "Publish new Github release"
+            scriptContent = "bash tooling/scripts/versioning/publish_github_release"
         }
     }
 

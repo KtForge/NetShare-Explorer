@@ -1,8 +1,8 @@
-#!/bin/bash -x
+#!/bin/bash
+set -x
 
 version=$(<"version.txt")
 
 git add version
 git commit -m "Increment version to $version"
 git tag -a "v$version" -m "Version $version"
-git push --atomic origin main "v$version"

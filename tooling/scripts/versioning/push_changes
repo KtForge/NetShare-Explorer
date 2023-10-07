@@ -1,0 +1,6 @@
+#!/bin/bash
+set -x
+
+version=$(<"version.txt")
+
+git push --atomic origin main "v$version"
