@@ -47,6 +47,7 @@ project {
         password("env.ANDROID_KEYSTORE_ALIAS", "credentialsJSON:48197dd5-840c-4c87-af19-0f75d4d88e75", label = "REDACTED", display = ParameterDisplay.HIDDEN)
         password("env.ANDROID_KEYSTORE_PASSWORD", "credentialsJSON:5fc20552-16ee-4c52-9493-cd2b14f2d98c", label = "REDACTED", display = ParameterDisplay.HIDDEN)
         password("env.ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD", "credentialsJSON:7655ce54-ac21-4cb6-b869-7411cf1f52e9", label = "REDACTED", display = ParameterDisplay.HIDDEN)
+        password("env.CODECOV_TOKEN", "credentialsJSON:ce200648-5ba0-4804-92c1-3623eb3d6bcc", label = "REDACTED", display = ParameterDisplay.HIDDEN)
     }
 }
 
