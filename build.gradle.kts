@@ -72,7 +72,7 @@ tasks.register("debugUiTest") {
 }
 
 jacoco {
-    reportsDirectory.set(layout.buildDirectory.dir("/reports/jacoco"))
+    reportsDirectory.set(layout.buildDirectory.dir("reports/jacoco"))
 }
 
 tasks.register("deleteIndividualJacocoReports") {
