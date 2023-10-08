@@ -1,6 +1,9 @@
 #!/bin/bash
 set -x
 
+git config --global user.name "TeamCity"
+git config --global user.email "msd117c@gmail.com"
+
 version=$(<"version.txt")
 
 git add version
