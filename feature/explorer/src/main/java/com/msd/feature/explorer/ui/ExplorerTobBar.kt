@@ -11,14 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import com.msd.core.ui.annotations.ExcludeFromJacocoGeneratedReport
-import com.msd.core.ui.theme.NetworkStorageConfigurationTheme
 import com.msd.core.ui.widget.AppTopBar
-import com.msd.domain.explorer.model.IBaseFile
-import com.msd.domain.explorer.model.NetworkFile
-import com.msd.domain.explorer.model.ParentDirectory
 import com.msd.feature.explorer.R
 import com.msd.feature.explorer.presenter.ExplorerState
 import com.msd.feature.explorer.presenter.UserInteractions
@@ -56,27 +50,4 @@ fun ExplorerTopBar(currentState: ExplorerState, userInteractions: UserInteractio
             }
         }
     )
-}
-
-@ExcludeFromJacocoGeneratedReport
-@Composable
-@Preview
-fun ExplorerTopBarPreview() {
-    NetworkStorageConfigurationTheme {
-        ExplorerTopBar(
-            currentState = ExplorerState.Loading("Name", "Path"),
-            userInteractions = object : UserInteractions {
-                override fun onItemClicked(file: IBaseFile) = Unit
-                override fun onParentDirectoryClicked(parentDirectory: ParentDirectory) = Unit
-                override fun onBackPressed() = Unit
-                override fun onNavigateUp() = Unit
-                override fun confirmFileAccessErrorDialog() = Unit
-                override fun dismissFileAccessErrorDialog() = Unit
-                override fun dismissProgressDialog() = Unit
-                override fun downloadFile(file: NetworkFile) = Unit
-                override fun deleteFile(file: NetworkFile) = Unit
-
-            }
-        )
-    }
 }

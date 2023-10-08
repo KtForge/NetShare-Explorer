@@ -117,20 +117,9 @@ project.afterEvaluate {
             "**/Manifest*.*",
             "**/*Test*.*",
             "android/**/*.*",
-            "androidx/**/*.*",
-            "**/*ViewInjector*.*",
-            "**/*Dagger*.*",
-            "**/*MembersInjector*.*",
-            "**/*_Factory.*",
-            "**/*_Provide*Factory*.*",
-            "**/*_ViewBinding*.*",
-            "**/AutoValue_*.*",
-            "**/R2.class",
-            "**/R2$*.class",
-            "**/*Directions$*",
-            "**/*Directions.*",
-            "**/*Binding.*",
-            "**/core/**"
+            "**/ui/preview/*Preview*.*",
+            "**/ui/*TopBar*.*",
+            "**/core/**",
         )
 
         val kClasses = subprojects.map { proj ->
