@@ -11,12 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import com.msd.core.ui.annotations.ExcludeFromJacocoGeneratedReport
 import com.msd.core.ui.theme.Dimensions.sizeXL
 import com.msd.core.ui.theme.Dimensions.sizeXXL
-import com.msd.core.ui.theme.NetworkStorageConfigurationTheme
-import com.msd.domain.smb.model.SMBConfiguration
 import com.msd.feature.main.R
 import com.msd.feature.main.presenter.UserInteractions
 
@@ -45,29 +41,5 @@ fun MainEmptyView(userInteractions: UserInteractions) {
         ) {
             Text(text = stringResource(id = R.string.add_network_configuration_button))
         }
-    }
-}
-
-@ExcludeFromJacocoGeneratedReport
-@Composable
-@Preview
-fun MainEmptyPreview() {
-    NetworkStorageConfigurationTheme {
-        MainEmptyView(
-            userInteractions = object : UserInteractions {
-                override fun onAddButtonClicked() = Unit
-                override fun onNetworkConfigurationItemClicked(smbConfiguration: SMBConfiguration) =
-                    Unit
-
-                override fun onEditNetworkConfigurationItemClicked(smbConfiguration: SMBConfiguration) =
-                    Unit
-
-                override fun onDeleteNetworkConfigurationItemClicked(smbConfiguration: SMBConfiguration) =
-                    Unit
-
-                override fun confirmDeleteDialog() = Unit
-                override fun dismissDeleteDialog() = Unit
-            }
-        )
     }
 }

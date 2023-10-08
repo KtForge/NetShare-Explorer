@@ -10,9 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import com.msd.core.ui.annotations.ExcludeFromJacocoGeneratedReport
-import com.msd.core.ui.theme.NetworkStorageConfigurationTheme
 import com.msd.core.ui.widget.AppTopBar
 import com.msd.feature.edit.R
 import com.msd.feature.edit.presenter.UserInteractions
@@ -41,25 +38,4 @@ fun EditTopBar(userInteractions: UserInteractions) {
             }
         }
     )
-}
-
-@ExcludeFromJacocoGeneratedReport
-@Composable
-@Preview
-fun EditTopBarPreview() {
-    NetworkStorageConfigurationTheme {
-        EditTopBar(
-            userInteractions = object : UserInteractions {
-                override fun onNavigateUp() = Unit
-                override fun onPasswordVisibilityIconClicked() = Unit
-                override fun onConfirmButtonClicked(
-                    name: String,
-                    server: String,
-                    sharedPath: String,
-                    user: String,
-                    psw: String
-                ) = Unit
-            }
-        )
-    }
 }

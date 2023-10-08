@@ -32,14 +32,11 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import com.msd.core.ui.annotations.ExcludeFromJacocoGeneratedReport
 import com.msd.core.ui.theme.Dimensions.sizeL
 import com.msd.core.ui.theme.Dimensions.sizeM
 import com.msd.core.ui.theme.Dimensions.sizeS
 import com.msd.core.ui.theme.Dimensions.sizeXL
-import com.msd.core.ui.theme.NetworkStorageConfigurationTheme
 import com.msd.domain.smb.model.SMBConfiguration
 import com.msd.feature.main.R
 import com.msd.feature.main.presenter.MainState.Loaded
@@ -169,96 +166,4 @@ private fun DeleteConfigurationDialog(userInteractions: UserInteractions) {
             }
         }
     )
-}
-
-@ExcludeFromJacocoGeneratedReport
-@Composable
-@Preview
-fun MainLoadedPreview() {
-    val loaded = Loaded(
-        smbConfigurations = listOf(
-            SMBConfiguration(
-                id = null,
-                name = "Configuration 1",
-                server = "Server 1",
-                sharedPath = "Public",
-                user = "",
-                psw = "",
-            ),
-            SMBConfiguration(
-                id = null,
-                name = "Configuration 2",
-                server = "Server 2",
-                sharedPath = "Public",
-                user = "",
-                psw = "",
-            )
-        ),
-        smbConfigurationItemIdToDelete = null,
-    )
-
-    NetworkStorageConfigurationTheme {
-        MainLoadedView(
-            loaded,
-            userInteractions = object : UserInteractions {
-                override fun onAddButtonClicked() = Unit
-                override fun onNetworkConfigurationItemClicked(smbConfiguration: SMBConfiguration) =
-                    Unit
-
-                override fun onEditNetworkConfigurationItemClicked(smbConfiguration: SMBConfiguration) =
-                    Unit
-
-                override fun onDeleteNetworkConfigurationItemClicked(smbConfiguration: SMBConfiguration) =
-                    Unit
-
-                override fun confirmDeleteDialog() = Unit
-                override fun dismissDeleteDialog() = Unit
-            })
-    }
-}
-
-@ExcludeFromJacocoGeneratedReport
-@Composable
-@Preview
-fun MainLoadedDeleteDialogPreview() {
-    val loaded = Loaded(
-        smbConfigurations = listOf(
-            SMBConfiguration(
-                id = null,
-                name = "Configuration 1",
-                server = "Server 1",
-                sharedPath = "Public",
-                user = "",
-                psw = "",
-            ),
-            SMBConfiguration(
-                id = null,
-                name = "Configuration 2",
-                server = "Server 2",
-                sharedPath = "Public",
-                user = "",
-                psw = "",
-            )
-        ),
-        smbConfigurationItemIdToDelete = 0,
-    )
-
-    NetworkStorageConfigurationTheme {
-        MainLoadedView(
-            loaded,
-            userInteractions = object : UserInteractions {
-                override fun onAddButtonClicked() = Unit
-                override fun onNetworkConfigurationItemClicked(smbConfiguration: SMBConfiguration) =
-                    Unit
-
-                override fun onEditNetworkConfigurationItemClicked(smbConfiguration: SMBConfiguration) =
-                    Unit
-
-                override fun onDeleteNetworkConfigurationItemClicked(smbConfiguration: SMBConfiguration) =
-                    Unit
-
-                override fun confirmDeleteDialog() = Unit
-                override fun dismissDeleteDialog() = Unit
-            })
-    }
 }

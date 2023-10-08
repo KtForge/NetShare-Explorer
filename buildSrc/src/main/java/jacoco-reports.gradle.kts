@@ -18,6 +18,8 @@ val excludedFiles = mutableSetOf(
     "**/Manifest*.*",
     "**/*Test*.*",
     "android/**/*.*",
+    "**/ui/preview/*Preview*.*",
+    "**/ui/*TopBar*.*",
 )
 
 tasks.register<JacocoReport>("testDebugUnitTestCoverage") {

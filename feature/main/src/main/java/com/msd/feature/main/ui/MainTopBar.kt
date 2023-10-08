@@ -6,9 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import com.msd.core.ui.annotations.ExcludeFromJacocoGeneratedReport
-import com.msd.core.ui.theme.NetworkStorageConfigurationTheme
 import com.msd.core.ui.widget.AppTopBar
 import com.msd.feature.main.R
 
@@ -26,13 +23,4 @@ fun MainTopBar() {
         },
         navigationContent = {}
     )
-}
-
-@ExcludeFromJacocoGeneratedReport
-@Composable
-@Preview
-fun MainTopBarPreview() {
-    NetworkStorageConfigurationTheme {
-        MainTopBar()
-    }
 }
