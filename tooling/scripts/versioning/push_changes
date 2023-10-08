@@ -3,4 +3,4 @@ set -x
 
 version=$(<"version.txt")
 
-yes | git push --atomic origin main "v$version"
+git push --atomic origin main "v$version"

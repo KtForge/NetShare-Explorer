@@ -97,7 +97,7 @@ object PublishPatchReleaseCandidate : BuildType({
         perfmon {
         }
         sshAgent {
-            teamcitySshKey = "NetShare Github"
+            teamcitySshKey = "Github"
         }
     }
 })
