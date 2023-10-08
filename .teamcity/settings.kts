@@ -4,6 +4,7 @@ import jetbrains.buildServer.configs.kotlin.buildFeatures.XmlReport
 import jetbrains.buildServer.configs.kotlin.buildFeatures.commitStatusPublisher
 import jetbrains.buildServer.configs.kotlin.buildFeatures.perfmon
 import jetbrains.buildServer.configs.kotlin.buildFeatures.pullRequests
+import jetbrains.buildServer.configs.kotlin.buildFeatures.sshAgent
 import jetbrains.buildServer.configs.kotlin.buildFeatures.xmlReport
 import jetbrains.buildServer.configs.kotlin.buildSteps.gradle
 import jetbrains.buildServer.configs.kotlin.buildSteps.script
@@ -94,7 +95,7 @@ object PublishPatchReleaseCandidate : BuildType({
     features {
         perfmon {
         }
-        SshAgent {
+        sshAgent {
             teamcitySshKey = "NetShare Github"
         }
     }
