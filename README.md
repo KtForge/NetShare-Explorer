@@ -35,3 +35,5 @@ Access your files directly from the app. NetShare Explorer empowers you to manag
 <p align="center">
     <img src="readme/images/open_screen.png" width="300">
 </p>
+
+Trigger CI webhook
