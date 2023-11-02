@@ -76,9 +76,14 @@ class EditPresenter @AssistedInject constructor(
         navigate(NavigateUp)
     }
 
-    override fun onPasswordVisibilityIconClicked() {
+    override fun onPasswordVisibilityIconClicked(currentPassword: String) {
         (currentState as? Loaded)?.let { loaded ->
-            tryEmit(loaded.copy(isPasswordVisible = !loaded.isPasswordVisible))
+            tryEmit(
+                loaded.copy(
+                    smbConfiguration = loaded.smbConfiguration.copy(psw = currentPassword),
+                    isPasswordVisible = !loaded.isPasswordVisible
+                )
+            )
         }
     }
 
@@ -158,7 +163,7 @@ class EditPresenter @AssistedInject constructor(
 interface UserInteractions {
 
     fun onNavigateUp()
-    fun onPasswordVisibilityIconClicked()
+    fun onPasswordVisibilityIconClicked(currentPassword: String)
     fun onConfirmButtonClicked(
         name: String,
         server: String,

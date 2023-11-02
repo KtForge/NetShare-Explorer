@@ -1,5 +1,9 @@
 package com.msd.feature.edit.presenter
 
+import com.msd.core.navigation.NavigateBack
+import com.msd.core.navigation.NavigateUp
+import com.msd.core.presentation.IPresenterCore
+import com.msd.core.unittest.CoroutineTest
 import com.msd.domain.smb.GetSMBConfigurationUseCase
 import com.msd.domain.smb.StoreSMBConfigurationUseCase
 import com.msd.domain.smb.model.SMBConfiguration
@@ -8,10 +12,6 @@ import com.msd.feature.edit.presenter.EditState.Loaded
 import com.msd.feature.edit.presenter.EditState.Loading
 import com.msd.feature.edit.presenter.EditState.Uninitialized
 import com.msd.feature.edit.tracker.EditTracker
-import com.msd.core.navigation.NavigateBack
-import com.msd.core.navigation.NavigateUp
-import com.msd.core.presentation.IPresenterCore
-import com.msd.core.unittest.CoroutineTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -317,11 +317,16 @@ class EditPresenterTest : CoroutineTest() {
 
     @Test
     fun `when toggling password visibility should update the state`() {
+        val newPassword = "newPassword"
         whenever(core.currentState()).thenReturn(loaded.copy(isPasswordVisible = false))
+        val expectedState = loaded.copy(
+            smbConfiguration = loaded.smbConfiguration.copy(psw = newPassword),
+            isPasswordVisible = true
+        )
 
-        presenter.onPasswordVisibilityIconClicked()
+        presenter.onPasswordVisibilityIconClicked(currentPassword = newPassword)
 
-        verify(core).tryEmit(loaded.copy(isPasswordVisible = true))
+        verify(core).tryEmit(expectedState)
         verifyNoInteractions(getSMBConfigurationUseCase)
         verifyNoInteractions(storeSMBConfigurationUseCase)
         verifyNoInteractions(editTracker)

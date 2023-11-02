@@ -30,7 +30,7 @@ fun EditLoadedEditConfigurationPreview() {
     NetworkStorageConfigurationTheme {
         EditLoadedView(loaded, userInteractions = object : UserInteractions {
             override fun onNavigateUp() = Unit
-            override fun onPasswordVisibilityIconClicked() = Unit
+            override fun onPasswordVisibilityIconClicked(currentPassword: String) = Unit
             override fun onConfirmButtonClicked(
                 name: String,
                 server: String,
@@ -63,7 +63,7 @@ fun EditLoadedEditConfigurationPasswordVisiblePreview() {
     NetworkStorageConfigurationTheme {
         EditLoadedView(loaded, userInteractions = object : UserInteractions {
             override fun onNavigateUp() = Unit
-            override fun onPasswordVisibilityIconClicked() = Unit
+            override fun onPasswordVisibilityIconClicked(currentPassword: String) = Unit
             override fun onConfirmButtonClicked(
                 name: String,
                 server: String,
@@ -96,7 +96,7 @@ fun EditLoadedNewConfigurationPreview() {
     NetworkStorageConfigurationTheme {
         EditLoadedView(loaded, userInteractions = object : UserInteractions {
             override fun onNavigateUp() = Unit
-            override fun onPasswordVisibilityIconClicked() = Unit
+            override fun onPasswordVisibilityIconClicked(currentPassword: String) = Unit
             override fun onConfirmButtonClicked(
                 name: String,
                 server: String,
@@ -129,7 +129,7 @@ fun EditLoadedNewConfigurationErrorsPreview() {
     NetworkStorageConfigurationTheme {
         EditLoadedView(loaded, userInteractions = object : UserInteractions {
             override fun onNavigateUp() = Unit
-            override fun onPasswordVisibilityIconClicked() = Unit
+            override fun onPasswordVisibilityIconClicked(currentPassword: String) = Unit
             override fun onConfirmButtonClicked(
                 name: String,
                 server: String,

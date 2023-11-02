@@ -105,7 +105,7 @@ fun EditLoadedView(loaded: Loaded, userInteractions: UserInteractions) {
                     R.string.show_password_a11y
                 }
 
-                IconButton(onClick = userInteractions::onPasswordVisibilityIconClicked) {
+                IconButton(onClick = { userInteractions.onPasswordVisibilityIconClicked(psw) }) {
                     Icon(
                         imageVector = imageVector,
                         contentDescription = stringResource(id = contentDescriptionRes)
