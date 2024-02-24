@@ -1,5 +1,5 @@
 name: Unit tests
-run-name: Unit tests on {{ github.ref_name }}
+run-name: Unit tests on {{ github.refName }}
 on:
   workflow_call:
   workflow_dispatch:
