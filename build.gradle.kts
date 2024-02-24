@@ -156,10 +156,6 @@ project.afterEvaluate {
             fileTree(proj.buildDir) {
                 include("outputs/**/coverage.ec")
             }
-            //val path = "${proj.buildDir}/outputs/**/coverage.ec"
-            //println("UI unit tests report: $path")
-//
-            //path
         }
 
         val kotlinExecutions = subprojects.filter { proj ->

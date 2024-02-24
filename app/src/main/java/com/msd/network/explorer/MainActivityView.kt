@@ -143,17 +143,9 @@ private fun <S : State, V : Presenter<S>> composable(
         LaunchedEffect(navigationEvent) {
             when (navigationEvent) {
                 is Idle -> Unit
-                is Navigate -> {
-                    navController.navigate((navigationEvent as Navigate).routeId)
-                }
-
-                is NavigateBack -> {
-                    navController.popBackStack()
-                }
-
-                is NavigateUp -> {
-                    navController.navigateUp()
-                }
+                is Navigate -> navController.navigate((navigationEvent as Navigate).routeId)
+                is NavigateBack -> navController.popBackStack()
+                is NavigateUp -> navController.navigateUp()
 
                 is OpenFile -> {
                     val uri = FileProvider.getUriForFile(
