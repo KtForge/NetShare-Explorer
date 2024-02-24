@@ -1,3 +1,4 @@
+
 pluginManagement {
     repositories {
         google()
@@ -5,6 +6,11 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
+plugins {
+    id("com.gradle.enterprise") version "3.16.2"
+}
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -12,6 +18,14 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceAgree = "yes"
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+    }
+}
+
 rootProject.name = "NetShare Explorer"
 include(":app")
 include(":core:ui")
