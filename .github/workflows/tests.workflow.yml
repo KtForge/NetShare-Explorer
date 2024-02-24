@@ -14,12 +14,14 @@ concurrency:
   cancel-in-progress: true
 jobs:
   unit-test:
+    name: Unit tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Check if Kotlin unit test cases related files changed
+        if: ${{ github.event_name }} != 'workflow_dispatch'
         uses: dorny/paths-filter@v3
         id: changes
         with:
@@ -30,5 +32,5 @@ jobs:
               - '**.kts'
 
       - name: Trigger unit test cases
-        if: steps.changes.outputs.unit_tests == 'true'
-        uses: ./.github/workflows/unit_test.workflow.yml
+        if: steps.changes.outputs.unit_tests == 'true' || ${{ github.event_name }} == 'workflow_dispatch'
+        uses: ./.github/actions/tests/unit_test
