@@ -20,10 +20,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Echo event name
-        shell: bash
-        run: echo $GITHUB_EVENT_NAME
-
       - name: Check if Kotlin unit test cases related files changed
         if: ${{ github.event_name != 'workflow_dispatch' }}
         uses: dorny/paths-filter@v3
@@ -36,5 +32,5 @@ jobs:
               - '**.kts'
 
       - name: Trigger unit test cases
-        if: steps.changes.outputs.unit_tests == 'true' || ${{ github.event_name == 'workflow_dispatch' }}
+        if: $${{ steps.changes.outputs.unit_tests == 'true' || github.event_name == 'workflow_dispatch' }}
         uses: ./.github/actions/tests/unit_test
