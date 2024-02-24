@@ -16,6 +16,9 @@ jobs:
   unit-test:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Check if Kotlin unit test cases related files changed
         uses: dorny/paths-filter@v3
         id: changes
