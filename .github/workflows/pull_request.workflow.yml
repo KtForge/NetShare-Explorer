@@ -14,4 +14,18 @@ concurrency:
   cancel-in-progress: true
 jobs:
   unit-test:
-    uses: ./.github/workflows/unit_test.workflow.yml
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if Kotlin unit test cases related files changed
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            unit_tests:
+              - 'src/main/**.kt'
+              - 'src/test/**.kt'
+              - '**.kts'
+
+      - name: Trigger unit test cases
+        if: steps.changes.outputs.unit_tests == 'true'
+        uses: ./.github/workflows/unit_test.workflow.yml
