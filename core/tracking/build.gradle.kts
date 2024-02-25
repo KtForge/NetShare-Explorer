@@ -1,18 +1,18 @@
 plugins {
-    kotlin(Plugins.kapt)
-    id(Plugins.androidLibrary)
-    id(Plugins.kotlinAndroid)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.msd.core.tracking"
-    compileSdk = Configuration.compileSdk
+    compileSdk = 34
 
 
     defaultConfig {
-        minSdk = Configuration.minSdk
+        minSdk = 26
 
-        testInstrumentationRunner = Configuration.testInstrumentationRunner
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -20,20 +20,20 @@ android {
         buildConfig = true
     }
     compileOptions {
-        sourceCompatibility = Configuration.javaVersion
-        targetCompatibility = Configuration.javaVersion
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = Versions.jvmTarget
+        jvmTarget = libs.versions.jvmTarget.get()
     }
 }
 
 dependencies {
 
-    implementation(Dependencies.firebaseCrashlytics)
-    implementation(platform(Dependencies.firebaseBom))
-    implementation(Dependencies.firebaseAnalytics)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
 
-    implementation(Dependencies.daggerHiltAndroid)
-    kapt(Dependencies.daggerHiltAndroidCompiler)
+    implementation(libs.dagger.hilt)
+    ksp(libs.dagger.hilt.compiler)
 }

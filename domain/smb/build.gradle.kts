@@ -1,18 +1,18 @@
 plugins {
-    id(Plugins.javaLibrary)
-    id(Plugins.kotlinJvm)
+    `java-library`
+    alias(libs.plugins.kotlin.jvm)
     jacoco
 }
 
 java {
-    sourceCompatibility = Configuration.javaVersion
-    targetCompatibility = Configuration.javaVersion
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 dependencies {
 
-    implementation(Dependencies.coroutinesCore)
-    implementation(Dependencies.inject)
+    implementation(libs.coroutines.core)
+    implementation(libs.inject)
 
     testImplementation(project(":core:unittest"))
 }

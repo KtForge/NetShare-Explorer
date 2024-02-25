@@ -1,4 +1,3 @@
-
 pluginManagement {
     repositories {
         google()
@@ -27,19 +26,10 @@ gradleEnterprise {
 }
 
 rootProject.name = "NetShare Explorer"
+
 include(":app")
-include(":core:ui")
-include(":core:presentation")
-include(":core:navigation")
-include(":domain:smb")
-include(":feature:main")
-include(":data:smb_data")
-include(":feature:edit")
-include(":feature:explorer")
-include(":domain:explorer")
-include(":data:explorer_data")
-include(":core:unittest")
-include(":core:uitest")
+include(":core:navigation", ":core:presentation", ":core:tracking", ":core:ui", ":core:uitest", ":core:unittest")
+include(":data:explorer_data", ":data:files", ":data:smb_data")
+include(":domain:explorer", ":domain:smb")
+include(":feature:edit", ":feature:explorer", ":feature:main")
 include(":cucumber")
-include(":core:tracking")
-include(":data:files")
