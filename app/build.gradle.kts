@@ -1,12 +1,12 @@
 import java.util.Properties
 
 plugins {
-    kotlin(Plugins.kapt)
-    id(Plugins.androidApplication)
-    id(Plugins.kotlinAndroid)
-    id(Plugins.daggerHiltAndroid)
-    id(Plugins.googleServices)
-    id(Plugins.firebaseCrashlytics)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.dagger.hilt.android)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.ksp)
 }
 
 val properties = Properties()
@@ -27,8 +27,8 @@ if (propertiesFile.canRead()) {
 }
 
 android {
-    namespace = Configuration.namespace
-    compileSdk = Configuration.compileSdk
+    namespace = "com.msd.network.explorer"
+    compileSdk = 34
 
     signingConfigs {
         create("release") {
@@ -53,10 +53,10 @@ android {
     }
 
     defaultConfig {
-        applicationId = Configuration.namespace
-        testApplicationId = Configuration.namespace + ".test"
-        minSdk = Configuration.minSdk
-        targetSdk = Configuration.targetSdk
+        applicationId = "com.msd.network.explorer"
+        testApplicationId = "com.msd.network.explorer.test"
+        minSdk = 26
+        targetSdk = 34
         versionCode = major.times(1000000) + minor.times(10000) + patch.times(100) + build
         versionName = "$major.$minor.$patch"
 
@@ -78,23 +78,18 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = Configuration.javaVersion
-        targetCompatibility = Configuration.javaVersion
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = Versions.jvmTarget
+        jvmTarget = libs.versions.jvmTarget.get()
     }
     buildFeatures {
         buildConfig = true
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.kotlinCompilerExtensionVersion
-    }
-    packagingOptions {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
+        kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtensionVersion.get()
     }
 }
 
@@ -115,20 +110,20 @@ dependencies {
     implementation(project(":feature:edit"))
     implementation(project(":feature:explorer"))
 
-    implementation(platform(Dependencies.kotlinBom))
-    implementation(Dependencies.coreKtx)
-    implementation(Dependencies.composeActivity)
-    implementation(Dependencies.composeNavigation)
+    implementation(platform(libs.kotlin.bom))
+    implementation(libs.core.ktx)
+    implementation(libs.compose.activity)
+    implementation(libs.compose.navigation)
 
-    implementation(platform(Dependencies.firebaseBom))
-    implementation(Dependencies.firebaseAnalytics)
-    implementation(Dependencies.firebaseCrashlytics)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
 
-    implementation(Dependencies.daggerHiltAndroid)
-    kapt(Dependencies.daggerHiltAndroidCompiler)
-    implementation(Dependencies.daggerHiltNavigation)
+    implementation(libs.dagger.hilt)
+    ksp(libs.dagger.hilt.compiler)
+    implementation(libs.dagger.hilt.navigation)
 
-    implementation(Dependencies.roomRuntime)
+    implementation(libs.room.runtime)
 
-    implementation(Dependencies.smbj)
+    implementation(libs.smbj)
 }

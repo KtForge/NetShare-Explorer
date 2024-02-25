@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.msd.data.smb_data.model.DataSMBConfiguration
 
-@Database(entities = [DataSMBConfiguration::class], version = 1)
+@Database(entities = [DataSMBConfiguration::class], version = 1, exportSchema = false)
 abstract class SMBConfigurationDatabase : RoomDatabase() {
 
     abstract fun smbConfigurationDao(): SMBConfigurationDao

@@ -1,40 +1,40 @@
 plugins {
-    id(Plugins.androidLibrary)
-    id(Plugins.kotlinAndroid)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
     namespace = "com.msd.core.uitest"
-    compileSdk = Configuration.compileSdk
+    compileSdk = 34
 
 
     defaultConfig {
-        minSdk = Configuration.minSdk
+        minSdk = 26
 
-        testInstrumentationRunner = Configuration.testInstrumentationRunner
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
     compileOptions {
-        sourceCompatibility = Configuration.javaVersion
-        targetCompatibility = Configuration.javaVersion
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = Versions.jvmTarget
+        jvmTarget = libs.versions.jvmTarget.get()
     }
     buildFeatures {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.kotlinCompilerExtensionVersion
+        kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtensionVersion.get()
     }
 }
 
 dependencies {
-    api(Dependencies.androidxTestRunner)
+    api(libs.androidx.test.runner)
 
-    api(Dependencies.espressoCore)
-    api(Dependencies.mockitoAndroid)
-    api(Dependencies.mockitoKotlin)
-    api(Dependencies.uiTestJUnit4)
-    debugApi(Dependencies.uiTestManifest)
+    api(libs.espresso.core)
+    api(libs.mockito.android)
+    api(libs.mockito.kotlin)
+    api(libs.compose.ui.test.junit4)
+    debugApi(libs.compose.ui.test.manifest)
 }

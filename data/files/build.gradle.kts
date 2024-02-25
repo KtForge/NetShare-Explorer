@@ -1,28 +1,27 @@
 plugins {
-    kotlin(Plugins.kapt)
-    id(Plugins.androidLibrary)
-    id(Plugins.kotlinAndroid)
-    `jacoco-reports`
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.msd.data.files"
-    compileSdk = Configuration.compileSdk
+    compileSdk = 34
 
 
     defaultConfig {
-        minSdk = Configuration.minSdk
+        minSdk = 26
 
-        testInstrumentationRunner = Configuration.testInstrumentationRunner
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
     compileOptions {
-        sourceCompatibility = Configuration.javaVersion
-        targetCompatibility = Configuration.javaVersion
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = Versions.jvmTarget
+        jvmTarget = libs.versions.jvmTarget.get()
     }
 }
 
@@ -30,11 +29,11 @@ dependencies {
 
     implementation(project(":domain:explorer"))
 
-    implementation(platform(Dependencies.kotlinBom))
-    implementation(Dependencies.coreKtx)
+    implementation(platform(libs.kotlin.bom))
+    implementation(libs.core.ktx)
 
-    implementation(Dependencies.daggerHiltAndroid)
-    kapt(Dependencies.daggerHiltAndroidCompiler)
+    implementation(libs.dagger.hilt)
+    ksp(libs.dagger.hilt.compiler)
 
     androidTestImplementation(project(":core:uitest"))
 }

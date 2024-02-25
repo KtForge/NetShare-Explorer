@@ -1,17 +1,16 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    id("com.google.dagger.hilt.android") version "2.44" apply false
-    id("com.google.gms.google-services") version "4.3.15" apply false
-    kotlin("plugin.serialization") version "1.9.10"
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.android.test) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.dagger.hilt.android) apply false
+    alias(libs.plugins.google.services) apply false
+    alias(libs.plugins.firebase.crashlytics) apply false
+    alias(libs.plugins.ksp) apply false
     jacoco
-}
-
-buildscript {
-    dependencies {
-        classpath("com.google.firebase:firebase-crashlytics-gradle:2.9.9")
-    }
 }
 
 allprojects {
@@ -30,9 +29,10 @@ allprojects {
 
 tasks.register("debugUnitTest") {
     val subprojectTasks = subprojects.filter { subproject ->
-        subproject.plugins.hasPlugin(Plugins.androidLibrary) || subproject.plugins.hasPlugin(Plugins.javaLibrary)
+        subproject.plugins.hasPlugin(libs.plugins.android.library.get().pluginId) ||
+                subproject.plugins.hasPlugin("java-library")
     }.map { subproject ->
-        if (subproject.plugins.hasPlugin(Plugins.androidLibrary)) {
+        if (subproject.plugins.hasPlugin(libs.plugins.android.library.get().pluginId)) {
             "${subproject.path}:${subproject.tasks.findByName("testDebugUnitTest")?.name}"
         } else {
             "${subproject.path}:${subproject.tasks.findByName("test")?.name}"
@@ -44,9 +44,10 @@ tasks.register("debugUnitTest") {
 
 tasks.register("debugUnitTestCoverage") {
     val subprojectTasks = subprojects.filter { subproject ->
-        subproject.plugins.hasPlugin(Plugins.androidLibrary) || subproject.plugins.hasPlugin(Plugins.javaLibrary)
+        subproject.plugins.hasPlugin(libs.plugins.android.library.get().pluginId) ||
+                subproject.plugins.hasPlugin("java-library")
     }.mapNotNull { subproject ->
-        if (subproject.plugins.hasPlugin(Plugins.androidLibrary)) {
+        if (subproject.plugins.hasPlugin(libs.plugins.android.library.get().pluginId)) {
             val taskName = subproject.tasks.findByName("testDebugUnitTestCoverage")?.name
             "${subproject.path}:$taskName".takeUnless { taskName.isNullOrEmpty() }
         } else {
@@ -59,7 +60,7 @@ tasks.register("debugUnitTestCoverage") {
 
 tasks.register("debugUiTest") {
     val subprojectTasks = subprojects.filter { subproject ->
-        subproject.plugins.hasPlugin(Plugins.androidLibrary)
+        subproject.plugins.hasPlugin(libs.plugins.android.library.get().pluginId)
     }.map { subproject ->
         "${subproject.path}:${subproject.tasks.findByName("connectedDebugAndroidTest")?.name}"
     }
@@ -138,7 +139,7 @@ project.afterEvaluate {
         sourceDirectories.setFrom(files(sources))
 
         val androidExecutions = subprojects.filter { proj ->
-            proj.plugins.hasPlugin(Plugins.androidLibrary)
+            proj.plugins.hasPlugin(libs.plugins.android.library.get().pluginId)
         }.map { proj ->
             val path = "${proj.buildDir}/jacoco/testDebugUnitTest.exec"
             println("Android unit test report: $path")
@@ -147,7 +148,7 @@ project.afterEvaluate {
         }
 
         val uiExecutions = subprojects.filter { proj ->
-            proj.plugins.hasPlugin(Plugins.androidLibrary)
+            proj.plugins.hasPlugin(libs.plugins.android.library.get().pluginId)
         }.map { proj ->
             fileTree(proj.buildDir) {
                 include("outputs/**/coverage.ec")
@@ -155,7 +156,7 @@ project.afterEvaluate {
         }
 
         val kotlinExecutions = subprojects.filter { proj ->
-            proj.plugins.hasPlugin(Plugins.javaLibrary)
+            proj.plugins.hasPlugin("java-library")
         }.map { proj ->
             val path = "${proj.buildDir}/jacoco/test.exec"
             println("Kotlin unit tests report: $path")

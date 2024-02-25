@@ -1,26 +1,26 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
 
 plugins {
-    kotlin(Plugins.kapt)
-    id(Plugins.androidTest)
-    id(Plugins.kotlinAndroid)
-    id(Plugins.cucumberReporting) version Versions.cucumberReporting
+    alias(libs.plugins.android.test)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.cucumber.reporting)
+    alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.msd.network.explorer.test"
-    compileSdk = Configuration.compileSdk
+    compileSdk = 34
 
     defaultConfig {
-        minSdk = Configuration.minSdk
+        minSdk = 26
         testApplicationId = "com.msd.network.explorer.test"
 
         testInstrumentationRunner = "com.msd.network.explorer.test.ExplorerCucumberTestRunner"
     }
 
     compileOptions {
-        sourceCompatibility = Configuration.javaVersion
-        targetCompatibility = Configuration.javaVersion
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     targetProjectPath = ":app"
@@ -45,20 +45,20 @@ dependencies {
     implementation(project(":feature:edit"))
     implementation(project(":feature:explorer"))
 
-    implementation(platform(Dependencies.firebaseBom))
-    implementation(Dependencies.firebaseAnalytics)
-    implementation(Dependencies.firebaseCrashlytics)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
 
-    implementation(Dependencies.roomRuntime)
+    implementation(libs.room.runtime)
 
-    implementation(Dependencies.smbj)
+    implementation(libs.smbj)
 
-    implementation(Dependencies.cucumberAndroid)
-    implementation(Dependencies.cucumberHilt)
+    implementation(libs.cucumber.android)
+    implementation(libs.cucumber.hilt)
 
-    implementation(Dependencies.daggerHiltAndroid)
-    implementation(Dependencies.daggerHiltAndroidTesting)
-    kapt(Dependencies.daggerHiltAndroidCompiler)
+    implementation(libs.dagger.hilt)
+    implementation(libs.dagger.hilt.testing)
+    ksp(libs.dagger.hilt.compiler)
 }
 
 var record: Boolean = false
