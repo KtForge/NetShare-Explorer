@@ -27,76 +27,18 @@ allprojects {
     }
 }
 
-tasks.register("debugUnitTest") {
-    val subprojectTasks = subprojects.filter { subproject ->
-        subproject.plugins.hasPlugin(libs.plugins.android.library.get().pluginId) ||
-                subproject.plugins.hasPlugin("java-library")
-    }.map { subproject ->
-        if (subproject.plugins.hasPlugin(libs.plugins.android.library.get().pluginId)) {
-            "${subproject.path}:${subproject.tasks.findByName("testDebugUnitTest")?.name}"
-        } else {
-            "${subproject.path}:${subproject.tasks.findByName("test")?.name}"
-        }
-    }
-
-    dependsOn(subprojectTasks)
-}
-
-tasks.register("debugUnitTestCoverage") {
-    val subprojectTasks = subprojects.filter { subproject ->
-        subproject.plugins.hasPlugin(libs.plugins.android.library.get().pluginId) ||
-                subproject.plugins.hasPlugin("java-library")
-    }.mapNotNull { subproject ->
-        if (subproject.plugins.hasPlugin(libs.plugins.android.library.get().pluginId)) {
-            val taskName = subproject.tasks.findByName("testDebugUnitTestCoverage")?.name
-            "${subproject.path}:$taskName".takeUnless { taskName.isNullOrEmpty() }
-        } else {
-            "${subproject.path}:${subproject.tasks.findByName("test")?.name}"
-        }
-    }
-
-    dependsOn(subprojectTasks)
-}
-
-tasks.register("debugUiTest") {
-    val subprojectTasks = subprojects.filter { subproject ->
-        subproject.plugins.hasPlugin(libs.plugins.android.library.get().pluginId)
-    }.map { subproject ->
-        "${subproject.path}:${subproject.tasks.findByName("connectedDebugAndroidTest")?.name}"
-    }
-
-    dependsOn(subprojectTasks)
+tasks.register("clean", Delete::class) {
+    delete = setOf(layout.buildDirectory)
 }
 
 jacoco {
     reportsDirectory.set(layout.buildDirectory.dir("reports/jacoco"))
 }
 
-tasks.register("deleteIndividualJacocoReports") {
-
-    doLast {
-        val report1Regex = ".*testDebugUnitTestCoverage.xml".toRegex()
-        val report2Regex = ".*connected.*report.xml".toRegex()
-        val report3Regex = ".*jacoco.*test.*jacocoTestReport.xml".toRegex()
-
-        val filesToDelete = File(".").walkTopDown().filter { file ->
-            report1Regex.containsMatchIn(file.absolutePath) ||
-                    report2Regex.containsMatchIn(file.absolutePath) ||
-                    report3Regex.containsMatchIn(file.absolutePath)
-        }.toSet()
-
-        filesToDelete.forEach { file ->
-            println("Deleting $file")
-            file.delete()
-        }
-    }
-}
-
 project.afterEvaluate {
 
     tasks.register<JacocoReport>("createTestCoverageReport") {
-        dependsOn("debugUnitTestCoverage")
-        finalizedBy("deleteIndividualJacocoReports")
+        dependsOn(subprojects.mapNotNull { it.tasks.findByName("test") })
 
         group = "Reporting"
         description = "Generate overall Jacoco coverage report for the debug build."
@@ -120,49 +62,37 @@ project.afterEvaluate {
         )
 
         val kClasses = subprojects.map { proj ->
-            "${proj.buildDir}/tmp/kotlin-classes/debug"
+            proj.layout.buildDirectory.file("/tmp/kotlin-classes/debug")
         }
         val classes = subprojects.map { proj ->
-            "${proj.buildDir}/classes/kotlin/main"
-        }
-        val kotlinClasses = kClasses.map { path ->
-            fileTree(path) { exclude(excludes) }
-        } + classes.map { path ->
-            fileTree(path) { exclude(excludes) }
+            proj.layout.buildDirectory.file("/classes/kotlin/main")
         }
 
+        val kotlinClasses = kClasses.map { path -> fileTree(path) { exclude(excludes) } } +
+                classes.map { path -> fileTree(path) { exclude(excludes) } }
+
         classDirectories.setFrom(files(kotlinClasses))
-        val sources = subprojects.map { proj ->
-            "${proj.projectDir}/src/main/java"
-        }
+        val sources = subprojects.map { proj -> "${proj.projectDir}/src/main/java" }
 
         sourceDirectories.setFrom(files(sources))
 
         val androidExecutions = subprojects.filter { proj ->
             proj.plugins.hasPlugin(libs.plugins.android.library.get().pluginId)
         }.map { proj ->
-            val path = "${proj.buildDir}/jacoco/testDebugUnitTest.exec"
-            println("Android unit test report: $path")
-
-            path
+            proj.layout.buildDirectory.file("/jacoco/testDebugUnitTest.exec")
         }
 
         val uiExecutions = subprojects.filter { proj ->
             proj.plugins.hasPlugin(libs.plugins.android.library.get().pluginId)
         }.map { proj ->
-            fileTree(proj.buildDir) {
+            fileTree(proj.layout.buildDirectory) {
                 include("outputs/**/coverage.ec")
             }
         }
 
         val kotlinExecutions = subprojects.filter { proj ->
             proj.plugins.hasPlugin("java-library")
-        }.map { proj ->
-            val path = "${proj.buildDir}/jacoco/test.exec"
-            println("Kotlin unit tests report: $path")
-
-            path
-        }
+        }.map { proj -> proj.layout.buildDirectory.file("/jacoco/test.exec") }
 
         executionData.setFrom(files(androidExecutions, kotlinExecutions), uiExecutions)
     }

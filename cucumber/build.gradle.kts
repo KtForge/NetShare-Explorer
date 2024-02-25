@@ -79,7 +79,7 @@ tasks.create("downloadCucumberReports") {
     description = "Downloads the rich Cucumber report files from the connected device"
 
     doLast {
-        val localReportPath = File(buildDir, "reports/cucumber")
+        val localReportPath = layout.buildDirectory.dir("reports/cucumber").get().asFile
         println("local report path: $localReportPath")
 
         if (!localReportPath.exists()) {
@@ -97,18 +97,16 @@ tasks.create("downloadCucumberReports") {
 }
 
 // Run after generating cucumber reports
-
 tasks.register<Zip>("compressCucumberReport") {
 
     doLast {
         archivesName.set("cucumber_report")
-        destinationDirectory.set(file(buildDir))
-        from(files("$buildDir/reports/cucumber/cucumber.html"))
+        destinationDirectory.set(layout.buildDirectory)
+        from(layout.buildDirectory.file("/reports/cucumber/cucumber.html"))
     }
 }
 
 // Run before mergeDebugAssets
-
 tasks.register<WriteProperties>("setRecordingMode") {
 
     record = if (project.hasProperty("record")) {
@@ -117,7 +115,7 @@ tasks.register<WriteProperties>("setRecordingMode") {
         false
     }
 
-    outputFile = file("src/main/assets/config/recording.properties")
+    destinationFile = file("src/main/assets/config/recording.properties")
     println("Recording mode: $record")
     property("record", record)
 }
@@ -127,7 +125,6 @@ tasks.register("installTestApp") {
 }
 
 // Delete previous cucumber reports
-
 tasks.register("deleteDeviceCucumberReportsAndLogs") {
 
     doLast {
@@ -142,11 +139,10 @@ fun getCucumberJsonDevicePath(): String {
 }
 
 // Cucumber report plugin configuration
-
 cucumberReports {
-    outputDir = file(buildDir.path + "/reports/cucumber/cucumber.html")
+    outputDir = layout.buildDirectory.dir("/reports/cucumber/cucumber.html").get().asFile
     buildId = "0"
-    reports = files(buildDir.path + "/reports/cucumber/cucumber.json")
+    reports = layout.buildDirectory.files("/reports/cucumber/cucumber.json")
 }
 
 tasks.register("cucumber") {
@@ -157,7 +153,6 @@ tasks.register("cucumber") {
 }
 
 // Grant root access to allow pulling the reports and log files
-
 tasks.register("grantRootAccess") {
 
     doLast {
@@ -171,7 +166,6 @@ tasks.register("grantRootAccess") {
 }
 
 // Run when invoking cucumber task
-
 tasks.register("runCucumber") {
 
     dependsOn("installTestApp")
@@ -201,7 +195,6 @@ tasks.register("runCucumber") {
 }
 
 // Run after generating cucumber reports
-
 tasks.register("downloadLogs") {
     doLast {
         if (record) {
