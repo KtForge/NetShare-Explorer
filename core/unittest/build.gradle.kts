@@ -1,18 +1,18 @@
 plugins {
-    id(Plugins.javaLibrary)
-    id(Plugins.kotlinJvm)
+    `java-library`
+    alias(libs.plugins.kotlin.jvm)
 }
 
 java {
-    sourceCompatibility = Configuration.javaVersion
-    targetCompatibility = Configuration.javaVersion
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 dependencies {
-    api(Dependencies.jUnit)
-    api(Dependencies.mockito)
-    api(Dependencies.mockitoKotlin)
-    api(Dependencies.coroutinesTest)
+    api(libs.junit)
+    api(libs.mockito)
+    api(libs.mockito.kotlin)
+    api(libs.coroutines.test)
 
-    implementation(Dependencies.mockitoInline)
+    implementation(libs.mockito.inline)
 }

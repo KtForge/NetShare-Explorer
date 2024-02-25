@@ -1,0 +1,84 @@
+[versions]
+kotlin = "1.9.22"
+coreKtx = "1.12.0"
+composeBom = "2024.02.01"
+composeActivity = "1.8.2"
+composeNavigation = "2.7.7"
+material3 = "1.2.0"
+materialIconsExtended = "1.6.2"
+viewModelLifecycleKtx = "2.7.0"
+coroutines = "1.8.0"
+firebase = "32.7.2"
+daggerHilt = "2.50"
+daggerHiltNavigation = "1.2.0"
+inject = "1"
+junit = "4.13.2"
+mockito = "4.0.0"
+mockitoAndroid = "5.5.0"
+espressoCore = "3.5.1"
+cucumberAndroid = "4.10.0"
+androidxTestRunner = "1.5.2"
+composeUiJunit4 = "1.6.2"
+smbj = "0.12.0"
+slf4j = "2.0.9"
+room = "2.6.1"
+ksp = "1.9.22-1.0.17"
+androidGradle = "8.2.2"
+googleServices = "4.4.1"
+firebaseCrashlytics = "2.9.9"
+cucumberReporting = "0.1.25"
+jvmTarget = "17"
+kotlinCompilerExtensionVersion = "1.5.10"
+
+[libraries]
+kotlin-bom = { name = "kotlin-bom", module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
+coroutines-core = { name = "coroutines-core", module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+core-ktx = { name = "core-ktx", module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+compose-activity = { name = "compose-activity", module = "androidx.activity:activity-compose", version.ref = "composeActivity" }
+compose-navigation = { name = "compose-navigation", module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
+viewmodel-lifecycle-ktx = { name = "viewmodel-lifecycle-ktx", module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "viewModelLifecycleKtx" }
+compose-bom = { name = "compose-bom", module = "androidx.compose:compose-bom", version.ref = "composeBom" }
+compose-ui = { name = "compose-ui", module = "androidx.compose.ui:ui" }
+compose-ui-graphics = { name = "compose-ui-graphics", module = "androidx.compose.ui:ui-graphics" }
+compose-ui-tooling = { name = "compose-ui-tooling", module = "androidx.compose.ui:ui-tooling" }
+compose-ui-tooling-preview = { name = "compose-ui-tooling-preview", module = "androidx.compose.ui:ui-tooling-preview" }
+compose-material3 = { name = "compose-material3", module = "androidx.compose.material3:material3", version.ref = "material3" }
+compose-material-icons = { name = "compose-material-icons", module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
+firebase-bom = { name = "firebase-bom", module = "com.google.firebase:firebase-bom", version.ref = "firebase" }
+firebase-analytics = { name = "firebase-analytics", module = "com.google.firebase:firebase-analytics-ktx" }
+firebase-crashlytics = { name = "firebase-crashlytics", module = "com.google.firebase:firebase-crashlytics-ktx" }
+dagger-hilt = { name = "dagger-hilt", module = "com.google.dagger:hilt-android", version.ref = "daggerHilt" }
+dagger-hilt-testing = { name = "dagger-hilt-testing", module = "com.google.dagger:hilt-android-testing", version.ref = "daggerHilt" }
+dagger-hilt-compiler = { name = "dagger-hilt-compiler", module = "com.google.dagger:hilt-android-compiler", version.ref = "daggerHilt" }
+dagger-hilt-navigation = { name = "dagger-hilt-navigation", module = "androidx.hilt:hilt-navigation-compose", version.ref = "daggerHiltNavigation" }
+inject = { name = "inject", module = "javax.inject:javax.inject", version.ref = "inject" }
+junit = { name = "junit", module = "junit:junit", version.ref = "junit" }
+mockito = { name = "mockito", module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockito-android = { name = "mockito-android", module = "org.mockito:mockito-android", version.ref = "mockitoAndroid" }
+mockito-kotlin = { name = "mockito-kotlin", module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockito" }
+mockito-inline = { name = "mockito-inline", module = "org.mockito:mockito-inline", version.ref = "mockito" }
+coroutines-test = { name = "coroutines-test", module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+espresso-core = { name = "espresso-core", module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
+cucumber-android = { name = "cucumber-android", module = "io.cucumber:cucumber-android", version.ref = "cucumberAndroid" }
+cucumber-hilt = { name = "cucumber-hilt", module = "io.cucumber:cucumber-android-hilt", version.ref = "cucumberAndroid" }
+androidx-test-runner = { name = "androidx-test-runner", module = "androidx.test:runner", version.ref = "androidxTestRunner" }
+compose-ui-test-junit4 = { name = "compose-ui-test-junit4", module = "androidx.compose.ui:ui-test-junit4", version.ref = "composeUiJunit4" }
+compose-ui-test-manifest = { name = "compose-ui-test-manifest", module = "androidx.compose.ui:ui-test-manifest", version.ref = "composeUiJunit4" }
+smbj = { name = "smbj", module = "com.hierynomus:smbj", version.ref = "smbj" }
+slf4j = { name = "slf4j", module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+slf4j-provider = { name = "slf4j-provider", module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+room-runtime = { name = "roomRuntime", module = "androidx.room:room-runtime", version.ref = "room" }
+room-compiler = { name = "roomCompiler", module = "androidx.room:room-compiler", version.ref = "room" }
+room-ktx = { name = "roomKtx", module = "androidx.room:room-ktx", version.ref = "room" }
+
+[plugins]
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+android-application = { id = "com.android.application", version.ref = "androidGradle" }
+android-library = { id = "com.android.library", version.ref = "androidGradle" }
+android-test = { id = "com.android.test", version.ref = "androidGradle" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "daggerHilt" }
+cucumber-reporting = { id = "com.github.spacialcircumstances.gradle-cucumber-reporting", version.ref = "cucumberReporting" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }

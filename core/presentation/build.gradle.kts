@@ -1,25 +1,25 @@
 plugins {
-    id(Plugins.androidLibrary)
-    id(Plugins.kotlinAndroid)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
     namespace = "com.msd.core.presentation"
-    compileSdk = Configuration.compileSdk
+    compileSdk = 34
 
 
     defaultConfig {
-        minSdk = Configuration.minSdk
+        minSdk = 26
 
-        testInstrumentationRunner = Configuration.testInstrumentationRunner
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
     compileOptions {
-        sourceCompatibility = Configuration.javaVersion
-        targetCompatibility = Configuration.javaVersion
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = Versions.jvmTarget
+        jvmTarget = libs.versions.jvmTarget.get()
     }
 }
 
@@ -27,9 +27,9 @@ dependencies {
 
     implementation(project(":core:navigation"))
 
-    implementation(platform(Dependencies.kotlinBom))
-    api(Dependencies.viewModelLifecycleKtx)
-    implementation(Dependencies.inject)
+    implementation(platform(libs.kotlin.bom))
+    api(libs.viewmodel.lifecycle.ktx)
+    implementation(libs.inject)
 
     testImplementation(project(":core:unittest"))
 }

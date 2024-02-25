@@ -1,43 +1,42 @@
 plugins {
-    id(Plugins.androidLibrary)
-    id(Plugins.kotlinAndroid)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
     namespace = "com.msd.core.ui"
-    compileSdk = Configuration.compileSdk
-
+    compileSdk = 34
 
     defaultConfig {
-        minSdk = Configuration.minSdk
+        minSdk = 26
 
-        testInstrumentationRunner = Configuration.testInstrumentationRunner
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
     compileOptions {
-        sourceCompatibility = Configuration.javaVersion
-        targetCompatibility = Configuration.javaVersion
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = Versions.jvmTarget
+        jvmTarget = libs.versions.jvmTarget.get()
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtensionVersion.get()
     }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = Versions.kotlinCompilerExtensionVersion
     }
 }
 
 dependencies {
 
-    implementation(Dependencies.coreKtx)
+    implementation(libs.core.ktx)
 
-    implementation(platform(Dependencies.composeBom))
-    api(Dependencies.composeUi)
-    api(Dependencies.composeUiGraphics)
-    debugApi(Dependencies.composeUiTooling)
-    api(Dependencies.composeUiToolingPreview)
-    api(Dependencies.composeMaterial3)
-    api(Dependencies.composeMaterialIcons)
+    implementation(platform(libs.compose.bom))
+    api(libs.compose.ui)
+    api(libs.compose.ui.graphics)
+    debugApi(libs.compose.ui.tooling)
+    api(libs.compose.ui.tooling.preview)
+    api(libs.compose.material3)
+    api(libs.compose.material.icons)
 }
