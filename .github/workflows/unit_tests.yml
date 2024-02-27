@@ -28,3 +28,5 @@ jobs:
       - name: Trigger unit test cases
         if: ${{ steps.changes.outputs.unit_tests == 'true' || github.event_name == 'workflow_dispatch' }}
         uses: ./.github/actions/tests/unit_tests
+        with:
+          google_services_json: ${{ secrets.GOOGLE_JSON }}

@@ -2,7 +2,12 @@ name: Setup environment
 description: |
   This action prepares the environment for gradle execution by:
   - Setting the Java version to 17
+  - Decodes and creates the Google services json file
   - Setting up Gradle and restoring its cache
+inputs:
+  google_services_json:
+    description: Google services json file contents in base 64
+    required: true
 runs:
   using: "composite"
   steps:
@@ -11,6 +16,13 @@ runs:
       with:
         distribution: temurin
         java-version: 17
+
+    - name: Decode and create Google services json file
+      shell: bash
+      run: |
+        encoded_google_services_json="${{ inputs.google_services_json }}"
+        decoded_google_services_json="$(echo $encoded_google_services_json | base64 --decode)"
+        echo "$decoded_google_services_json" > "./app/google-services.json"
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
