@@ -1,5 +1,3 @@
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
@@ -13,20 +11,6 @@ plugins {
     jacoco
 }
 
-allprojects {
-    subprojects.forEach { subproject ->
-        subproject.tasks.withType(Test::class.java) {
-            testLogging.events = setOf(
-                TestLogEvent.PASSED,
-                TestLogEvent.FAILED,
-                TestLogEvent.SKIPPED,
-                TestLogEvent.STANDARD_ERROR,
-                TestLogEvent.STANDARD_OUT
-            )
-        }
-    }
-}
-
 tasks.register("clean", Delete::class) {
     delete = setOf(layout.buildDirectory)
 }
@@ -36,6 +20,13 @@ jacoco {
 }
 
 project.afterEvaluate {
+
+    // Disable release unit test task to reduce compilation time
+    subprojects.forEach {
+        it.tasks.whenTaskAdded {
+            if (name == "testReleaseUnitTest") enabled = false
+        }
+    }
 
     tasks.register<JacocoReport>("createTestCoverageReport") {
         dependsOn(subprojects.mapNotNull { it.tasks.findByName("test") })

@@ -17,12 +17,11 @@ runs:
         distribution: temurin
         java-version: 17
 
-    - name: Decode and create Google services json file
-      shell: bash
-      run: |
-        echo "${{ inputs.google_services_json }}" > "./encoded"
-        base64 --decode < "./encoded" > "./app/google-services.json"
-        cat "./app/google-services.json"
+  #  - name: Decode and create Google services json file
+  #    shell: bash
+  #    run: |
+  #      echo "${{ inputs.google_services_json }}" > "./encoded"
+  #      base64 --decode < "./encoded" > "./app/google-services.json"
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
