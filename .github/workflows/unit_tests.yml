@@ -4,7 +4,7 @@ on:
   workflow_call:
   workflow_dispatch:
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: unit-tests-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 jobs:
   unit-tests:
