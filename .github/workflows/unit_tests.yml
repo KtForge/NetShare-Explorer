@@ -1,0 +1,30 @@
+name: Unit tests job
+run-name: Unit tests job for ${{ github.ref_name }}
+on:
+  workflow_call:
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  unit-tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check if Kotlin unit test cases related files changed
+        if: ${{ github.event_name != 'workflow_dispatch' }}
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            unit_tests:
+              - 'src/main/**.kt'
+              - 'src/test/**.kt'
+              - '**.kts'
+
+      - name: Trigger unit test cases
+        if: ${{ steps.changes.outputs.unit_tests == 'true' || github.event_name == 'workflow_dispatch' }}
+        uses: ./.github/actions/tests/unit_tests
