@@ -1,10 +1,16 @@
 name: Unit tests
 description: Runs unit test cases and generates test report
+inputs:
+  google_services_json:
+    description: Google services json file contents in base 64
+    required: true
 runs:
   using: "composite"
   steps:
     - name: Setup environment
       uses: ./.github/actions/setup
+      with:
+        google_services_json: ${{ inputs.google_services_json }}
 
     - name: Run unit tests
       shell: bash
