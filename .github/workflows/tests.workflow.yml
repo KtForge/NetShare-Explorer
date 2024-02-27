@@ -15,3 +15,4 @@ concurrency:
 jobs:
   unit-tests:
     uses: ./.github/workflows/unit_tests.yml
+    secrets: inherit
