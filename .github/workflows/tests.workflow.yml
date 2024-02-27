@@ -15,3 +15,5 @@ concurrency:
 jobs:
   unit-tests:
     uses: ./.github/workflows/unit_tests.yml
+    with:
+      google_services_json: ${{ secrets.GOOGLE_JSON }}
